@@ -40,22 +40,26 @@ export const LMS_MENU: MenuItem[] = [
             {
                 id: 7,
                 label: 'LMS.SIDEBAR.DEALSSUB.PIPELINEVIEW',
-                parentId: 6
+                parentId: 6,
+                link: '/lms/deals/pipeline-view'
             },
             {
                 id: 8,
                 label: 'LMS.SIDEBAR.DEALSSUB.ALLDEALS',
-                parentId: 6
+                parentId: 6,
+                link: '/lms/deals/all-deals'
             },
             {
                 id: 9,
                 label: 'LMS.SIDEBAR.DEALSSUB.PIPELINES',
-                parentId: 6
+                parentId: 6,
+                link: '/lms/deals/pipelines'
             },
             {
                 id: 10,
                 label: 'LMS.SIDEBAR.DEALSSUB.LOSTREASONS',
-                parentId: 6
+                parentId: 6,
+                link: '/lms/deals/lost-reasons'
             }
         ]
     },

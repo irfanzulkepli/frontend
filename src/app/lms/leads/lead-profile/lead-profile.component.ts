@@ -54,8 +54,9 @@ export class LeadProfileComponent implements OnInit {
   organizationForms: FormGroup;
   contactForms: FormGroup;
   followerForms: FormGroup;
+  addressForm: FormGroup;
 
-  
+  countries: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -68,6 +69,7 @@ export class LeadProfileComponent implements OnInit {
     this.allTag = await this.lmsService.getTags();
     this.allPerson = await this.lmsService.getPersons();
     this.allUser = await this.lmsService.getUsers();
+    this.countries = await this.lmsService.getCountry();
 
     this.filteredFruits = this.fruitCtrl.valueChanges.pipe(
       startWith(null),
@@ -79,7 +81,7 @@ export class LeadProfileComponent implements OnInit {
     );
     this.filteredTags = this.tagCtrl.valueChanges.pipe(
       startWith(null),
-      map((tag: string | null) => (tag ? this._filterTag(tag) : this.allTag.slice())),
+      map((tag) => (tag ? this._filterTag(tag.name) : this.allTag.slice())),
     );
 
     this.initForm();
@@ -95,6 +97,26 @@ export class LeadProfileComponent implements OnInit {
     this.followerForms = this.fb.group({
       followers: this.fb.array([])
     });
+    this.addressForm = this.fb.group({
+      country: ['133'],
+      area: [''],
+      city: [''],
+      state: [''],
+      zipcode: [''],
+      address: ['']
+    });
+  }
+
+  onSaveAddress() {
+    console.log('addressForm: ', this.addressForm.getRawValue());
+    this.isEditAddress = !this.isEditAddress;
+  }
+
+  onCancelAddress() {
+    this.addressForm.reset({
+      country: '133'
+    });
+    this.isEditAddress = !this.isEditAddress;
   }
 
   addOrganization() {
@@ -139,7 +161,7 @@ export class LeadProfileComponent implements OnInit {
     const value = (event.value || '').trim();
 
     // Add our fruit
-    if (value) {
+    if (value && this.allFruits.includes(value)) {
       this.fruits.push(value);
     }
 
@@ -199,8 +221,8 @@ export class LeadProfileComponent implements OnInit {
     this.tagCtrl.setValue(null);
   }
 
-  removeTag(fruit: string): void {
-    const index = this.tags.indexOf(fruit);
+  removeTag(id): void {
+    const index = this.tags.findIndex(tag => tag.id == id);
 
     if (index >= 0) {
       this.tags.splice(index, 1);

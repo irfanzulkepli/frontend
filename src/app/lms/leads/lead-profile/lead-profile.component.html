@@ -262,8 +262,8 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <form [formGroup]="organizationForms">
-                            <table class="table mb-0" *ngIf="isEditOrganization">
+                        <form [formGroup]="organizationForms" *ngIf="isEditOrganization">
+                            <table class="table mb-0">
                                 <tbody>
                                     <ng-container formArrayName="organizations">
                                         <ng-container
@@ -325,40 +325,40 @@
                                 (click)="isEditContact = !isEditContact"></i>
                         </div>
                     </div>
-                    <form [formGroup]="contactForms">
-                        <div class="table-responsive" *ngIf="!isEditContact">
-                            <table class="table mb-0">
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            Phone(s)
-                                        </td>
-                                    </tr>
-                                    <tr class="d-flex justify-content-between">
-                                        <td>
-                                            +0123456789
-                                        </td>
-                                        <td>
-                                            <span class="badge rounded-pill bg-primary">Office</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            Email(s)
-                                        </td>
-                                    </tr>
-                                    <tr class="d-flex justify-content-between">
-                                        <td>
-                                            email@email.com
-                                        </td>
-                                        <td>
-                                            <span class="badge rounded-pill bg-primary">Office</span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="table-responsive" style="overflow: unset;" *ngIf="isEditContact">
+                    <div class="table-responsive" *ngIf="!isEditContact">
+                        <table class="table mb-0">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        Phone(s)
+                                    </td>
+                                </tr>
+                                <tr class="d-flex justify-content-between">
+                                    <td>
+                                        +0123456789
+                                    </td>
+                                    <td>
+                                        <span class="badge rounded-pill bg-primary">Office</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Email(s)
+                                    </td>
+                                </tr>
+                                <tr class="d-flex justify-content-between">
+                                    <td>
+                                        email@email.com
+                                    </td>
+                                    <td>
+                                        <span class="badge rounded-pill bg-primary">Office</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <form [formGroup]="contactForms" *ngIf="isEditContact">
+                        <div class="table-responsive" style="overflow: unset;">
                             <table class="table table-nowrap mb-0">
                                 <tbody>
                                     <ng-container formArrayName="contacts">
@@ -412,14 +412,14 @@
                         </div>
                         <div class="page-title-right" *ngIf="isEditAddress">
                             <i class="mdi mdi-close-box-outline font-size-24 cursor-pointer"
-                                (click)="isEditAddress = !isEditAddress"></i>
+                                (click)="onCancelAddress()"></i>
                             <i class="mdi mdi-checkbox-marked-outline font-size-24 cursor-pointer"
-                                (click)="isEditAddress = !isEditAddress"></i>
+                                (click)="onSaveAddress()"></i>
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-nowrap mb-0">
-                            <tbody *ngIf="!isEditAddress">
+                        <table class="table table-nowrap mb-0" *ngIf="!isEditAddress">
+                            <tbody>
                                 <tr>
                                     <td>
                                         Not added yet
@@ -433,50 +433,59 @@
                                     </td>
                                 </tr>
                             </tbody>
-                            <tbody *ngIf="isEditAddress">
-                                <tr>
-                                    <th scope="row" class="d-flex align-items-center">Country </th>
-                                    <td>
-                                        <select class="form-select">
-                                            <option>Select</option>
-                                            <option>Large select</option>
-                                            <option>Small select</option>
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="d-flex align-items-center">Area</th>
-                                    <td>
-                                        <input placeholder="Enter area" class="form-control" type="text" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="d-flex align-items-center">City</th>
-                                    <td>
-                                        <input placeholder="Enter city" class="form-control" type="text" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="d-flex align-items-center">State</th>
-                                    <td>
-                                        <input placeholder="Enter state" class="form-control" type="text" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="d-flex align-items-center">Zip code</th>
-                                    <td>
-                                        <input placeholder="Enter zip code" class="form-control" type="text" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="d-flex align-items-center">Zip code</th>
-                                    <td>
-                                        <textarea rows="2" placeholder="Add address details here" class="form-control"
-                                            type="text"></textarea>
-                                    </td>
-                                </tr>
-                            </tbody>
                         </table>
+
+                        <form [formGroup]="addressForm" *ngIf="isEditAddress">
+                            <table class="table table-nowrap mb-0">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row" class="d-flex align-items-center">Country </th>
+                                        <td>
+                                            <select class="form-select" formControlName="country">
+                                                <option *ngFor="let country of countries" [value]="country.id">
+                                                    {{ country.name }}
+                                                </option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="d-flex align-items-center">Area</th>
+                                        <td>
+                                            <input placeholder="Enter area" class="form-control" type="text"
+                                                formControlName="area" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="d-flex align-items-center">City</th>
+                                        <td>
+                                            <input placeholder="Enter city" class="form-control" type="text"
+                                                formControlName="city" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="d-flex align-items-center">State</th>
+                                        <td>
+                                            <input placeholder="Enter state" class="form-control" type="text"
+                                                formControlName="state" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="d-flex align-items-center">Zip code</th>
+                                        <td>
+                                            <input placeholder="Enter zip code" class="form-control" type="text"
+                                                formControlName="zipcode" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="d-flex align-items-center">Address</th>
+                                        <td>
+                                            <textarea rows="2" placeholder="Add address details here"
+                                                class="form-control" type="text" formControlName="address"></textarea>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -541,7 +550,7 @@
                                         <mat-form-field class="tag-list" appearance="fill"
                                             style="width: 100%; background: white;">
                                             <mat-chip-list #chipList3 style="width: 100%;">
-                                                <mat-chip *ngFor="let tag of tags" (removed)="removeTag(tag)">
+                                                <mat-chip *ngFor="let tag of tags" (removed)="removeTag(tag.id)">
                                                     {{tag}}
                                                     <button matChipRemove>
                                                         <i class="dripicons-cross"></i>
@@ -550,13 +559,12 @@
                                                 <input class="cursor-pointer" placeholder="+ Add" #tagInput
                                                     [formControl]="tagCtrl" [matAutocomplete]="auto4"
                                                     [matChipInputFor]="chipList3"
-                                                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                                                     (matChipInputTokenEnd)="addTag($event)">
                                             </mat-chip-list>
                                             <mat-autocomplete #auto4="matAutocomplete"
                                                 (optionSelected)="selectedTag($event)">
                                                 <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
-                                                    {{tag}}
+                                                    {{tag.name}}
                                                 </mat-option>
                                             </mat-autocomplete>
                                         </mat-form-field>
@@ -799,7 +807,7 @@
                     </mat-chip>
                     <input class="cursor-pointer" placeholder="+ Add" #fruitInput [formControl]="fruitCtrl"
                         [matAutocomplete]="auto5" [matChipInputFor]="chipList"
-                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="addFruit($event)">
+                        (matChipInputTokenEnd)="addFruit($event)">
                 </mat-chip-list>
                 <mat-autocomplete #auto5="matAutocomplete" (optionSelected)="selectedFruit($event)">
                     <mat-option *ngFor="let fruit of filteredFruits | async" [value]="fruit">
@@ -822,7 +830,7 @@
                     </mat-chip>
                     <input style="cursor: pointer;" placeholder="+ Add" #personInput [formControl]="personCtrl"
                         [matAutocomplete]="auto2" [matChipInputFor]="chipList2"
-                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="addPerson($event)">
+                        (matChipInputTokenEnd)="addPerson($event)">
                 </mat-chip-list>
                 <mat-autocomplete #auto2="matAutocomplete" (optionSelected)="selectedPerson($event)">
                     <mat-option *ngFor="let person of filteredPersons | async" [value]="person">

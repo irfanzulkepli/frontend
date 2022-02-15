@@ -3,12 +3,16 @@
 /* Dropzone */
 
 ::ng-deep {
+    .mat-form-field-infix {
+        padding-top: 0px !important;
+        border-top: none !important;
+    }
     .mat-form-field-underline {
         display: none;
     }
     .tag-list {
         .mat-form-field-flex {
-            background: white;
+            background: rgb(102, 91, 91);
         }
     }
 }
