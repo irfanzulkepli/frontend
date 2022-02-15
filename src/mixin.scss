@@ -1,0 +1,19 @@
+
+$prefix: '--';
+$mobile: 576px;
+$tablet: 704px;
+$desktop: 1200px;
+$min: "moreThanAndEqual";
+$max: "lessThanAndEqual";
+
+@mixin screen-breakpoint($boundary, $size) {
+    @if $boundary == "moreThanAndEqual" {
+        @media (min-width: $size) {
+            @content;
+        }
+    } @else {
+        @media (max-width: $size) {
+            @content;
+        }
+    }
+}

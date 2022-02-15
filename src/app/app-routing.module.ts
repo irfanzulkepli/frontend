@@ -1,22 +1,24 @@
 import { NgModule } from '@angular/core';
-import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { Routes, RouterModule } from '@angular/router';
+
+import { AuthGuard } from './core/guards/auth.guard';
+import { LayoutComponent } from './layouts/layout.component';
+import { CyptolandingComponent } from './cyptolanding/cyptolanding.component';
+import { Page404Component } from './extrapages/page404/page404.component';
 
 const routes: Routes = [
-  {
-    path: 'home',
-    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
-  },
-  {
-    path: '',
-    redirectTo: 'home',
-    pathMatch: 'full'
-  },
+  { path: 'account', loadChildren: () => import('./account/account.module').then(m => m.AccountModule) },
+  // tslint:disable-next-line: max-line-length
+  { path: '', component: LayoutComponent, loadChildren: () => import('./pages/pages.module').then(m => m.PagesModule), canActivate: [AuthGuard] },
+  { path: 'lms', component: LayoutComponent, loadChildren: () => import('./lms/lms.module').then(m => m.LeadsModule), canActivate: [AuthGuard] },
+  { path: 'pages', loadChildren: () => import('./extrapages/extrapages.module').then(m => m.ExtrapagesModule), canActivate: [AuthGuard] },
+  { path: 'crypto-ico-landing', component: CyptolandingComponent },
+  { path: '**', component: Page404Component },
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
-  ],
+  imports: [RouterModule.forRoot(routes, { scrollPositionRestoration: 'top', relativeLinkResolution: 'legacy' })],
   exports: [RouterModule]
 })
+
 export class AppRoutingModule { }

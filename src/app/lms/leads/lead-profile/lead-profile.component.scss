@@ -1,0 +1,98 @@
+@import '../../../../mixin.scss';
+@import '~dropzone/dist/min/dropzone.min.css';
+/* Dropzone */
+
+::ng-deep {
+    .mat-form-field-underline {
+        display: none;
+    }
+    .tag-list {
+        .mat-form-field-flex {
+            background: white;
+        }
+    }
+}
+
+.d-lg {
+    display: none !important;
+}
+
+.d-lg-none {
+    display: flex !important;
+}
+
+.form-check-input {
+    width: 2em;
+    height: 2em;
+}
+
+.rounded-pill {
+    padding: 5px 10px !important;
+}
+
+.word-break {
+    word-break: break-all;
+}
+
+.border-btm {
+    border-bottom: 1px solid lightgray;
+}
+
+.border-check {
+    width: 85px !important;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.no-data-img {
+    width: 150px;
+    height: 150px;
+}
+
+th,td {
+    border-bottom: none;
+}
+
+.page-title-right {
+    i {
+        transition: all 0.4s;
+    }
+    :hover { 
+        color: #c20003;
+        transform: scale(1.0);
+    }
+}
+
+.bg-note {
+    background-color: rgba(255,204,23,0.09);
+}
+
+::ng-deep {
+    .iti--allow-dropdown {
+        width: 100%;
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+        display: block;
+    }
+    .iti__flag-container {
+        left: auto !important;
+    }
+    .iti__country-list {
+        max-width: 445px;
+    }
+}
+
+@include screen-breakpoint($min, $desktop) {
+    .d-lg {
+        display: flex !important;
+    }
+
+    .d-lg-none {
+        display: none !important;
+    }
+    .border-rgt {
+        border-right: 1px solid lightgray;
+    }
+}

@@ -1,5 +1,8 @@
 {
   "name": "lms-frontend",
-  "integrations": {},
+  "integrations": {
+    "cordova": {},
+    "capacitor": {}
+  },
   "type": "angular"
 }

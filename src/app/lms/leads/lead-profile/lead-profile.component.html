@@ -1,0 +1,1030 @@
+<app-loader></app-loader>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+                <h4 class="mb-0 font-size-18"> Name </h4>
+                <div class="page-title-right">
+                    <button type="button" class="btn btn-primary btn-rounded" (click)="openDealsModal(addDealModal)">
+                        Add Deal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card overflow-hidden">
+                <div class="card-body pt-0">
+                    <div class="row mt-4">
+                        <div class="col-xl-2 d-flex align-items-center justify-content-center">
+                            <div class="avatar-lg">
+                                <img src="assets/images/users/avatar-1.jpg" alt="" class="img-thumbnail rounded-circle">
+                            </div>
+                        </div>
+                        <div class="col-xl-3 d-flex align-items-center border-rgt d-lg">
+                            <div class="row">
+                                <div class="col-12">
+                                    <span class="badge rounded-pill bg-primary">Customer</span>
+                                </div>
+                                <div class="col-12">
+                                    <div class="media d-flex align-items-center">
+                                        <div class="me-1 font-size-24">
+                                            <i class="mdi mdi-email-outline"></i>
+                                        </div>
+                                        <div class="media-body word-break">
+                                            <span class="font-size-14">email@email.com</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="media d-flex align-items-center">
+                                        <div class="me-1 font-size-24">
+                                            <i class="bx bx-phone-call"></i>
+                                        </div>
+                                        <div class="media-body">
+                                            <span class="font-size-14">+6012-3456789</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 d-flex align-items-center justify-content-center d-lg-none">
+                            <div class="row">
+                                <div class="col-12 d-flex justify-content-center">
+                                    <span class="badge rounded-pill bg-primary">Customer</span>
+                                </div>
+                                <div class="col-12 d-flex justify-content-center">
+                                    <div class="media d-flex align-items-center">
+                                        <div class="me-1 font-size-24">
+                                            <i class="mdi mdi-email-outline"></i>
+                                        </div>
+                                        <div class="media-body word-break">
+                                            <span class="font-size-14">email@email.com</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 d-flex justify-content-center">
+                                    <div class="media d-flex align-items-center">
+                                        <div class="me-1 font-size-24">
+                                            <i class="bx bx-phone-call"></i>
+                                        </div>
+                                        <div class="media-body">
+                                            <span class="font-size-14">+6012-3456789</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 d-flex align-items-center border-rgt">
+                            <div class="row" style="padding-left: 20px;">
+                                <div class="col-12">
+                                    <div class="media d-flex align-items-center">
+                                        <div class="me-4 font-size-24">
+                                            <i class="bx bx-user"></i>
+                                        </div>
+                                        <div class="media-body word-break">
+                                            <span class="font-size-14">Working on:</span>
+                                            <p>
+                                                No organization linked yet
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="media d-flex align-items-center">
+                                        <div class="me-4 font-size-24">
+                                            <i class="bx bx-phone"></i>
+                                        </div>
+                                        <div class="media-body">
+                                            <span class="font-size-14">Deals:</span>
+                                            <p style="margin-bottom: 0px;">
+                                                Closed: 0, Open: 0
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 d-flex align-items-center">
+                            <div class="row" style="padding-left: 20px;">
+                                <div class="col-12">
+                                    <div class="media d-flex align-items-center">
+                                        <div class="me-4 font-size-24">
+                                            <i class="bx bx-user"></i>
+                                        </div>
+                                        <div class="media-body word-break">
+                                            <span class="font-size-14">Owner:</span>
+                                            <p>
+                                                User
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="media d-flex align-items-center">
+                                        <div class="me-4 font-size-24">
+                                            <i class="bx bx-calendar"></i>
+                                        </div>
+                                        <div class="media-body">
+                                            <span class="font-size-14">Created:</span>
+                                            <p style="margin-bottom: 0px;">
+                                                09-02-2022
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title border-btm pb-4 d-flex justify-content-between align-items-center">
+                        <span>
+                            {{ isEditDetails ? 'Edit Details' : 'Details' }}
+                        </span>
+                        <div class="page-title-right" *ngIf="!isEditDetails">
+                            <i class="mdi mdi-square-edit-outline font-size-24 cursor-pointer"
+                                (click)="isEditDetails = !isEditDetails"></i>
+                        </div>
+                        <div class="page-title-right" *ngIf="isEditDetails">
+                            <i class="mdi mdi-close-box-outline font-size-24 cursor-pointer"
+                                (click)="isEditDetails = !isEditDetails"></i>
+                            <i class="mdi mdi-checkbox-marked-outline font-size-24 cursor-pointer"
+                                (click)="isEditDetails = !isEditDetails"></i>
+                        </div>
+                    </div>
+                    <div class="table-responsive" *ngIf="!isEditDetails">
+                        <table class="table table-nowrap mb-0">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Name </th>
+                                    <td>Cynthia Price</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Lead Group </th>
+                                    <td>
+                                        <span class="badge rounded-pill bg-primary">Customer</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Owner </th>
+                                    <td>
+                                        <div class="media align-items-center me-2">
+                                            <div class="me-1 rounded-circle avatar-xs bg-secondary d-flex align-items-center justify-content-center"
+                                                alt="user-pic">
+                                                YM
+                                            </div>
+                                            <div class="media-body">
+                                                Yap Meng You
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-responsive" *ngIf="isEditDetails">
+                        <table class="table table-nowrap mb-0">
+                            <tbody>
+                                <tr>
+                                    <th scope="row" class="d-flex align-items-center">Name </th>
+                                    <td>
+                                        <input placeholder="Enter title" class="form-control" type="text" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="d-flex align-items-center">Lead Group </th>
+                                    <td>
+                                        <select class="form-select">
+                                            <option>Select</option>
+                                            <option>Large select</option>
+                                            <option>Small select</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="d-flex align-items-center">Owner</th>
+                                    <td>
+                                        <select class="form-select">
+                                            <option>Select</option>
+                                            <option>Large select</option>
+                                            <option>Small select</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title border-btm pb-4 d-flex justify-content-between align-items-center">
+                        <span>
+                            {{ isEditOrganization ? 'Edit Organization and job title' : 'Organization and job title' }}
+                        </span>
+                        <div class="page-title-right" *ngIf="!isEditOrganization">
+                            <i class="mdi mdi-square-edit-outline font-size-24 cursor-pointer"
+                                (click)="isEditOrganization = !isEditOrganization"></i>
+                        </div>
+                        <div class="page-title-right" *ngIf="isEditOrganization">
+                            <i class="mdi mdi-close-box-outline font-size-24 cursor-pointer"
+                                (click)="isEditOrganization = !isEditOrganization"></i>
+                            <i class="mdi mdi-checkbox-marked-outline font-size-24 cursor-pointer"
+                                (click)="isEditOrganization = !isEditOrganization"></i>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table mb-0" *ngIf="!isEditOrganization">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        No Organization linked yet
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a class="cursor-pointer" (click)="isEditOrganization = !isEditOrganization">
+                                            + link an organization
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <form [formGroup]="organizationForms">
+                            <table class="table mb-0" *ngIf="isEditOrganization">
+                                <tbody>
+                                    <ng-container formArrayName="organizations">
+                                        <ng-container
+                                            *ngFor="let organizationForm of organizations.controls; let i = index">
+                                            <ng-container [formGroup]="organizationForm">
+                                                <tr>
+                                                    <td>
+                                                        <input class="form-control cursor-pointer"
+                                                            placeholder="Choose One" #fruitInput
+                                                            [formControl]="fruitCtrl" [matAutocomplete]="auto" />
+                                                        <mat-autocomplete #auto="matAutocomplete"
+                                                            (optionSelected)="selectedFruit($event)">
+                                                            <mat-option *ngFor="let fruit of filteredFruits | async"
+                                                                [value]="fruit">
+                                                                {{fruit}}
+                                                            </mat-option>
+                                                        </mat-autocomplete>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="d-inline-flex w-100 page-title-right">
+                                                        <input class="form-control" placeholder="Type job title" />
+                                                        <i class="bx bx-trash-alt font-size-24 d-flex align-items-center cursor-pointer"
+                                                            style="margin-left: 10px;"
+                                                            (click)="deleteOrganization(i)"></i>
+                                                    </td>
+                                                </tr>
+                                            </ng-container>
+                                        </ng-container>
+                                    </ng-container>
+                                    <tr>
+                                        <td>
+                                            <a class="cursor-pointer" (click)="addOrganization()">
+                                                + add more
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title border-btm pb-4 d-flex justify-content-between align-items-center">
+                        <span>
+                            {{ isEditContact ? 'Edit Contact' : 'Contact' }}
+                        </span>
+                        <div class="page-title-right" *ngIf="!isEditContact">
+                            <i class="mdi mdi-square-edit-outline font-size-24 cursor-pointer"
+                                (click)="isEditContact = !isEditContact"></i>
+                        </div>
+                        <div class="page-title-right" *ngIf="isEditContact">
+                            <i class="mdi mdi-close-box-outline font-size-24 cursor-pointer"
+                                (click)="isEditContact = !isEditContact"></i>
+                            <i class="mdi mdi-checkbox-marked-outline font-size-24 cursor-pointer"
+                                (click)="isEditContact = !isEditContact"></i>
+                        </div>
+                    </div>
+                    <form [formGroup]="contactForms">
+                        <div class="table-responsive" *ngIf="!isEditContact">
+                            <table class="table mb-0">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            Phone(s)
+                                        </td>
+                                    </tr>
+                                    <tr class="d-flex justify-content-between">
+                                        <td>
+                                            +0123456789
+                                        </td>
+                                        <td>
+                                            <span class="badge rounded-pill bg-primary">Office</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Email(s)
+                                        </td>
+                                    </tr>
+                                    <tr class="d-flex justify-content-between">
+                                        <td>
+                                            email@email.com
+                                        </td>
+                                        <td>
+                                            <span class="badge rounded-pill bg-primary">Office</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="table-responsive" style="overflow: unset;" *ngIf="isEditContact">
+                            <table class="table table-nowrap mb-0">
+                                <tbody>
+                                    <ng-container formArrayName="contacts">
+                                        <ng-container *ngFor="let contactForm of contacts.controls; let i = index">
+                                            <ng-container [formGroup]="contactForm">
+                                                <tr>
+                                                    <td>
+                                                        <input type="tel" class="form-control" ng2TelInput
+                                                            [ng2TelInputOptions]="{initialCountry: 'my'}"
+                                                            (ng2TelOutput)="getNumber($event)"
+                                                            (countryChange)="onCountryChange($event)" />
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="d-inline-flex w-100 page-title-right">
+                                                        <select class="form-select">
+                                                            <option>Select</option>
+                                                            <option>Large select</option>
+                                                            <option>Small select</option>
+                                                        </select>
+                                                        <i class="bx bx-trash-alt font-size-24 d-flex align-items-center cursor-pointer"
+                                                            style="margin-left: 10px;" (click)="deleteContact(i)"></i>
+                                                    </td>
+                                                </tr>
+                                            </ng-container>
+                                        </ng-container>
+                                    </ng-container>
+                                    <tr>
+                                        <td>
+                                            <a class="cursor-pointer" (click)="addContact()">
+                                                + add more
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title border-btm pb-4 d-flex justify-content-between align-items-center">
+                        <span>
+                            {{ isEditAddress ? 'Edit Address Details' : 'Address Details' }}
+                        </span>
+                        <div class="page-title-right" *ngIf="!isEditAddress">
+                            <i class="mdi mdi-square-edit-outline font-size-24 cursor-pointer"
+                                (click)="isEditAddress = !isEditAddress"></i>
+                        </div>
+                        <div class="page-title-right" *ngIf="isEditAddress">
+                            <i class="mdi mdi-close-box-outline font-size-24 cursor-pointer"
+                                (click)="isEditAddress = !isEditAddress"></i>
+                            <i class="mdi mdi-checkbox-marked-outline font-size-24 cursor-pointer"
+                                (click)="isEditAddress = !isEditAddress"></i>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-nowrap mb-0">
+                            <tbody *ngIf="!isEditAddress">
+                                <tr>
+                                    <td>
+                                        Not added yet
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a class="cursor-pointer" (click)="isEditAddress = !isEditAddress">
+                                            + Add address
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tbody *ngIf="isEditAddress">
+                                <tr>
+                                    <th scope="row" class="d-flex align-items-center">Country </th>
+                                    <td>
+                                        <select class="form-select">
+                                            <option>Select</option>
+                                            <option>Large select</option>
+                                            <option>Small select</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="d-flex align-items-center">Area</th>
+                                    <td>
+                                        <input placeholder="Enter area" class="form-control" type="text" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="d-flex align-items-center">City</th>
+                                    <td>
+                                        <input placeholder="Enter city" class="form-control" type="text" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="d-flex align-items-center">State</th>
+                                    <td>
+                                        <input placeholder="Enter state" class="form-control" type="text" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="d-flex align-items-center">Zip code</th>
+                                    <td>
+                                        <input placeholder="Enter zip code" class="form-control" type="text" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="d-flex align-items-center">Zip code</th>
+                                    <td>
+                                        <textarea rows="2" placeholder="Add address details here" class="form-control"
+                                            type="text"></textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title border-btm pb-4 d-flex justify-content-between align-items-center">
+                        <span>
+                            Deals (0)
+                        </span>
+                        <div class="page-title-right">
+                            <i class="mdi mdi-plus-box-outline font-size-24 cursor-pointer"
+                                (click)="openDealsModal(addDealModal)"></i>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title border-btm pb-4 d-flex justify-content-between align-items-center">
+                        <span>
+                            {{ isEditCustomField ? 'Edit Custom Fields' : 'Custom Fields' }}
+                        </span>
+                        <div class="page-title-right" *ngIf="!isEditCustomField">
+                            <i class="mdi mdi-square-edit-outline font-size-24 cursor-pointer"
+                                (click)="isEditCustomField = !isEditCustomField"></i>
+                        </div>
+                        <div class="page-title-right" *ngIf="isEditCustomField">
+                            <i class="mdi mdi-close-box-outline font-size-24 cursor-pointer"
+                                (click)="isEditCustomField = !isEditCustomField"></i>
+                            <i class="mdi mdi-checkbox-marked-outline font-size-24 cursor-pointer"
+                                (click)="isEditCustomField = !isEditCustomField"></i>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table mb-0" *ngIf="!isEditCustomField">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        No custom field added
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title border-btm pb-4">
+                        Tags
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-nowrap mb-0">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <mat-form-field class="tag-list" appearance="fill"
+                                            style="width: 100%; background: white;">
+                                            <mat-chip-list #chipList3 style="width: 100%;">
+                                                <mat-chip *ngFor="let tag of tags" (removed)="removeTag(tag)">
+                                                    {{tag}}
+                                                    <button matChipRemove>
+                                                        <i class="dripicons-cross"></i>
+                                                    </button>
+                                                </mat-chip>
+                                                <input class="cursor-pointer" placeholder="+ Add" #tagInput
+                                                    [formControl]="tagCtrl" [matAutocomplete]="auto4"
+                                                    [matChipInputFor]="chipList3"
+                                                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                    (matChipInputTokenEnd)="addTag($event)">
+                                            </mat-chip-list>
+                                            <mat-autocomplete #auto4="matAutocomplete"
+                                                (optionSelected)="selectedTag($event)">
+                                                <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+                                                    {{tag}}
+                                                </mat-option>
+                                            </mat-autocomplete>
+                                        </mat-form-field>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title border-btm pb-4 d-flex justify-content-between align-items-center">
+                        <span>
+                            {{ isEditFollower ? 'Edit Followers' : 'Followers (0)' }}
+                        </span>
+                        <div class="page-title-right" *ngIf="!isEditFollower">
+                            <i class="mdi mdi-square-edit-outline font-size-24 cursor-pointer"
+                                (click)="isEditFollower = !isEditFollower"></i>
+                        </div>
+                        <div class="page-title-right" *ngIf="isEditFollower">
+                            <i class="mdi mdi-close-box-outline font-size-24 cursor-pointer"
+                                (click)="isEditFollower = !isEditFollower"></i>
+                            <i class="mdi mdi-checkbox-marked-outline font-size-24 cursor-pointer"
+                                (click)="isEditFollower = !isEditFollower"></i>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-nowrap mb-0" *ngIf="!isEditFollower">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        No person linked yet
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a class="cursor-pointer" (click)="isEditFollower = !isEditFollower">
+                                            Link as person
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <form [formGroup]="followerForms" *ngIf="isEditFollower">
+                            <table class="table table-nowrap mb-0">
+                                <tbody>
+                                    <ng-container formArrayName="followers">
+                                        <ng-container *ngFor="let followerForm of followers.controls; let i = index">
+                                            <ng-container [formGroup]="followerForm">
+                                                <tr>
+                                                    <td class="d-inline-flex w-100 page-title-right">
+                                                        <input class="form-control cursor-pointer"
+                                                            placeholder="Choose One" #fruitInput
+                                                            [formControl]="fruitCtrl" [matAutocomplete]="auto3" />
+                                                        <mat-autocomplete #auto3="matAutocomplete"
+                                                            (optionSelected)="selectedFruit($event)">
+                                                            <mat-option *ngFor="let fruit of filteredFruits | async"
+                                                                [value]="fruit">
+                                                                {{fruit}}
+                                                            </mat-option>
+                                                        </mat-autocomplete>
+                                                        <i class="bx bx-trash-alt font-size-24 d-flex align-items-center cursor-pointer"
+                                                            style="margin-left: 10px;" (click)="deleteFollower(i)"></i>
+                                                    </td>
+                                                </tr>
+                                            </ng-container>
+                                        </ng-container>
+                                    </ng-container>
+                                    <tr>
+                                        <td>
+                                            <a class="cursor-pointer" (click)="addFollower()">
+                                                + add more
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-8">
+            <div class="card">
+                <div class="card-body">
+                    <ul ngbNav #customNav="ngbNav" [activeId]="1" class="nav-tabs nav-tabs-custom nav-justified">
+                        <li [ngbNavItem]="1">
+                            <a ngbNavLink>
+                                <i class="dripicons-graph-line"></i>
+                                <span class="d-none d-sm-block">Activity</span>
+                            </a>
+                            <ng-template ngbNavContent>
+                                <ng-template [ngTemplateOutlet]="Activity"></ng-template>
+                            </ng-template>
+                        </li>
+                        <li [ngbNavItem]="2">
+                            <a ngbNavLink>
+                                <i class="fas fa-paperclip"></i>
+                                <span class="d-none d-sm-block">File</span>
+                            </a>
+                            <ng-template ngbNavContent>
+                                <ng-template [ngTemplateOutlet]="File"></ng-template>
+                            </ng-template>
+                        </li>
+                        <li [ngbNavItem]="3">
+                            <a ngbNavLink>
+                                <i class="mdi mdi-note-text-outline"></i>
+                                <span class="d-none d-sm-block">Note</span>
+                            </a>
+                            <ng-template ngbNavContent>
+                                <ng-template [ngTemplateOutlet]="Note"></ng-template>
+                            </ng-template>
+                        </li>
+                    </ul>
+                    <div [ngbNavOutlet]="customNav"></div>
+                </div>
+            </div>
+
+            <ul ngbNav #customNav2="ngbNav" [activeId]="1" class="nav-pills">
+                <li [ngbNavItem]="1">
+                    <a ngbNavLink>
+                        <span class="d-sm-block">Todo</span>
+                    </a>
+                    <ng-template ngbNavContent>
+                        <ng-template [ngTemplateOutlet]="Todo"></ng-template>
+                    </ng-template>
+                </li>
+                <li [ngbNavItem]="2">
+                    <a ngbNavLink>
+                        <span class="d-sm-block">Done</span>
+                    </a>
+                    <ng-template ngbNavContent>
+                        <ng-template [ngTemplateOutlet]="Notes"></ng-template>
+                    </ng-template>
+                </li>
+                <li [ngbNavItem]="3">
+                    <a ngbNavLink>
+                        <span class="d-sm-block">Incomplete</span>
+                    </a>
+                    <ng-template ngbNavContent>
+                        <ng-template [ngTemplateOutlet]="Notes"></ng-template>
+                    </ng-template>
+                </li>
+                <li [ngbNavItem]="4">
+                    <a ngbNavLink>
+                        <span class="d-sm-block">Files</span>
+                    </a>
+                    <ng-template ngbNavContent>
+                        <ng-template [ngTemplateOutlet]="Notes"></ng-template>
+                    </ng-template>
+                </li>
+                <li [ngbNavItem]="5">
+                    <a ngbNavLink>
+                        <span class="d-sm-block">Notes</span>
+                    </a>
+                    <ng-template ngbNavContent>
+                        <ng-template [ngTemplateOutlet]="Notes"></ng-template>
+                    </ng-template>
+                </li>
+            </ul>
+            <div [ngbNavOutlet]="customNav2"></div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Tab Content -->
+<ng-template #Activity>
+    <div class="mt-5 mb-3 row">
+        <label for="example-text-input" class="col-md-2 col-form-label">Activity</label>
+        <div class="col-md-10">
+            <div style="display: block;" class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="btnradio" id="call" autocomplete="off" checked>
+                <label class="btn btn-outline-secondary" for="call">Call</label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="meeting" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="meeting">Meeting</label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="email" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="email">Email</label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="task" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="task">Task</label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="deadline" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="deadline">Deadline</label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="others" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="others">Others</label>
+            </div>
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <label for="example-text-input" class="col-md-2 col-form-label">Title</label>
+        <div class="col-md-10">
+            <input placeholder="Enter title" class="form-control" type="text" value="Artisanal kale"
+                id="example-text-input">
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <label for="example-text-input" class="col-md-2 col-form-label">Description</label>
+        <div class="col-md-10">
+            <textarea placeholder="Description here" class="form-control" rows="5"></textarea>
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <label for="example-text-input" class="col-md-2 col-form-label d-flex align-items-center">Set schedule</label>
+        <div class="col-md-10">
+            <div class="row">
+                <div class="col-md-7">
+                    <input class="form-control" type="date" value="2019-08-19">
+                </div>
+                <div class="col-md-5">
+                    <input class="form-control" type="time" value="13:45:00">
+                </div>
+                <div class="col-md-7 pt-2">
+                    <input class="form-control" type="date" value="2019-08-19">
+                </div>
+                <div class="col-md-5 pt-2">
+                    <input class="form-control" type="time" value="13:45:00">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <label for="example-text-input" class="col-md-2 col-form-label">Participants</label>
+        <div class="col-md-10">
+            <mat-form-field class="example-chip-list" appearance="fill" style="width: 100%;">
+                <mat-chip-list #chipList aria-label="Fruit selection" style="width: 100%;">
+                    <mat-chip *ngFor="let fruit of fruits" (removed)="removeFruit(fruit)">
+                        {{fruit}}
+                        <button matChipRemove>
+                            <i class="dripicons-cross"></i>
+                        </button>
+                    </mat-chip>
+                    <input class="cursor-pointer" placeholder="+ Add" #fruitInput [formControl]="fruitCtrl"
+                        [matAutocomplete]="auto5" [matChipInputFor]="chipList"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="addFruit($event)">
+                </mat-chip-list>
+                <mat-autocomplete #auto5="matAutocomplete" (optionSelected)="selectedFruit($event)">
+                    <mat-option *ngFor="let fruit of filteredFruits | async" [value]="fruit">
+                        {{fruit}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <label for="example-text-input" class="col-md-2 col-form-label">Collaborators</label>
+        <div class="col-md-10 d-flex align-items-center">
+            <mat-form-field class="example-chip-list" appearance="fill" style="width: 100%;">
+                <mat-chip-list #chipList2 aria-label="Fruit selection" style="width: 100%;">
+                    <mat-chip *ngFor="let person of persons" (removed)="removePerson(person)">
+                        {{person}}
+                        <button matChipRemove>
+                            <i class="dripicons-cross"></i>
+                        </button>
+                    </mat-chip>
+                    <input style="cursor: pointer;" placeholder="+ Add" #personInput [formControl]="personCtrl"
+                        [matAutocomplete]="auto2" [matChipInputFor]="chipList2"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="addPerson($event)">
+                </mat-chip-list>
+                <mat-autocomplete #auto2="matAutocomplete" (optionSelected)="selectedPerson($event)">
+                    <mat-option *ngFor="let person of filteredPersons | async" [value]="person">
+                        {{person}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <label class="col-md-2 col-form-label">Save as done</label>
+        <div class="col-md-10">
+            <input class="form-check-input" type="checkbox" id="formCheck1">
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="mt-3 row">
+        <div class="col-12">
+            <button type="button" class="btn btn-primary">Save</button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #File>
+    <div class="mt-5">
+        <dropzone class="dropzone"></dropzone>
+    </div>
+</ng-template>
+
+<ng-template #Note>
+    <div class="mt-5">
+        <ckeditor [editor]="Editor" data="<p>Content of the editor.</p>"></ckeditor>
+    </div>
+</ng-template>
+
+<ng-template #Todo>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="media col-12 d-flex align-items-center">
+                    <div class="me-3 rounded-circle avatar-sm bg-primary d-flex align-items-center justify-content-center"
+                        alt="user-pic">
+                        <i class="bx bx-envelope font-size-24" style="color: white;"></i>
+                    </div>
+                    <div class="media-body">
+                        <h6 class="mt-0 mb-1">Title</h6>
+                        <div class="font-size-12 text-muted">
+                            <p class="mb-1">Today | 2:06 PM</p>
+                        </div>
+
+                    </div>
+                    <div class="page-title-right" ngbDropdown>
+                        <i class="bx bx-dots-vertical-rounded font-size-24 cursor-pointer" ngbDropdownToggle></i>
+                        <div class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+                            <a href="javascript: void(0);" class="dropdown-item">
+                                <span>Delete</span>
+                            </a>
+                            <a href="javascript: void(0);" class="dropdown-item">
+                                <span>Mark as done</span>
+                            </a>
+                            <a href="javascript: void(0);" class="dropdown-item">
+                                <span>Edit</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 d-flex align-items-center mt-3">
+                    <div class="bg-note p-2" style="width: 100%; ">
+                        test
+                    </div>
+                </div>
+                <div class="col-12 mt-3 d-inline-flex">
+                    <div class="media align-items-center me-2">
+                        <div class="me-1 rounded-circle avatar-xs bg-secondary d-flex align-items-center justify-content-center"
+                            alt="user-pic">
+                            YM
+                        </div>
+                        <div class="media-body">
+                            Yap Meng You
+                        </div>
+                    </div>
+                    <div class="media align-items-center me-2">
+                        <div class="me-1 rounded-circle avatar-xs bg-secondary d-flex align-items-center justify-content-center"
+                            alt="user-pic">
+                            YM
+                        </div>
+                        <div class="media-body">
+                            Yap Meng You
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 mt-4 d-inline-flex">
+                    <div>Participants:</div>
+                </div>
+                <div class="col-12 mt-2 d-inline-flex">
+                    <div class="media align-items-center me-2">
+                        <div class="me-1 rounded-circle avatar-xs bg-secondary d-flex align-items-center justify-content-center"
+                            alt="user-pic">
+                            YM
+                        </div>
+                        <div class="media-body">
+                            Yap Meng You
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 mt-4 d-inline-flex">
+                    <div>Collaborators:</div>
+                </div>
+                <div class="col-12 mt-2 d-inline-flex">
+                    <div class="media align-items-center me-2">
+                        <div class="me-1 rounded-circle avatar-xs bg-secondary d-flex align-items-center justify-content-center"
+                            alt="user-pic">
+                            YM
+                        </div>
+                        <div class="media-body">
+                            Yap Meng You
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #Notes>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12 d-flex align-items-center justify-content-center">
+                    <div>
+                        <img class="no-data-img" src="assets/images/no_data.svg" />
+                    </div>
+                </div>
+                <div class="col-12 d-flex align-items-center justify-content-center">
+                    <div style="text-align: center;">
+                        Nothing to show here
+                        <p style="margin-bottom: 0px;">
+                            Please add something in Notes
+                        </p>
+                        <p>
+                            Thank you
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #addDealModal role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Add Deal</h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row mt-4 mb-3">
+            <label for="example-text-input" class="col-md-3 col-form-label">Title</label>
+            <div class="col-md-9">
+                <input placeholder="Enter title" class="form-control" type="text" />
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="example-text-input" class="col-md-3 col-form-label">Description</label>
+            <div class="col-md-9">
+                <textarea rows="2" placeholder="Enter description" class="form-control" type="text"></textarea>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="example-text-input" class="col-md-3 col-form-label">Deal value</label>
+            <div class="col-md-9">
+                <input placeholder="Enter deal value" class="form-control" type="number" />
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="example-text-input" class="col-md-3 col-form-label">Pipeline</label>
+            <div class="col-md-9">
+                <input placeholder="Enter pipeline" class="form-control" type="text" />
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="example-text-input" class="col-md-3 col-form-label">Stage</label>
+            <div class="col-md-9">
+                <input placeholder="Enter stage" class="form-control" type="text" />
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="example-text-input" class="col-md-3 col-form-label">Expected closing date</label>
+            <div class="col-md-9">
+                <input placeholder="Enter expected closing date" class="form-control" type="text" />
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="example-text-input" class="col-md-3 col-form-label">Owner</label>
+            <div class="col-md-9">
+                <input placeholder="Enter ownder" class="form-control" type="text" />
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cancel</button>
+        <button type="button" class="btn btn-primary">Save</button>
+    </div>
+</ng-template>
