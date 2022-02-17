@@ -12,6 +12,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { SimplebarAngularModule } from 'simplebar-angular';
 import { Ng2TelInputModule } from 'ng2-tel-input';
 import { DealsRoutingModule } from './deals-routing.module';
+import { AllDealsComponent } from './all-deals/all-deals.component';
+import { LostReasonsComponent } from './lost-reasons/lost-reasons.component';
+import { PipelinesComponent } from './pipelines/pipelines.component';
+import { PipelineViewComponent } from './pipeline-view/pipeline-view.component';
 
 const config: DropzoneConfigInterface = {
     // Change this to your upload POST address:
@@ -22,7 +26,10 @@ const config: DropzoneConfigInterface = {
 
 @NgModule({
     declarations: [
-
+        AllDealsComponent,
+        LostReasonsComponent,
+        PipelinesComponent,
+        PipelineViewComponent
     ],
     imports: [
         DealsRoutingModule,
