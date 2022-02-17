@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 import { COUNTRY } from './data/country-data';
+import { LEADTYPES } from './data/lead-type-data';
+import { ORGANIZATION } from './data/organization-data';
 import { PERSON } from './data/person-data';
 import { TAGS } from './data/tags-data';
 import { TYPE } from './data/type-data';
@@ -21,18 +23,26 @@ export class LMSService {
     }
 
     getUsers() {
-        return USER
+        return USER;
     }
 
     getTypes() {
-        return TYPE
+        return TYPE;
     }
 
     getCountry() {
-        return COUNTRY
+        return COUNTRY;
     }
 
     getTags() {
-        return TAGS
+        return TAGS;
+    }
+
+    getLeadTypes() {
+        return LEADTYPES;
+    }
+
+    getOrganizations() {
+        return ORGANIZATION;
     }
 }

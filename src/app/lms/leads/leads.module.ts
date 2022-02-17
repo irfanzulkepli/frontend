@@ -7,7 +7,7 @@ import { LeadProfileComponent } from './lead-profile/lead-profile.component';
 import { OrganizationComponent } from './organization/organization.component';
 import { LeadsRoutingModule } from './leads-routing.module';
 import { UIModule } from 'src/app/shared/ui/ui.module';
-import { NgbDropdownModule, NgbModalModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbModalModule, NgbNavModule, NgbPaginationModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { DropzoneConfigInterface, DropzoneModule, DROPZONE_CONFIG } from 'ngx-dropzone-wrapper';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { MatChipsModule } from '@angular/material/chips';
@@ -16,6 +16,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { SimplebarAngularModule } from 'simplebar-angular';
 import { Ng2TelInputModule } from 'ng2-tel-input';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { MatSelectModule } from '@angular/material/select';
+import { Ng2SmartTableModule } from 'ng2-smart-table';
+import { AdvancedSortableDirective } from './advanced-sortable.directive';
+
 
 const config: DropzoneConfigInterface = {
     // Change this to your upload POST address:
@@ -29,7 +34,8 @@ const config: DropzoneConfigInterface = {
         PeopleComponent,
         LeadGroupComponent,
         LeadProfileComponent,
-        OrganizationComponent
+        OrganizationComponent,
+        AdvancedSortableDirective
     ],
     imports: [
         CommonModule,
@@ -47,7 +53,12 @@ const config: DropzoneConfigInterface = {
         SimplebarAngularModule,
         NgbDropdownModule,
         Ng2TelInputModule,
-        NgbModalModule
+        NgbModalModule,
+        NgxMatSelectSearchModule,
+        MatSelectModule,
+        Ng2SmartTableModule,
+        NgbPaginationModule,
+        NgbTypeaheadModule
     ],
     providers: [
         {

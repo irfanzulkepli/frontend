@@ -1,4 +1,4 @@
-export const People = {
+export const PEOPLE = {
     "id": 312,
     "name": "Ho Chi Min",
     "address": null,
@@ -13,7 +13,7 @@ export const People = {
     "createdAt": "2022-01-27T02:18:36.000000Z",
     "updatedAt": "2022-01-27T02:18:36.000000Z",
     "countryId": null,
-    "area": null,
+    "area": 'test',
     "state": null,
     "city": null,
     "zipCode": null,

@@ -8,6 +8,7 @@ import { FormControl, FormBuilder, FormGroup, FormArray, Validators } from '@ang
 import { Observable } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LMSService } from '../../lms-service';
+import { PEOPLE } from '../../data/people-data';
 
 @Component({
   selector: 'app-lead-profile',
@@ -27,7 +28,6 @@ export class LeadProfileComponent implements OnInit {
   filteredFruits: Observable<string[]>;
   fruits: string[] = ['Lemon'];
 
-
   persons: any[] = [];
   allPerson = [];
   filteredPersons: Observable<string[]>;
@@ -40,6 +40,10 @@ export class LeadProfileComponent implements OnInit {
   allUser = [];
   filteredUsers: Observable<any[]>;
 
+  followerList;
+  allFollowers;
+  filteredFollowers = [];
+
   isEditDetails: boolean = false;
   isEditOrganization: boolean = false;
   isEditContact: boolean = false;
@@ -51,12 +55,20 @@ export class LeadProfileComponent implements OnInit {
   @ViewChild('personInput') personInput: ElementRef<HTMLInputElement>;
   @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
 
+  detailForm: FormGroup;
   organizationForms: FormGroup;
-  contactForms: FormGroup;
+  phoneForms: FormGroup;
+  emailForms: FormGroup;
   followerForms: FormGroup;
   addressForm: FormGroup;
+  activityForm: FormGroup;
 
   countries: any[] = [];
+  leadTypes = [];
+  organizationsAndJobs = [];
+
+  contactType = [];
+  public leadProfileData = PEOPLE;
 
   constructor(
     private fb: FormBuilder,
@@ -69,7 +81,13 @@ export class LeadProfileComponent implements OnInit {
     this.allTag = await this.lmsService.getTags();
     this.allPerson = await this.lmsService.getPersons();
     this.allUser = await this.lmsService.getUsers();
+    this.allFollowers = await this.lmsService.getPersons();
     this.countries = await this.lmsService.getCountry();
+    this.leadTypes = await this.lmsService.getLeadTypes();
+    this.contactType = await this.lmsService.getTypes();
+    this.organizationsAndJobs = await this.lmsService.getOrganizations();
+
+    this.initForm();
 
     this.filteredFruits = this.fruitCtrl.valueChanges.pipe(
       startWith(null),
@@ -81,30 +99,76 @@ export class LeadProfileComponent implements OnInit {
     );
     this.filteredTags = this.tagCtrl.valueChanges.pipe(
       startWith(null),
-      map((tag) => (tag ? this._filterTag(tag.name) : this.allTag.slice())),
+      map((tag) => (tag ? this._filterTag(tag) : this.allTag.slice())),
     );
-
-    this.initForm();
   }
 
   initForm() {
+    this.detailForm = this.fb.group({
+      name: [this.leadProfileData.name, Validators.required],
+      leadGroup: [this.leadProfileData.contactType.id, Validators.required],
+      owner: [this.leadProfileData.owner.id, Validators.required]
+    });
     this.organizationForms = this.fb.group({
       organizations: this.fb.array([])
     });
-    this.contactForms = this.fb.group({
-      contacts: this.fb.array([])
+    this.phoneForms = this.fb.group({
+      phones: this.fb.array([])
+    });
+    this.emailForms = this.fb.group({
+      emails: this.fb.array([])
     });
     this.followerForms = this.fb.group({
       followers: this.fb.array([])
     });
     this.addressForm = this.fb.group({
-      country: ['133'],
-      area: [''],
-      city: [''],
-      state: [''],
-      zipcode: [''],
-      address: ['']
+      country: [this.leadProfileData.country ? this.leadProfileData.country.id : ''],
+      area: [this.leadProfileData.area],
+      city: [this.leadProfileData.city],
+      state: [this.leadProfileData.state],
+      zipcode: [this.leadProfileData.zipCode],
+      address: [this.leadProfileData.address]
     });
+    this.activityForm = this.fb.group({
+      activity: ['call', Validators.required],
+      title: ['', Validators.required],
+      description: [''],
+      startDate: ['2022-02-09'],
+      startTime: ['00:00'],
+      endDate: ['2022-02-09'],
+      endTime: ['00:00'],
+      participants: [''],
+      collaborators: [''],
+      isDone: [false]
+    })
+
+    if (this.leadProfileData.tags.length > 0) {
+      for (const tag of this.leadProfileData.tags) {
+        this.tags.push(tag);
+      }
+    }
+
+    if (this.leadProfileData.email.length > 0) {
+      for (const email of this.leadProfileData.email) {
+        const emailForm = this.fb.group({
+          email: [email.value],
+          emailType: [email.type.id]
+        });
+
+        this.emails.push(emailForm);
+      }
+    }
+
+    if (this.leadProfileData.phone.length > 0) {
+      for (const phone of this.leadProfileData.phone) {
+        const phoneForm = this.fb.group({
+          contactNumber: [phone.value],
+          contactType: [phone.type.id]
+        });
+
+        this.phones.push(phoneForm);
+      }
+    }
   }
 
   onSaveAddress() {
@@ -113,15 +177,17 @@ export class LeadProfileComponent implements OnInit {
   }
 
   onCancelAddress() {
-    this.addressForm.reset({
-      country: '133'
-    });
+    this.addressForm.reset();
     this.isEditAddress = !this.isEditAddress;
+  }
+
+  saveActivity() {
+    console.log('activityForm: ', this.activityForm.getRawValue());
   }
 
   addOrganization() {
     const organizationForm = this.fb.group({
-      organzationName: ['', Validators.required],
+      organizationName: ['', Validators.required],
       jobTitle: ['']
     });
 
@@ -132,29 +198,55 @@ export class LeadProfileComponent implements OnInit {
     this.organizations.removeAt(index);
   }
 
-  addContact() {
+  addPhone() {
     const contactForm = this.fb.group({
       contactNumber: ['', Validators.required],
       contactType: ['']
     });
 
-    this.contacts.push(contactForm);
+    this.phones.push(contactForm);
   }
 
-  deleteContact(index: number) {
-    this.contacts.removeAt(index);
+  deletePhone(index: number) {
+    this.phones.removeAt(index);
+  }
+
+  addEmail() {
+    const contactForm = this.fb.group({
+      email: ['', Validators.required],
+      emailType: ['']
+    });
+
+    this.emails.push(contactForm);
+  }
+
+  deleteEmail(index: number) {
+    this.emails.removeAt(index);
   }
 
   addFollower() {
     const followerForm = this.fb.group({
-      id: ['', Validators.required],
+      follower: ['', Validators.required],
+      followerCtrlName: ['']
     });
 
     this.followers.push(followerForm);
+    this.manageFollowerFilter(this.followers.controls.length - 1);
+  }
+
+  manageFollowerFilter(index: number) {
+    this.filteredFollowers[index] = {};
+    this.filteredFollowers[index] = this.followers.at(index).get('followerCtrlName').valueChanges
+      .pipe(
+        startWith(null),
+        map((value) => (value ? this._filterFollower(value) : this.allFollowers.slice())
+        )
+      );
   }
 
   deleteFollower(index: number) {
     this.followers.removeAt(index);
+    this.filteredFollowers.splice(index, 1);
   }
 
   addFruit(event: MatChipInputEvent): void {
@@ -185,6 +277,10 @@ export class LeadProfileComponent implements OnInit {
     this.fruitCtrl.setValue(null);
   }
 
+  selectedFollower(event: MatAutocompleteSelectedEvent, index: number) {
+
+  }
+
   addPerson(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
     if (value) {
@@ -211,6 +307,8 @@ export class LeadProfileComponent implements OnInit {
   }
 
   addTag(event: MatChipInputEvent): void {
+    console.log('addTag event: ', event);
+
     const value = (event.value || '').trim();
     if (value) {
       this.tags.push(value);
@@ -219,6 +317,8 @@ export class LeadProfileComponent implements OnInit {
     event.chipInput!.clear();
 
     this.tagCtrl.setValue(null);
+    console.log('tags: ', this.tags);
+
   }
 
   removeTag(id): void {
@@ -230,7 +330,7 @@ export class LeadProfileComponent implements OnInit {
   }
 
   selectedTag(event: MatAutocompleteSelectedEvent): void {
-    this.tags.push(event.option.viewValue);
+    this.tags.push(event.option.value);
     this.tagInput.nativeElement.value = '';
     this.tagCtrl.setValue(null);
   }
@@ -272,16 +372,24 @@ export class LeadProfileComponent implements OnInit {
     return this.allPerson.filter(person => person.toLowerCase().includes(filterValue));
   }
 
-  private _filterTag(value: string): string[] {
-    const filterValue = value.toLowerCase();
+  private _filterTag(value): string[] {
+    const filterValue = value.name ? value.name.toLowerCase() : value.toLowerCase();
 
-    return this.allFruits.filter(tag => tag.toLowerCase().includes(filterValue));
+    return this.allTag.filter(tag => tag.name.toLowerCase().includes(filterValue));
   }
 
   private _filterCollaborator(value: string): string[] {
     const filterValue = value.toLowerCase();
 
     return this.allUser.filter(user => user.toLowerCase().includes(filterValue));
+  }
+
+  private _filterFollower(value): string[] {
+    console.log('value: ', value);
+
+    const filterValue = value;
+
+    return this.allFollowers.filter(follower => follower.name.toLowerCase().includes(filterValue));
   }
 
   openDealsModal(content) {
@@ -304,12 +412,20 @@ export class LeadProfileComponent implements OnInit {
     console.log('ev: ', ev);
   }
 
+  get hasAddressDetails(): boolean {
+    return (this.leadProfileData.address || this.leadProfileData.area || this.leadProfileData.city || this.leadProfileData.zipCode || this.leadProfileData.state || this.leadProfileData.country)
+  }
+
   get organizations() {
     return this.organizationForms.controls.organizations as FormArray;
   }
 
-  get contacts() {
-    return this.contactForms.controls.contacts as FormArray;
+  get phones() {
+    return this.phoneForms.controls.phones as FormArray;
+  }
+
+  get emails() {
+    return this.emailForms.controls.emails as FormArray;
   }
 
   get followers() {

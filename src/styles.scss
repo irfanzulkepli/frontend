@@ -1,5 +1,6 @@
 /* Importing Bootstrap SCSS file. */
 @import '~bootstrap/scss/bootstrap';
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons"); 
 
 /* You can add global styles to this file, and also import other style files */
 .modal-holder {
@@ -29,3 +30,27 @@
   opacity: 1;
 }
 
+.success {
+  background: var(--bs-success);
+}
+
+.info {
+  background: var(--bs-info);
+}
+
+.warning {
+  background: var(--bs-warning);
+}
+
+.primary {
+  background: var(--bs-primary);
+}
+
+.secondary {
+  background: var(--bs-secondary);
+}
+
+.link {
+  background: none !important;
+  color: darkblue !important;
+}
