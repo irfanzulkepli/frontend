@@ -1,3 +1,86 @@
-<p>
-  pipeline-view works!
-</p>
+<div>
+  <div class="card">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped mb-0">
+
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Total Deal Value</th>
+              <th>No. of Deals</th>
+              <th>No. of Stage</th>
+              <th>Date Created</th>
+              <th style="text-align:left">Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>
+                <div>
+                  <a href="#">Lead PipeLine (Sales)</a>
+                </div>
+              </td>
+              <td>$ 2,463,220.00</td>
+              <td>56</td>
+              <td>7</td>
+              <td>04-01-2022</td>
+              <td style="text-align:right">
+                <span>
+                  <div class="btn-group btn-group-action" role="group">
+                    <button type="button" class="btn">
+                      <i class="mdi mdi-square-edit-outline font-size-24"></i>
+                    </button>
+                    <button type="button" class="btn" (click)="centerModal(centerDataModal)">
+                      <i class="mdi mdi-delete font-size-24"></i>
+                    </button>
+                  </div>
+                </span>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <div>
+                  <a href="#">Test 1</a>
+                </div>
+              </td>
+              <td>$ 0.00</td>
+              <td>0</td>
+              <td>7</td>
+              <td>12-02-2022</td>
+              <td style="text-align:right">
+                <span>
+                  <div class="btn-group btn-group-action" role="group">
+                    <button type="button" class="btn">
+                      <i class="mdi mdi-square-edit-outline font-size-24"></i>
+                    </button>
+                    <button type="button" class="btn" (click)="centerModal(centerDataModal)">
+                      <i class="mdi mdi-delete font-size-24"></i>
+                    </button>
+                  </div>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<ng-template #centerDataModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Are you sure?</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
+  </div>
+  <div class="modal-body">
+    <p>This content will be deleted permenantly.</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">No</button>
+    <button type="button" class="btn btn-primary">Yes</button>
+  </div>
+</ng-template>
