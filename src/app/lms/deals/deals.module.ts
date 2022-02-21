@@ -17,6 +17,8 @@ import { LostReasonsComponent } from './lost-reasons/lost-reasons.component';
 import { PipelinesComponent } from './pipelines/pipelines.component';
 import { PipelineViewComponent } from './pipeline-view/pipeline-view.component';
 import { DealsCardComponent } from './deals-card/deals-card.component';
+import { DndModule } from 'ngx-drag-drop';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 const config: DropzoneConfigInterface = {
     // Change this to your upload POST address:
@@ -49,7 +51,9 @@ const config: DropzoneConfigInterface = {
         SimplebarAngularModule,
         NgbDropdownModule,
         Ng2TelInputModule,
-        NgbModalModule
+        NgbModalModule,
+        DndModule,
+        DragDropModule
     ],
     providers: [
         {

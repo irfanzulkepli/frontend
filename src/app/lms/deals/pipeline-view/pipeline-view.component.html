@@ -1,86 +1,157 @@
-<div>
-  <div class="card">
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-striped mb-0">
+<div class="container-fluid">
 
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Total Deal Value</th>
-              <th>No. of Deals</th>
-              <th>No. of Stage</th>
-              <th>Date Created</th>
-              <th style="text-align:left">Action</th>
-            </tr>
-          </thead>
+  <div class="row">
+    <div class="col-lg-4">
+      <div class="card">
+        <!-- header -->
+        <div class="card-header bg-white">
+          <div class="d-flex align-items-start justify-content-between py-3">
+            <h4 class="card-title">Lead generation</h4>
+            <div class="dropdown float-end" ngbDropdown>
+              <a href="javascript: void(0);" class="dropdown-toggle arrow-none" ngbDropdownToggle>
+                <i class="mdi mdi-dots-vertical m-0 text-muted h5"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+                <a class="dropdown-item" href="javascript: void(0);">Edit</a>
+                <a class="dropdown-item" href="javascript: void(0);">Delete</a>
+              </div>
+            </div> <!-- end dropdown -->
+          </div>
+        </div>
 
-          <tbody>
-            <tr>
-              <td>
-                <div>
-                  <a href="#">Lead PipeLine (Sales)</a>
-                </div>
-              </td>
-              <td>$ 2,463,220.00</td>
-              <td>56</td>
-              <td>7</td>
-              <td>04-01-2022</td>
-              <td style="text-align:right">
-                <span>
-                  <div class="btn-group btn-group-action" role="group">
-                    <button type="button" class="btn">
-                      <i class="mdi mdi-square-edit-outline font-size-24"></i>
-                    </button>
-                    <button type="button" class="btn" (click)="centerModal(centerDataModal)">
-                      <i class="mdi mdi-delete font-size-24"></i>
-                    </button>
+          <!-- <ng-container> -->
+            <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)" style="background-color: rgb(240, 240, 240);">
+              <div class="col" cdkDrag>
+                <div class="card" style="cursor: move;">
+                  <!-- header -->
+                  <div class="card-header bg-transparent">
+                    <div class="d-flex align-items-start justify-content-between">
+                      <div class="d-flex align-items-center">
+                        <span class="avatar bg-dark text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 32px;height: 32px;">AV</span>
+                        <div class="media-body p-2" (click)="openModal(content)" style="cursor: pointer;">
+                          <span class="mt-0 mb-0 text-muted text-nowrap">Lead PipeLine (Sales)</span><b>#7</b>
+                          <p style="margin: 0 0 0;"><b>Personal Financing</b></p>
+                        </div>
+                      </div>
+                      <div ngbDropdown>
+                        <div class="btn-group">
+                          <button id="btnGroupVerticalDrop1" ngbDropdownToggle type="button"
+                              class="btn dropdown-toggle " data-toggle="dropdown" aria-haspopup="true"
+                              aria-expanded="false">
+                              <i class="fas fa-ellipsis-v"></i>
+                          </button>
+                          <div class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupVerticalDrop1" ngbDropdownMenu>
+                              <a class="dropdown-item">Add activity</a>
+                              <a class="dropdown-item">Manage Tag</a>
+                              <a class="dropdown-item">Won the deal</a>
+                              <a class="dropdown-item">Make it lost</a>
+                              <a class="dropdown-item">Mark</a>
+                              <a class="dropdown-item">Edit</a>
+                              <a class="dropdown-item">Delete</a>
+                          </div>
+                        </div>
+                      </div> <!-- end dropdown -->
+                    </div>
                   </div>
-                </span>
-              </td>
-            </tr>
-
-            <tr>
-              <td>
-                <div>
-                  <a href="#">Test 1</a>
-                </div>
-              </td>
-              <td>$ 0.00</td>
-              <td>0</td>
-              <td>7</td>
-              <td>12-02-2022</td>
-              <td style="text-align:right">
-                <span>
-                  <div class="btn-group btn-group-action" role="group">
-                    <button type="button" class="btn">
-                      <i class="mdi mdi-square-edit-outline font-size-24"></i>
-                    </button>
-                    <button type="button" class="btn" (click)="centerModal(centerDataModal)">
-                      <i class="mdi mdi-delete font-size-24"></i>
-                    </button>
+                    
+                  <!-- body -->
+                  <div class="card-body">
+                    <div class="d-flex-inline justify-content-between py-2 px-1">
+                      <P class="text-muted font-size-90 mb-2">No lead added yet</P>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="d-flex align-items-center">
+                        <span class="badge bg-dark text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 16px;height: 16px;">NC</span>
+                        <p class="p-2 ml-2 mb-0">NG CHIN TAH</p>
+                      </div>
+                      <p class="text-nowrap mb-0">$ 10,000.00</p>
+                    </div>
                   </div>
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                  
+                  <!-- Footer -->
+                  <div class="card-footer bg-transparent border-top">
+                    <p class="card-text"><em><small>Created At :<b>19 Jan 22</b></small></em></p>
+                  </div>
+                </div>
+                <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+              </div>
+            </div>
+          <!-- </ng-container> -->
+          
+
+          <div class="text-center d-grid">
+            <a href="javascript: void(0);" class="btn btn-primary"><i class="mdi mdi-plus me-1"></i>
+              Add New</a>
+          </div>
+        <!-- </div> -->
       </div>
-
     </div>
-  </div>
+
 </div>
 
-<ng-template #centerDataModal let-modal>
+
+
+<!-- Task  -->
+<ng-template #TaskContent let-task='task'>
+  <div class="card task-box">
+    <div class="card-body">
+      <div class="float-end ms-2">
+        <span class="badge rounded-pill badge-soft-secondary font-size-12" [ngClass]=" { 
+            'badge-soft-secondary': task.task === 'Waiting',
+            'badge-soft-success': task.task === 'Complete',
+            'badge-soft-primary': task.task === 'Approved',
+            'badge-soft-warning': task.task === 'Pending' }">{{task.task}}</span>
+      </div>
+      <div>
+        <h5 class="font-size-15"><a href="javascript: void(0);" class="text-dark">{{task.title}}</a>
+        </h5>
+        <p class="text-muted mb-4">{{task.date}}</p>
+      </div>
+
+      <div class="avatar-group float-start">
+        <div class="avatar-group-item">
+          <a href="javascript: void(0);" class="d-inline-block">
+            <img src="{{ task.user[0]}}" class="rounded-circle avatar-xs" alt="">
+          </a>
+        </div>
+        <div class="avatar-group-item" *ngIf="task.user[1]">
+          <a href="javascript: void(0);" class="d-inline-block">
+            <img src="{{ task.user[1]}}" class="rounded-circle avatar-xs" alt="">
+          </a>
+        </div>
+      </div>
+
+      <div class="text-end">
+        <h5 class="font-size-15 mb-1">$ {{task.budget}}</h5>
+        <p class="mb-0 text-muted">Budget</p>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Standard Modal -->
+<ng-template #content role="document" let-modal>
   <div class="modal-header">
-    <h5 class="modal-title mt-0">Are you sure?</h5>
-    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
+    <h5 class="modal-title mt-0">Modal Heading</h5>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-    <p>This content will be deleted permenantly.</p>
+    <h5>Overflowing text to show scroll behavior</h5>
+    <p>Cras mattis consectetur purus sit amet fermentum.
+      Cras justo odio, dapibus ac facilisis in,
+      egestas eget quam. Morbi leo risus, porta ac
+      consectetur ac, vestibulum at eros.</p>
+    <p>Praesent commodo cursus magna, vel scelerisque
+      nisl consectetur et. Vivamus sagittis lacus vel
+      augue laoreet rutrum faucibus dolor auctor.</p>
+    <p>Aenean lacinia bibendum nulla sed consectetur.
+      Praesent commodo cursus magna, vel scelerisque
+      nisl consectetur et. Donec sed odio dui. Donec
+      ullamcorper nulla non metus auctor
+      fringilla.</p>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">No</button>
-    <button type="button" class="btn btn-primary">Yes</button>
+    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+    <button type="button" class="btn btn-primary">Save changes</button>
   </div>
 </ng-template>
