@@ -1,0 +1,19 @@
+td {
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.text-ellipsis {
+    max-width: 150px !important;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.avatar-title {
+    min-width: 32px;
+}

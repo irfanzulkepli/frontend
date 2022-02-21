@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PeopleComponent } from './people/people.component';
 import { LeadGroupComponent } from './lead-group/lead-group.component';
@@ -20,6 +20,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { MatSelectModule } from '@angular/material/select';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { AdvancedSortableDirective } from './advanced-sortable.directive';
+import { AdvancedService } from './advanced.service';
 
 
 const config: DropzoneConfigInterface = {
@@ -64,7 +65,9 @@ const config: DropzoneConfigInterface = {
         {
             provide: DROPZONE_CONFIG,
             useValue: config
-        }
+        },
+        DecimalPipe,
+        AdvancedService
     ]
 })
 export class LeadsModule { }

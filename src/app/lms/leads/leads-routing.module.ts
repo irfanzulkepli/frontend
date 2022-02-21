@@ -10,7 +10,6 @@ const routes: Routes = [
     { path: 'organization', component: OrganizationComponent },
     { path: 'lead-group', component: LeadGroupComponent },
     { path: 'people/:id', component: LeadProfileComponent },
-    { path: 'lead-group/:id', component: LeadProfileComponent },
     { path: 'organization/:id', component: LeadProfileComponent }
 ];
 

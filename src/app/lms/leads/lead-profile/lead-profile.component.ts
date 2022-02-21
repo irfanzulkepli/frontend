@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LMSService } from '../../lms-service';
 import { PEOPLE } from '../../data/people-data';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-lead-profile',
@@ -73,7 +74,8 @@ export class LeadProfileComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private modalService: NgbModal,
-    private lmsService: LMSService
+    private lmsService: LMSService,
+    private router: Router
   ) {
   }
 
@@ -410,6 +412,10 @@ export class LeadProfileComponent implements OnInit {
 
   telInputObject(ev) {
     console.log('ev: ', ev);
+  }
+
+  onBack() {
+    this.router.navigate(['/lms/leads/people']);
   }
 
   get hasAddressDetails(): boolean {

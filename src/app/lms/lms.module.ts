@@ -28,4 +28,4 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
         UIModule,
     ]
 })
-export class LeadsModule { }
+export class LMSModule { }

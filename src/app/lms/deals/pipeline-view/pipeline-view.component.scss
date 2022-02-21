@@ -1,11 +1,18 @@
+.row {
+  flex-wrap: nowrap;
+  overflow-x: scroll;
+}
+
 .example-list {
     width: 500px;
     max-width: 100%;
     min-height: 60px;
+    max-height: 400px;
+    overflow-y: scroll;
     display: block;
     background: white;
     border-radius: 4px;
-    overflow: hidden;
+    // overflow: hidden;
     padding: 15px 15px;
   }
 

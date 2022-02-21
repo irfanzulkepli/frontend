@@ -140,7 +140,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
    * Initialize
    */
   initialize(): void {
-    this.menuItems = MENU;
+    this.menuItems = LMS_MENU;
   }
 
   /**

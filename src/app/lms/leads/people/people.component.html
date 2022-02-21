@@ -1,317 +1,141 @@
 <div class="container-fluid">
 
-  <app-page-title title="People" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+  <div class="row">
+    <div class="col-12">
+      <div class="page-title-box d-flex align-items-center justify-content-between">
+        <h4 class="mb-0 font-size-18"> People </h4>
+        <div class="page-title-right">
+          <button type="button" class="btn btn-primary btn-rounded">
+            Add people
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="row">
     <div class="col-lg-12">
       <div class="card">
         <div class="card-body">
-          <div class="table-responsive">
-            <table class="table align-middle  table-nowrap table-hover">
-              <thead class="table-light">
-                <tr>
-                  <th scope="col" style="width: 70px;">#</th>
-                  <th scope="col">Name</th>
-                  <th scope="col">Email</th>
-                  <th scope="col">Tags</th>
-                  <th scope="col">Projects</th>
-                  <th scope="col">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr (click)="redirectToProfile()" [routerLink]="['/lms/leads/people/1']">
-                  <td>
-                    <div class="avatar-xs">
-                      <span class="avatar-title rounded-circle">
-                        D
+          <div class="card-title">
+            <div class="row">
+              <div class="col-sm-12 col-md-6">
+                Showing {{service.startIndex}} to
+                {{service.endIndex}} items of {{service.totalRecords}}
+              </div>
+              <div class="col-sm-12 col-md-6">
+                <div id="tickets-table_filter" class="dataTables_filter text-md-end">
+                  <label class="d-inline-flex align-items-center">Search:
+                    <input type="text" name="searchTerm" class="form-control form-control-sm ms-2"
+                      aria-controls="tickets-table" [(ngModel)]="service.searchTerm">
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table style="width: 2000px;"
+                class="table align-middle table-striped dt-responsive nowrap datatables dtr-inline">
+                <thead class="table-light">
+                  <tr>
+                    <th>Name</th>
+                    <th>Lead groups</th>
+                    <th>Organization</th>
+                    <th>Email(s)</th>
+                    <th>Phone(s)</th>
+                    <th>Address</th>
+                    <th>Closed deal(s)</th>
+                    <th>Open deal(s)</th>
+                    <th>Owner</th>
+                    <th>Tags</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let table of (tables$ | async);let i=index">
+                    <td>
+                      <div class="d-flex align-items-center cursor-pointer" (click)="redirectToProfile(table)">
+                        <div class="avatar-xs me-2">
+                          <span class="avatar-title rounded-circle">
+                            {{ getInitial(table) }}
+                          </span>
+                        </div>
+                        <ngb-highlight [result]="table.name" [term]="service.searchTerm"></ngb-highlight>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="badge rounded-pill
+                       {{ table.contactType?.class ? table.contactType?.class : ''}}  font-size-12">
+                        <ngb-highlight [result]="table.contactType?.name" [term]="service.searchTerm"></ngb-highlight>
                       </span>
-                    </div>
-                  </td>
-                  <td>
-                    <h5 class="font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">David McHenry</a>
-                    </h5>
-                    <p class="text-muted mb-0">UI/UX Designer</p>
-                  </td>
-                  <td>david@skote.com</td>
-                  <td>
-                    <div>
-                      <a href="javascript: void(0);" class="badge badge-soft-primary font-size-11 m-1">Photoshop</a>
-                      <a href="javascript: void(0);" class="badge badge-soft-primary font-size-11 m-1">illustrator</a>
-                    </div>
-                  </td>
-                  <td>
-                    125
-                  </td>
-                  <td>
-                    <ul class="list-inline font-size-20 contact-links mb-0">
-                      <li class="list-inline-item px-2">
-                        <a href="" ngbTooltip="Message"><i class="bx bx-message-square-dots"></i></a>
-                      </li>
-                      <li class="list-inline-item px-2">
-                        <a href="" ngbTooltip="Profile"><i class="bx bx-user-circle"></i></a>
-                      </li>
-                    </ul>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div>
-                      <img class="rounded-circle avatar-xs" src="assets/images/users/avatar-2.jpg" alt="">
-                    </div>
-                  </td>
-                  <td>
-                    <h5 class="font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">Frank Kirk</a></h5>
-                    <p class="text-muted mb-0">Frontend Developer</p>
-                  </td>
-                  <td>frank@skote.com</td>
-                  <td>
-                    <div>
-                      <a href="javascript: void(0);" class="badge badge-soft-primary font-size-11 m-1">Html</a>
-                      <a href="javascript: void(0);" class="badge badge-soft-primary font-size-11 m-1">Css</a>
-                      <a href="javascript: void(0);" class="badge badge-soft-primary font-size-11 m-1">2 + more</a>
-                    </div>
-                  </td>
-                  <td>
-                    132
-                  </td>
-                  <td>
-                    <ul class="list-inline font-size-20 contact-links mb-0">
-                      <li class="list-inline-item px-2">
-                        <a href="" ngbTooltip="Message"><i class="bx bx-message-square-dots"></i></a>
-                      </li>
-                      <li class="list-inline-item px-2">
-                        <a href="" ngbTooltip="Profile"><i class="bx bx-user-circle"></i></a>
-                      </li>
-                    </ul>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div>
-                      <img class="rounded-circle avatar-xs" src="assets/images/users/avatar-3.jpg" alt="">
-                    </div>
-                  </td>
-                  <td>
-                    <h5 class="font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">Rafael Morales</a>
-                    </h5>
-                    <p class="text-muted mb-0">Backend Developer</p>
-                  </td>
-                  <td>Rafael@skote.com</td>
-                  <td>
-                    <div>
-                      <a href="javascript: void(0);" class="badge badge-soft-primary font-size-11 m-1">Php</a>
-                      <a href="javascript: void(0);" class="badge badge-soft-primary font-size-11 m-1">Java</a>
-                      <a href="javascript: void(0);" class="badge badge-soft-primary font-size-11 m-1">Python</a>
-                    </div>
-                  </td>
-                  <td>
-                    112
-                  </td>
-                  <td>
-                    <ul class="list-inline font-size-20 contact-links mb-0">
-                      <li class="list-inline-item px-2">
-                        <a href="" ngbTooltip="Message"><i class="bx bx-message-square-dots"></i></a>
-                      </li>
-                      <li class="list-inline-item px-2">
-                        <a href="" ngbTooltip="Profile"><i class="bx bx-user-circle"></i></a>
-                      </li>
-                    </ul>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="avatar-xs">
-                      <span class="avatar-title rounded-circle">
-                        M
+                    </td>
+                    <td>
+                      <span class="d-flex align-items-center" *ngFor="let organization of table.organizations">
+                        {{ organization.name }} <i class="mdi mdi-exit-to-app font-size-12"></i>
                       </span>
-                    </div>
-                  </td>
-                  <td>
-                    <h5 class="font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">Mark Ellison</a></h5>
-                    <p class="text-muted mb-0">Full Stack Developer</p>
-                  </td>
-                  <td>mark@skote.com</td>
-                  <td>
-                    <div>
-                      <a href="javascript: void(0);" class="badge badge-soft-primary font-size-11 m-1">Ruby</a>
-                      <a href="javascript: void(0);" class="badge badge-soft-primary font-size-11 m-1">Php</a>
-                      <a href="javascript: void(0);" class="badge badge-soft-primary font-size-11 m-1">2 + more</a>
-                    </div>
-                  </td>
-                  <td>
-                    121
-                  </td>
-                  <td>
-                    <ul class="list-inline font-size-20 contact-links mb-0">
-                      <li class="list-inline-item px-2">
-                        <a href="" ngbTooltip="Message"><i class="bx bx-message-square-dots"></i></a>
-                      </li>
-                      <li class="list-inline-item px-2">
-                        <a href="" ngbTooltip="Profile"><i class="bx bx-user-circle"></i></a>
-                      </li>
-                    </ul>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div>
-                      <img class="rounded-circle avatar-xs" src="assets/images/users/avatar-4.jpg" alt="">
-                    </div>
-                  </td>
-                  <td>
-                    <h5 class="font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">Minnie Walter</a>
-                    </h5>
-                    <p class="text-muted mb-0">Frontend Developer</p>
-                  </td>
-                  <td>minnie@skote.com</td>
-                  <td>
-                    <div>
-                      <a href="javascript: void(0);" class="badge badge-soft-primary font-size-11 m-1">Html</a>
-                      <a href="javascript: void(0);" class="badge badge-soft-primary font-size-11 m-1">Css</a>
-                      <a href="javascript: void(0);" class="badge badge-soft-primary font-size-11 m-1">2 + more</a>
-                    </div>
-                  </td>
-                  <td>
-                    145
-                  </td>
-                  <td>
-                    <ul class="list-inline font-size-20 contact-links mb-0">
-                      <li class="list-inline-item px-2">
-                        <a href="" ngbTooltip="Message"><i class="bx bx-message-square-dots"></i></a>
-                      </li>
-                      <li class="list-inline-item px-2">
-                        <a href="" ngbTooltip="Profile"><i class="bx bx-user-circle"></i></a>
-                      </li>
-                    </ul>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div>
-                      <img class="rounded-circle avatar-xs" src="assets/images/users/avatar-5.jpg" alt="">
-                    </div>
-                  </td>
-                  <td>
-                    <h5 class="font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">Shirley Smith</a>
-                    </h5>
-                    <p class="text-muted mb-0">UI/UX Designer</p>
-                  </td>
-                  <td>shirley@skote.com</td>
-                  <td>
-                    <div>
-                      <a href="javascript: void(0);" class="badge badge-soft-primary font-size-11 m-1">Photoshop</a>
-                      <a href="javascript: void(0);" class="badge badge-soft-primary font-size-11 m-1">illustrator</a>
-                    </div>
-                  </td>
-                  <td>
-                    136
-                  </td>
-                  <td>
-                    <ul class="list-inline font-size-20 contact-links mb-0">
-                      <li class="list-inline-item px-2">
-                        <a href="javascript: void(0);" ngbTooltip="Message"><i class="bx bx-message-square-dots"></i></a>
-                      </li>
-                      <li class="list-inline-item px-2">
-                        <a href="javascript: void(0);" ngbTooltip="Profile"><i class="bx bx-user-circle"></i></a>
-                      </li>
-                    </ul>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="avatar-xs">
-                      <span class="avatar-title rounded-circle">
-                        J
+                    </td>
+                    <td>
+                      <span class="d-flex align-items-center" *ngFor="let email of table.email">
+                        <ngb-highlight class="me-2" [result]="email.value" [term]="service.searchTerm"></ngb-highlight>
+                        <span class="badge rounded-pill
+                       {{ email.type?.class ? email.type?.class : '' }}  font-size-12">
+                          {{ email.type?.name }}
+                        </span>
                       </span>
-                    </div>
-                  </td>
-                  <td>
-                    <h5 class="font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">John Santiago</a>
-                    </h5>
-                    <p class="text-muted mb-0">Full Stack Developer</p>
-                  </td>
-                  <td>john@skote.com</td>
-                  <td>
-                    <div>
-                      <a href="javascript: void(0);" class="badge badge-soft-primary font-size-11 m-1">Ruby</a>
-                      <a href="javascript: void(0);" class="badge badge-soft-primary font-size-11 m-1">Php</a>
-                      <a href="javascript: void(0);" class="badge badge-soft-primary font-size-11 m-1">2 + more</a>
-                    </div>
-                  </td>
-                  <td>
-                    125
-                  </td>
-                  <td>
-                    <ul class="list-inline font-size-20 contact-links mb-0">
-                      <li class="list-inline-item px-2">
-                        <a href="javascript: void(0);" ngbTooltip="Message"><i class="bx bx-message-square-dots"></i></a>
-                      </li>
-                      <li class="list-inline-item px-2">
-                        <a href="javascript: void(0);" ngbTooltip="Profile"><i class="bx bx-user-circle"></i></a>
-                      </li>
-                    </ul>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div>
-                      <img class="rounded-circle avatar-xs" src="assets/images/users/avatar-5.jpg" alt="">
-                    </div>
-                  </td>
-                  <td>
-                    <h5 class="font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark">Colin Melton</a></h5>
-                    <p class="text-muted mb-0">Backend Developer</p>
-                  </td>
-                  <td>colin@skote.com</td>
-                  <td>
-                    <div>
-                      <a href="javascript: void(0);" class="badge badge-soft-primary font-size-11 m-1">Php</a>
-                      <a href="javascript: void(0);" class="badge badge-soft-primary font-size-11 m-1">Java</a>
-                      <a href="javascript: void(0);" class="badge badge-soft-primary font-size-11 m-1">Python</a>
-                    </div>
-                  </td>
-                  <td>
-                    136
-                  </td>
-                  <td>
-                    <ul class="list-inline font-size-20 contact-links mb-0">
-                      <li class="list-inline-item px-2">
-                        <a href="javascript: void(0);" ngbTooltip="Message"><i class="bx bx-message-square-dots"></i></a>
-                      </li>
-                      <li class="list-inline-item px-2">
-                        <a href="javascript: void(0);" ngbTooltip="Profile"><i class="bx bx-user-circle"></i></a>
-                      </li>
-                    </ul>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="row">
-            <div class="col-lg-12">
-              <ul class="pagination pagination-rounded justify-content-center mt-4">
-                <li class="page-item disabled">
-                  <a href="javascript: void(0);" class="page-link"><i class="mdi mdi-chevron-left"></i></a>
-                </li>
-                <li class="page-item">
-                  <a href="javascript: void(0);" class="page-link">1</a>
-                </li>
-                <li class="page-item active">
-                  <a href="javascript: void(0);" class="page-link">2</a>
-                </li>
-                <li class="page-item">
-                  <a href="javascript: void(0);" class="page-link">3</a>
-                </li>
-                <li class="page-item">
-                  <a href="javascript: void(0);" class="page-link">4</a>
-                </li>
-                <li class="page-item">
-                  <a href="javascript: void(0);" class="page-link">5</a>
-                </li>
-                <li class="page-item">
-                  <a href="javascript: void(0);" class="page-link"><i class="mdi mdi-chevron-right"></i></a>
-                </li>
-              </ul>
+                    </td>
+                    <td>
+                      <span class="d-flex align-items-center" *ngFor="let phone of table.phone">
+                        <ngb-highlight class="me-2" [result]="phone.value" [term]="service.searchTerm"></ngb-highlight>
+                        <span class="badge rounded-pill
+                       {{ phone.type?.class ? phone.type?.class : '' }}  font-size-12">
+                          {{ phone.type?.name }}
+                        </span>
+                      </span>
+                    </td>
+                    <td>
+                      <ngb-highlight [result]="getAddress(table)" [term]="service.searchTerm"></ngb-highlight>
+                    </td>
+                    <td>
+                      <ngb-highlight [result]="table.closeDealsCount" [term]="service.searchTerm"></ngb-highlight>
+                    </td>
+                    <td>
+                      <ngb-highlight [result]="table.openDealsCount" [term]="service.searchTerm"></ngb-highlight>
+                    </td>
+                    <td>
+                      <ngb-highlight [result]="table.owner?.fullName" [term]="service.searchTerm"></ngb-highlight>
+                    </td>
+                    <td style="width: 225px;">
+                      <mat-chip-list>
+                        <mat-chip class="d-flex align-items-center" [style.background-color]="tag.colorCode"
+                          *ngFor="let tag of table.tags">
+                          <ngb-highlight [result]="tag.name" [term]="service.searchTerm"></ngb-highlight>
+                        </mat-chip>
+                      </mat-chip-list>
+                    </td>
+                    <td>
+                      <div class="page-title-right" ngbDropdown>
+                        <i class="bx bx-dots-vertical-rounded font-size-24 cursor-pointer" ngbDropdownToggle></i>
+                        <div class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+                          <a class="dropdown-item">
+                            <span>Send invitation</span>
+                          </a>
+                          <a class="dropdown-item">
+                            <span>Edit</span>
+                          </a>
+                          <a class="dropdown-item">
+                            <span>Delete</span>
+                          </a>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="row">
+              <div class="col-lg-12 d-flex justify-content-center">
+                <ngb-pagination [collectionSize]="total$ | async" [(page)]="service.page" [maxSize]="5" [rotate]="true"
+                  [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
+              </div>
             </div>
           </div>
         </div>
