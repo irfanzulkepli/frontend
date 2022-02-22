@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DndDropEvent } from 'ngx-drag-drop';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -14,20 +13,29 @@ export class PipelineViewComponent implements OnInit {
 
   ngOnInit() { }
 
-  cols = [
-    'Col 1',
-    'Col 2',
-    'Col 3'
-  ]
-
   deals = [
     'Deal 1',
     'Deal 2',
     'Deal 3'
   ];
 
+  deals2 = [
+    'Deal 4',
+    'Deal 5',
+    'Deal 6'
+  ];
+
+
   drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.deals, event.previousIndex, event.currentIndex);
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      console.log('Transfering item to new container')
+      transferArrayItem(event.previousContainer.data,
+                        event.container.data,
+                        event.previousIndex,
+                        event.currentIndex);
+    }
   }
 
   /**
