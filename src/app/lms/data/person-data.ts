@@ -1566,3 +1566,9 @@ export const PERSON = [
         ]
     }
 ];
+
+export interface Person {
+    id: number;
+    name: string;
+    organizations: any[]
+}

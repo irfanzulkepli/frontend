@@ -7,8 +7,8 @@
           <img src="assets/images/users/avatar-1.jpg" class="avatar-xs rounded-circle" alt="">
         </div>
         <div class="media-body">
-          <h5 class="font-size-15 mt-0 mb-1">Henry Wells</h5>
-          <span class="badge rounded-pill bg-info mb-0">Open</span>
+          <h5 class="font-size-15 text-primary mt-0 mb-1" (click)="openProfile()" style="cursor: pointer;">Personal Financing</h5>
+          <h5><span class="badge rounded-pill bg-primary">Open</span></h5>
         </div>
         <div ngbDropdown>
           <div class="btn-group ms-auto">
@@ -18,8 +18,8 @@
                 <i class="fas fa-ellipsis-v"></i>
             </button>
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupVerticalDrop1" ngbDropdownMenu>
-                <a class="dropdown-item">Edit</a>
-                <a class="dropdown-item">Delete</a>
+                <a class="dropdown-item" (click)="editModal(editContent)">Edit</a>
+                <a class="dropdown-item" (click)="deleteModal(deleteContent)">Delete</a>
             </div>
           </div>
         </div>
@@ -30,7 +30,7 @@
     <ul class="list-group list-group-flush">
       <li class="list-group-item border-0 d-flex justify-content-between align-items-center mt-3">
         <div class="d-flex align-items-center">
-          <span class="avatar bg-dark text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 32px;height: 32px;">DD</span>
+          <span class="avatar bg-dark text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 32px;height: 32px;">HW</span>
           <P class="p-2 ml-2 mb-0">Henry Wells</P>
         </div>
         <p class="text-info text-nowrap mb-0">$ 10,000.00</p>
@@ -50,3 +50,106 @@
     </div>
   </div>
 </div>
+
+<!-- Edit Modal -->
+<ng-template #editContent role="document" let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Edit Deal</h5>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group row mb-3">
+        <label for="formDealTitleInput" class="col-sm-2 col-form-label">Title</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="formDealTitleInput" placeholder="Enter Deal Title Here" value="Personal Financing">    
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formDescriptionInput" class="col-sm-2 col-form-label">Description</label>
+        <div class="col-sm-10">
+          <textarea class="form-control text-muted" id="formDescriptionInput" rows="3" placeholder="Enter description"></textarea>  
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formLeadTypeInput" class="col-sm-2 col-form-label text-nowrap">Lead Type</label>
+        <div class="col-sm-10 d-flex align-items-center">
+          <div class="form-check form-check-inline" *ngFor="let lead of leadTypes">
+            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" checked>
+            <label class="form-check-label" for="inlineRadio1">{{ lead }}</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formLeadTypeInput" class="col-sm-2 col-form-label text-nowrap">Person</label>
+        <div class="col-sm-10 d-flex align-items-center">
+          <mat-select [formControl]="personCtrl" placeholder="Person">
+            <mat-option>
+              <ngx-mat-select-search [formControl]="personFilterCtrl" placeholderLabel="Search" noEntriesFoundLabel="Didnt match anything"></ngx-mat-select-search>
+            </mat-option>
+            <mat-option *ngFor="let person of filteredPerson | async" [value]="person">
+              {{person.name}}
+            </mat-option>
+          </mat-select>
+        </div> 
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formDealValueInput" class="col-sm-2 col-form-label">Deal Value</label>
+        <div class="col-sm-10">
+          <input type="number" class="form-control" id="formDealValueInput" placeholder="Enter Deal Value" value="500">    
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formLeadTypeInput" class="col-sm-2 col-form-label text-nowrap">Pipeline</label>
+        <div class="col-sm-10 d-flex align-items-center">
+          <select class="form-select">
+            <option *ngFor="let pipeline of pipelineOptions">{{ pipeline }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formStageTypeInput" class="col-sm-2 col-form-label text-nowrap">Stage</label>
+        <div class="col-sm-10 d-flex align-items-center">
+          <select class="form-select">
+            <option *ngFor="let stage of stageTypes">{{ stage }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formExpClosingDateInput" class="col-sm-2 col-form-label">Expecting Closing Date</label>
+        <div class="col-sm-10 d-flex align-items-center">
+          <input class="form-control" type="date" id="formExpClosingDateInput">
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formLeadTypeInput" class="col-sm-2 col-form-label text-nowrap">Owner</label>
+        <div class="col-sm-10 d-flex align-items-center">
+          <select class="form-select">
+            <option *ngFor="let user of userData">
+              {{ user.fullName }}
+            </option>
+          </select>
+        </div> 
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cancel</button>
+    <button type="button" class="btn btn-primary">Save</button>
+  </div>
+</ng-template>
+
+<!-- Delete Modal -->
+<ng-template #deleteContent let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Are you sure?</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
+  </div>
+  <div class="modal-body">
+    <p>This content will be deleted permenantly.</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">No</button>
+    <button type="button" class="btn btn-primary">Yes</button>
+  </div>
+</ng-template>

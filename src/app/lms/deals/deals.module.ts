@@ -18,6 +18,9 @@ import { PipelinesComponent } from './pipelines/pipelines.component';
 import { PipelineViewComponent } from './pipeline-view/pipeline-view.component';
 import { DealsCardComponent } from './deals-card/deals-card.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatSelectModule } from '@angular/material/select';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { AddDealModalComponent } from './add-deal-modal/add-deal-modal.component';
 
 const config: DropzoneConfigInterface = {
     // Change this to your upload POST address:
@@ -32,7 +35,8 @@ const config: DropzoneConfigInterface = {
         DealsCardComponent,
         LostReasonsComponent,
         PipelinesComponent,
-        PipelineViewComponent
+        PipelineViewComponent,
+        AddDealModalComponent
     ],
     imports: [
         DealsRoutingModule,
@@ -51,13 +55,16 @@ const config: DropzoneConfigInterface = {
         NgbDropdownModule,
         Ng2TelInputModule,
         NgbModalModule,
-        DragDropModule
+        DragDropModule,
+        MatSelectModule,
+        NgxMatSelectSearchModule
     ],
     providers: [
         {
             provide: DROPZONE_CONFIG,
             useValue: config
         }
-    ]
+    ],
+    entryComponents: [ AddDealModalComponent ]
 })
 export class DealsModule { }
