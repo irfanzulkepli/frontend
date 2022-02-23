@@ -26,7 +26,7 @@
                 <div class="d-flex align-items-start justify-content-between">
                   <div class="d-flex align-items-center">
                     <span class="avatar bg-dark text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 32px;height: 32px;">AV</span>
-                    <div class="media-body p-2" (click)="openProfile(profileContent)" style="cursor: pointer;">
+                    <div class="media-body p-2" (click)="openProfile()" style="cursor: pointer;">
                       <span class="mt-0 mb-0 text-muted text-nowrap">Lead PipeLine (Sales) </span><b>#7</b>
                       <p style="margin: 0;"><b>Personal Financing</b></p>
                     </div>
@@ -106,7 +106,7 @@
                 <div class="d-flex align-items-start justify-content-between">
                   <div class="d-flex align-items-center">
                     <span class="avatar bg-dark text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 32px;height: 32px;">AV</span>
-                    <div class="media-body p-2" (click)="openProfile(profileContent)" style="cursor: pointer;">
+                    <div class="media-body p-2" (click)="openProfile()" style="cursor: pointer;">
                       <span class="mt-0 mb-0 text-muted text-nowrap">Lead PipeLine (Sales) </span><b>#7</b>
                       <p style="margin: 0;"><b>Personal Financing</b></p>
                     </div>
@@ -162,27 +162,6 @@
     </div>
     
   </div>
-
-
-<!-- Profile Modal -->
-<ng-template #profileContent role="document" let-modal>
-  <div class="modal-header">
-    <div class="avatar-sm ml-2">
-      <span class="avatar-title rounded-circle bg-success font-size-16">JL</span>
-    </div>
-    <div class="media-body p-2">
-      <p style="margin: 0;font-size: large;">Jeff Lam</p>
-      <p class="text-muted text-nowrap" style="margin: 0;">
-        Deal Owner - 11-01-2022 - Age - Time Lapsed
-      </p>
-    </div>
-    <button type="button" class="btn-primary" aria-hidden="true"><i class="bx bx-window-open align-middle me-2"></i>View Details</button>
-    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
-  </div>
-  <div class="modal-body">
-    <h5 style="min-height: 200px;">TBA</h5>
-  </div>
-</ng-template>
 
 <!-- Card Modal -->
 <ng-template #cardContent role="document" let-modal>

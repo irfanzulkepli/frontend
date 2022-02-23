@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AddDealModalComponent } from '../add-deal-modal/add-deal-modal.component';
 
 @Component({
   selector: 'app-pipeline-view',
@@ -38,12 +39,8 @@ export class PipelineViewComponent implements OnInit {
     }
   }
 
-  /**
-   * Open modal
-   * @param content modal content
-   */
-   openProfile(content: any) {
-    this.modalService.open(content, { size: 'xl'});
+   openProfile() {
+    this.modalService.open(AddDealModalComponent, { size: 'xl'});
   }
 
     /**

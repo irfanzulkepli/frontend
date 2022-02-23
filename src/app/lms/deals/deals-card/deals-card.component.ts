@@ -87,23 +87,10 @@ export class DealsCardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.person.filter(bank => bank.name.toLowerCase().indexOf(search) > -1)
       );
     }
-    
-  public user = {
-    name: 'Izzat Nadiri',
-    age: 26
-  }
 
   openProfile() {
-    const modalRef = this.modalService.open(AddDealModalComponent, { size: 'xl'});
-    modalRef.componentInstance.user = this.user;
-    modalRef.componentInstance.passEntry.subscribe((receivedEntry) => {
-      console.log(receivedEntry);
-      })
+    this.modalService.open(AddDealModalComponent, { size: 'xl'});
   }
-
-  passBack() {
-    this.passEntry.emit(this.user);
-    }
 
   /**
    * Open modal

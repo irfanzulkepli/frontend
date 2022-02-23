@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-add-deal-modal',
@@ -8,7 +8,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class AddDealModalComponent implements OnInit {
 
-  constructor(private modalService: NgbModal) { }
+  constructor(public activeModal: NgbActiveModal) { }
 
   ngOnInit() {}
 

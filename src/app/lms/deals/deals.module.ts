@@ -64,7 +64,6 @@ const config: DropzoneConfigInterface = {
             provide: DROPZONE_CONFIG,
             useValue: config
         }
-    ],
-    entryComponents: [ AddDealModalComponent ]
+    ]
 })
 export class DealsModule { }
