@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit, EventEmitter, Input } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PERSON, Person } from '../../data/person-data';
 import { USER } from '../../data/user-data';
@@ -26,10 +26,10 @@ export class DealsCardComponent implements OnInit, OnDestroy, AfterViewInit {
   pipelineOptions: string[] = ["Lead Pipeline (Sales)", "test1"];
 
   @ViewChild('singleSelect') singleSelect: MatSelect;
+  @Input() cardData;
 
   /** Subject that emits when the component has been destroyed. */
   protected _onDestroy = new Subject<void>();
-  passEntry: EventEmitter<any> = new EventEmitter();
   
   constructor(private modalService: NgbModal) { }
 
@@ -55,38 +55,44 @@ export class DealsCardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
     /**
-   * Sets the initial value after the filteredPerson are loaded initially
-   */
-     protected setInitialValue() {
-      this.filteredPerson
-        .pipe(take(1), takeUntil(this._onDestroy))
-        .subscribe(() => {
-          // setting the compareWith property to a comparison function
-          // triggers initializing the selection according to the initial value of
-          // the form control (i.e. _initializeSelection())
-          // this needs to be done after the filteredBanks are loaded initially
-          // and after the mat-option elements are available
-          this.singleSelect.compareWith = (a: Person, b: Person) => a && b && a.id === b.id;
-        });
-    }
+     * Sets the initial value after the filteredPerson are loaded initially
+     */
+    protected setInitialValue() {
+    this.filteredPerson
+      .pipe(take(1), takeUntil(this._onDestroy))
+      .subscribe(() => {
+        // setting the compareWith property to a comparison function
+        // triggers initializing the selection according to the initial value of
+        // the form control (i.e. _initializeSelection())
+        // this needs to be done after the filteredBanks are loaded initially
+        // and after the mat-option elements are available
+        this.singleSelect.compareWith = (a: Person, b: Person) => a && b && a.id === b.id;
+      });
+  }
   
-    protected filterPerson() {
-      if (!this.person) {
-        return;
-      }
-      // get the search keyword
-      let search = this.personFilterCtrl.value;
-      if (!search) {
-        this.filteredPerson.next(this.person.slice());
-        return;
-      } else {
-        search = search.toLowerCase();
-      }
-      // filter the person
-      this.filteredPerson.next(
-        this.person.filter(bank => bank.name.toLowerCase().indexOf(search) > -1)
-      );
+  protected filterPerson() {
+    if (!this.person) {
+      return;
     }
+    // get the search keyword
+    let search = this.personFilterCtrl.value;
+    if (!search) {
+      this.filteredPerson.next(this.person.slice());
+      return;
+    } else {
+      search = search.toLowerCase();
+    }
+    // filter the person
+    this.filteredPerson.next(
+      this.person.filter(bank => bank.name.toLowerCase().indexOf(search) > -1)
+    );
+  }
+
+  getInitials() {
+    const ownerName = this.cardData.owner.fullName.split(' ')
+    const ownerInitials = ownerName[0].charAt(0) + ownerName[1].charAt(0);
+    return ownerInitials.toUpperCase();
+  }
 
   openProfile() {
     this.modalService.open(AddDealModalComponent, { size: 'xl'});

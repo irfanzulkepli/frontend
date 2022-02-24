@@ -1,3 +1,5 @@
 <div class="row">
-    <app-deals-card></app-deals-card>
+    <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-primary" *ngFor="let deal of deals">
+        <app-deals-card [cardData]="deal"></app-deals-card>
+    </div>
 </div>

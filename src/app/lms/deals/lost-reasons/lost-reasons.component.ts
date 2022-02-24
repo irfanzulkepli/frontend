@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { LOSTREASONS } from '../../data/lost-reasons';
 
 @Component({
   selector: 'app-lost-reasons',
@@ -7,6 +8,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./lost-reasons.component.scss']
 })
 export class LostReasonsComponent implements OnInit {
+
+  public lostReasons = LOSTREASONS;
 
   constructor(private modalService: NgbModal) { }
 

@@ -13,57 +13,9 @@
           </thead>
 
           <tbody>
-            <tr>
-              <td>Miscommunication</td>
-              <td>NG CHIN TAH</td>
-              <td style="text-align:right">
-                <span>
-                  <div class="btn-group btn-group-action" role="group">
-                    <button type="button" class="btn" (click)="openModal(content)">
-                      <i class="mdi mdi-square-edit-outline font-size-24"></i>
-                    </button>
-                    <button type="button" class="btn" (click)="centerModal(centerDataModal)">
-                      <i class="mdi mdi-delete font-size-24"></i>
-                    </button>
-                  </div>
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <td>Price Quotation</td>
-              <td>NG CHIN TAH</td>
-              <td style="text-align:right">
-                <span>
-                  <div class="btn-group btn-group-action" role="group">
-                    <button type="button" class="btn" (click)="openModal(content)">
-                      <i class="mdi mdi-square-edit-outline font-size-24"></i>
-                    </button>
-                    <button type="button" class="btn" (click)="centerModal(centerDataModal)">
-                      <i class="mdi mdi-delete font-size-24"></i>
-                    </button>
-                  </div>
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <td>Proposal Failed</td>
-              <td>NG CHIN TAH</td>
-              <td style="text-align:right">
-                <span>
-                  <div class="btn-group btn-group-action" role="group">
-                    <button type="button" class="btn" (click)="openModal(content)">
-                      <i class="mdi mdi-square-edit-outline font-size-24"></i>
-                    </button>
-                    <button type="button" class="btn" (click)="centerModal(centerDataModal)">
-                      <i class="mdi mdi-delete font-size-24"></i>
-                    </button>
-                  </div>
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <td>Lack of performance</td>
-              <td>NG CHIN TAH</td>
+            <tr *ngFor="let lostReason of lostReasons">
+              <td>{{ lostReason.lostReason }}</td>
+              <td>{{ lostReason.createdBy.fullName }}</td>
               <td style="text-align:right">
                 <span>
                   <div class="btn-group btn-group-action" role="group">
@@ -85,6 +37,7 @@
   </div>
 </div>
 
+<!-- Edit modal -->
 <ng-template #content role="document" let-modal>
   <div class="modal-header">
     <h5 class="modal-title mt-0">Edit Lost Reasons</h5>
@@ -92,7 +45,7 @@
   </div>
   <div class="modal-body">
     <p>Name</p>
-    <input type="text" value="" class="form-control">
+    <input type="text" placeholder="Enter name" class="form-control">
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cancel</button>
@@ -100,6 +53,7 @@
   </div>
 </ng-template>
 
+<!-- Exit modal -->
 <ng-template #centerDataModal let-modal>
   <div class="modal-header">
     <h5 class="modal-title mt-0">Are you sure?</h5>
