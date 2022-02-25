@@ -95,7 +95,8 @@ export class DealsCardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   openProfile() {
-    this.modalService.open(AddDealModalComponent, { size: 'xl'});
+    const modalRef = this.modalService.open(AddDealModalComponent, { size: 'xl'});
+    (<AddDealModalComponent>modalRef.componentInstance).inputData = this.cardData;
   }
 
   /**

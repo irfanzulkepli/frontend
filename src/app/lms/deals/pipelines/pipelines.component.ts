@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { PIPELINES } from '../../data/pipelines.data';
 
 @Component({
   selector: 'app-pipelines',
@@ -7,6 +8,9 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./pipelines.component.scss']
 })
 export class PipelinesComponent implements OnInit {
+
+  public colNames: string[] = ["Name", "Total Deal Value", "No. of Deals", "No. of Stage", "Date Created"];
+  public pipelines = PIPELINES;
 
   constructor(private modalService: NgbModal) { }
 

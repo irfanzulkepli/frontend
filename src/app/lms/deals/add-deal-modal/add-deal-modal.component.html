@@ -1,12 +1,12 @@
 <div class="modal-header d-flex align-items-center justify-content-between">
   <div class="d-flex align-items-center">
     <div class="avatar-sm ml-2">
-      <span class="avatar-title rounded-circle bg-success font-size-16">JL</span>
+      <span class="avatar-title rounded-circle bg-success font-size-16">{{  getInitials(inputData.owner.fullName) }}</span>
     </div>
     <div class="media-body p-2">
-      <p style="margin: 0;font-size: large;">Jeff Lam</p>
+      <p style="margin: 0;font-size: large;">{{ inputData.owner.fullName }}</p>
       <p class="text-muted text-nowrap" style="margin: 0;">
-        Deal Owner - 11-01-2022 - Age - Time Lapsed
+        Deal Owner - {{ inputData.createdAt | date:'dd-MM-yyyy' }} - Age - {{ getTimeLapsed() }}
       </p>
     </div>
   </div>
@@ -20,8 +20,8 @@
   <div class="row">
     <div class="col-xl-9 mb-4 mb-xl-0">
       <div class="d-flex align-items-center">
-        <h4 class="p-2"><b>#71</b></h4>
-        <h4>Personal Financing</h4>
+        <h4 class="p-2"><b>#{{ inputData.id }}</b></h4>
+        <h4>{{ inputData.title }}</h4>
         <h4 class="p-2 align-items-center"><span class="badge rounded-pill bg-primary">Open</span></h4>
       </div>
 
@@ -35,7 +35,7 @@
         <div class="card-body comment-card">
           <div class="d-flex align-items-center justify-content-between mb-4">
             <div class="d-flex align-items-center">
-              <p class="mb-0">No description added yet</p>
+              <p class="mb-0" placeholder="No description added yet">{{ inputData.description }}</p>
             </div>
           </div>
         </div>
@@ -48,27 +48,28 @@
           <p class="mb-2"><b>Stage</b></p>
           <a href="#" class="text-muted"><i class="mdi mdi-square-edit-outline font-size-24"></i></a>
         </div>
-        <p class="mb-0 font-size-90 text-muted"><i class="bx bxl-trello text-primary"></i> Lead generation</p>
+        <p class="mb-0 font-size-90 text-muted"><i class="bx bxl-trello text-primary"></i> {{ getStage(inputData.stageId) }}</p>
       </div>
       <div class="border-bottom mb-4 pb-4">
         <div class="d-flex align-items-center justify-content-between">
           <p class="mb-2"><b>Deal Value</b></p>
           <a href="#" class="text-muted"><i class="mdi mdi-square-edit-outline font-size-24"></i></a>
         </div>
-        <p class="mb-0 font-size-90 text-muted"><i class="bx bx-dollar text-primary"></i> 0</p>
+        <p class="mb-0 font-size-90 text-muted"><i class="bx bx-dollar text-primary"></i>{{ inputData.value | number : '1.2-2' }}</p>
       </div>
       <div class="border-bottom mb-4 pb-4">
         <div class="d-flex align-items-center justify-content-between">
           <p class="mb-2"><b>Lead Type : Person</b></p>
           <a href="#" class="text-muted"><i class="mdi mdi-square-edit-outline font-size-24"></i></a>
         </div>
-        <div class="d-flex align-items-center">
-          <span class="badge bg-dark text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 16px;height: 16px;">NC</span>
-          <p class="p-2 ml-2 mb-0">NG CHIN TAH</p>
+        <div class="d-flex align-items-center" *ngFor="let person of inputData.contactPerson">
+          <span class="badge bg-dark text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 16px;height: 16px;">{{ getInitials(person.name) }}</span>
+          <p class="p-2 ml-2 mb-0">{{ person.name }}</p>
         </div>
       </div>
       <div class="border-bottom mb-4 pb-4">
-        <p class="mb-2"><b>Proposal (0)</b></p>
+        <p class="mb-2"><b>Proposal ({{ inputData.proposals.length }})</b></p>
+        <p>TODO</p>
       </div>
       <div class="border-bottom mb-4 pb-4">
         <p class="mb-2"><b>Tags</b></p>
@@ -79,15 +80,15 @@
           <p class="mb-2"><b>Expected Closing Date</b></p>
           <a href="#" class="text-muted"><i class="mdi mdi-square-edit-outline font-size-24"></i></a>
         </div>
-        <p class="mb-0 font-size-90 text-muted"><i class="bx bx-calendar-alt text-primary"></i> Not added yet</p>
+        <p class="mb-0 font-size-90 text-muted"><i class="bx bx-calendar-alt text-primary"></i> Not added yet TODO</p>
       </div>
       <div class="border-bottom mb-4 pb-4">
         <div class="d-flex align-items-center justify-content-between">
-          <p class="mb-2"><b>Followers (0)</b></p>
+          <p class="mb-2"><b>Followers ({{ inputData.followers.length }})</b></p>
           <a href="#" class="text-muted"><i class="mdi mdi-square-edit-outline font-size-24"></i></a>
         </div>
-        <p class="text-muted">No person linked yet</p>
-        <a href="#" class="font-size-90">Link a person</a>
+        <p class="text-muted">No person linked yet TODO</p>
+        <a href="#" class="font-size-90">Link a person TODO</a>
       </div>
     </div>
   </div> <!-- end row -->

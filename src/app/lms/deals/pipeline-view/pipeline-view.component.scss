@@ -1,4 +1,4 @@
-.row {
+.scrollable-row {
   flex-wrap: nowrap;
   overflow-x: scroll;
 }
@@ -13,13 +13,6 @@
     background: white;
     border-radius: 4px;
     padding: 15px 15px;
-  }
-
-  .scrollable-column {
-    height: 100%;
-    position: absolute;
-    overflow-y: scroll;
-    overflow: hidden;
   }
   
   .cdk-drag-preview {

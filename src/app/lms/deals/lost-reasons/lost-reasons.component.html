@@ -3,7 +3,6 @@
     <div class="card-body">
       <div class="table-responsive">
         <table class="table table-striped mb-0">
-
           <thead>
             <tr>
               <th>Name</th>
@@ -11,7 +10,6 @@
               <th style="text-align: right;">Actions</th>
             </tr>
           </thead>
-
           <tbody>
             <tr *ngFor="let lostReason of lostReasons">
               <td>{{ lostReason.lostReason }}</td>
@@ -32,7 +30,6 @@
           </tbody>
         </table>
       </div>
-
     </div>
   </div>
 </div>
@@ -44,8 +41,12 @@
     <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-    <p>Name</p>
-    <input type="text" placeholder="Enter name" class="form-control">
+    <div class="form-group row mb-3">
+      <label for="formDealTitleInput" class="col-sm-2 col-form-label">Name</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="formDealTitleInput" placeholder="Enter name" value="TODO">    
+      </div>
+    </div>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cancel</button>

@@ -1,176 +1,116 @@
 <div class="container-fluid">
 
-  <div class="row" cdkDropListGroup>
-    <!-- column 1 -->
-    <div class="col-lg-4">
+  <div class="row scrollable-row" cdkDropListGroup>
+    <div class="col-lg-4 col-xl-3" *ngFor="let stageType of stageTypes">
       <div class="card">
         <!-- header -->
         <div class="card-header bg-white">
           <div class="d-flex flex-column">
-            <h4 class="card-title d-flex p-2 text-nowrap" style="margin: 0;">Lead generation</h4>
+            <h4 class="card-title d-flex p-2 text-nowrap" style="margin: 0;">{{ stageType.name }}</h4>
             <div class="d-flex flex-wrap align-items-center text-muted ">
-              <span class="p-2">Total Amount</span>
-              <span class="p-2">No of Deals</span>
-              <span class="p-2">Percentage</span>
+              <span class="p-2">$ {{ dealsValueByStageId[stageType.id] | number : '1.2-2' }}</span>
+              <span class="p-2">{{ dealsByStageId[stageType.id].length }} Deal</span>
+              <span class="p-2">{{ dealsProbabilityByStageId[stageType.id] }}%</span>
             </div>
           </div>
         </div>
 
-        <div cdkDropList class="example-list" [cdkDropListData]="deals" (cdkDropListDropped)="drop($event)" style="background-color: rgb(240, 240, 240);">
-          <div class="col" *ngFor="let deal of deals" cdkDrag>
+        <div cdkDropList class="example-list" [cdkDropListData]="dealsByStageId[stageType.id]" (cdkDropListDropped)="drop($event)" style="background-color: rgb(240, 240, 240);">
+          <div class="col" *ngFor="let deal of dealsByStageId[stageType.id]" cdkDrag>
             <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
-            {{deal}}
-            <div class="card" style="cursor: move;">
-              <!-- header -->
-              <div class="card-header bg-transparent">
-                <div class="d-flex align-items-start justify-content-between">
-                  <div class="d-flex align-items-center">
-                    <span class="avatar bg-dark text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 32px;height: 32px;">AV</span>
-                    <div class="media-body p-2" (click)="openProfile()" style="cursor: pointer;">
-                      <span class="mt-0 mb-0 text-muted text-nowrap">Lead PipeLine (Sales) </span><b>#7</b>
-                      <p style="margin: 0;"><b>Personal Financing</b></p>
-                    </div>
-                  </div>
-                  <div ngbDropdown>
-                    <div class="btn-group">
-                      <button id="btnGroupVerticalDrop1" ngbDropdownToggle type="button"
-                          class="btn dropdown-toggle " data-toggle="dropdown" aria-haspopup="true"
-                          aria-expanded="false">
-                          <i class="fas fa-ellipsis-v"></i>
-                      </button>
-                      <div class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupVerticalDrop1" ngbDropdownMenu>
-                          <a class="dropdown-item">Add activity</a>
-                          <a class="dropdown-item">Manage Tag</a>
-                          <a class="dropdown-item">Won the deal</a>
-                          <a class="dropdown-item">Make it lost</a>
-                          <a class="dropdown-item">Mark</a>
-                          <a class="dropdown-item">Edit</a>
-                          <a class="dropdown-item">Delete</a>
-                      </div>
-                    </div>
-                  </div> <!-- end dropdown -->
-                </div>
-              </div>
-                
-              <!-- body -->
-              <div class="card-body">
-                <div class="d-flex-inline">
-                  <p class="text-muted font-size-90" style="margin: 0;">No lead added yet</p>
-                </div>
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="d-flex align-items-center">
-                    <span class="badge bg-dark text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 16px;height: 16px;">NC</span>
-                    <p class="p-2 ml-2 mb-0">NG CHIN TAH</p>
-                  </div>
-                  <p class="text-nowrap mb-0">$ 10,000.00</p>
-                </div>
-              </div>
-              
-              <!-- Footer -->
-              <div class="card-footer bg-transparent border-top">
-                <p class="card-text"><em><small>Created At :<b>19 Jan 22</b></small></em></p>
-              </div>
-            </div>
+            <app-pipeline-view-card [cardData]="deal"></app-pipeline-view-card>
           </div>
         </div>
 
         <div class="text-center d-grid">
-          <button class="btn btn-primary" (click)="addCard(cardContent)"><i class="mdi mdi-plus me-1"></i>
+          <button class="btn btn-primary" (click)="addModal(addContent)"><i class="mdi mdi-plus me-1"></i>
             Add New</button>
         </div>
       </div>
     </div>
-
-    <!-- column 2 -->
-    <div class="col-lg-4">
-      <div class="card">
-        <!-- header -->
-        <div class="card-header bg-white">
-          <div class="d-flex flex-column">
-            <h4 class="card-title d-flex p-2 text-nowrap" style="margin: 0;">Lead generation</h4>
-            <div class="d-flex flex-wrap align-items-center text-muted ">
-              <span class="p-2">Total Amount</span>
-              <span class="p-2">No of Deals</span>
-              <span class="p-2">Percentage</span>
-            </div>
-          </div>
-        </div>
-
-        <div cdkDropList class="example-list" [cdkDropListData]="deals2" (cdkDropListDropped)="drop($event)" style="background-color: rgb(240, 240, 240);">
-          <div class="col" *ngFor="let deal of deals2" cdkDrag>
-            <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
-            {{deal}}
-            <div class="card" style="cursor: move;">
-              <!-- header -->
-              <div class="card-header bg-transparent">
-                <div class="d-flex align-items-start justify-content-between">
-                  <div class="d-flex align-items-center">
-                    <span class="avatar bg-dark text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 32px;height: 32px;">AV</span>
-                    <div class="media-body p-2" (click)="openProfile()" style="cursor: pointer;">
-                      <span class="mt-0 mb-0 text-muted text-nowrap">Lead PipeLine (Sales) </span><b>#7</b>
-                      <p style="margin: 0;"><b>Personal Financing</b></p>
-                    </div>
-                  </div>
-                  <div ngbDropdown>
-                    <div class="btn-group">
-                      <button id="btnGroupVerticalDrop1" ngbDropdownToggle type="button"
-                          class="btn dropdown-toggle " data-toggle="dropdown" aria-haspopup="true"
-                          aria-expanded="false">
-                          <i class="fas fa-ellipsis-v"></i>
-                      </button>
-                      <div class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupVerticalDrop1" ngbDropdownMenu>
-                          <a class="dropdown-item">Add activity</a>
-                          <a class="dropdown-item">Manage Tag</a>
-                          <a class="dropdown-item">Won the deal</a>
-                          <a class="dropdown-item">Make it lost</a>
-                          <a class="dropdown-item">Mark</a>
-                          <a class="dropdown-item">Edit</a>
-                          <a class="dropdown-item">Delete</a>
-                      </div>
-                    </div>
-                  </div> <!-- end dropdown -->
-                </div>
-              </div>
-                
-              <!-- body -->
-              <div class="card-body">
-                <div class="d-flex-inline">
-                  <p class="text-muted font-size-90" style="margin: 0;">No lead added yet</p>
-                </div>
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="d-flex align-items-center">
-                    <span class="badge bg-dark text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 16px;height: 16px;">NC</span>
-                    <p class="p-2 ml-2 mb-0">NG CHIN TAH</p>
-                  </div>
-                  <p class="text-nowrap mb-0">$ 10,000.00</p>
-                </div>
-              </div>
-              
-              <!-- Footer -->
-              <div class="card-footer bg-transparent border-top">
-                <p class="card-text"><em><small>Created At :<b>19 Jan 22</b></small></em></p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="text-center d-grid">
-          <button class="btn btn-primary" (click)="addCard(cardContent)"><i class="mdi mdi-plus me-1"></i>
-            Add New</button>
-        </div>
-      </div>
-    </div>
-    
   </div>
 
-<!-- Card Modal -->
-<ng-template #cardContent role="document" let-modal>
+<!-- Add Modal -->
+<ng-template #addContent role="document" let-modal>
   <div class="modal-header">
     <h5 class="modal-title mt-0">Add Deal</h5>
     <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-    <h5 style="min-height: 150px;">TBA</h5>
+    <form>
+      <div class="form-group row mb-3">
+        <label for="formDealTitleInput" class="col-sm-2 col-form-label">Title</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="formDealTitleInput" placeholder="Enter deal title">    
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formDescriptionInput" class="col-sm-2 col-form-label">Description</label>
+        <div class="col-sm-10">
+          <textarea class="form-control text-muted" id="formDescriptionInput" rows="3" placeholder="Enter description"></textarea>  
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formLeadTypeInput" class="col-sm-2 col-form-label text-nowrap">Lead Type</label>
+        <div class="col-sm-10 d-flex align-items-center">
+          <div class="form-check form-check-inline" *ngFor="let lead of leadTypes">
+            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" checked>
+            <label class="form-check-label" for="inlineRadio1">{{ lead }}</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formLeadTypeInput" class="col-sm-2 col-form-label text-nowrap">Person</label>
+        <div class="col-sm-10 d-flex align-items-center">
+          <mat-select [formControl]="personCtrl" placeholder="Person">
+            <mat-option>
+              <ngx-mat-select-search [formControl]="personFilterCtrl" placeholderLabel="Search" noEntriesFoundLabel="Didnt match anything"></ngx-mat-select-search>
+            </mat-option>
+            <mat-option *ngFor="let person of filteredPerson | async" [value]="person">
+              {{person.name}}
+            </mat-option>
+          </mat-select>
+        </div> 
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formDealValueInput" class="col-sm-2 col-form-label">Deal Value</label>
+        <div class="col-sm-10">
+          <input type="number" class="form-control" id="formDealValueInput" placeholder="Enter Deal Value">    
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formLeadTypeInput" class="col-sm-2 col-form-label text-nowrap">Pipeline</label>
+        <div class="col-sm-10 d-flex align-items-center">
+          <select class="form-select">
+            <option *ngFor="let pipelineOption of pipeline">{{ pipelineOption.name }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formStageTypeInput" class="col-sm-2 col-form-label text-nowrap">Stage</label>
+        <div class="col-sm-10 d-flex align-items-center">
+          <select class="form-select">
+            <option *ngFor="let stage of stageTypes">{{ stage.name }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formExpClosingDateInput" class="col-sm-2 col-form-label">Expecting Closing Date</label>
+        <div class="col-sm-10 d-flex align-items-center">
+          <input class="form-control" type="date" id="formExpClosingDateInput">
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formLeadTypeInput" class="col-sm-2 col-form-label text-nowrap">Owner</label>
+        <div class="col-sm-10 d-flex align-items-center">
+          <select class="form-select">
+            <option *ngFor="let user of userData">
+              {{ user.fullName }}
+            </option>
+          </select>
+        </div> 
+      </div>
+    </form>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cancel</button>

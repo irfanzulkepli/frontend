@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UIModule } from 'src/app/shared/ui/ui.module';
 import { NgbDropdownModule, NgbModalModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
@@ -21,6 +21,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatSelectModule } from '@angular/material/select';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { AddDealModalComponent } from './add-deal-modal/add-deal-modal.component';
+import { PipelineViewCardComponent } from './pipeline-view-card/pipeline-view-card.component';
 
 const config: DropzoneConfigInterface = {
     // Change this to your upload POST address:
@@ -36,7 +37,8 @@ const config: DropzoneConfigInterface = {
         LostReasonsComponent,
         PipelinesComponent,
         PipelineViewComponent,
-        AddDealModalComponent
+        AddDealModalComponent,
+        PipelineViewCardComponent
     ],
     imports: [
         DealsRoutingModule,
@@ -63,7 +65,8 @@ const config: DropzoneConfigInterface = {
         {
             provide: DROPZONE_CONFIG,
             useValue: config
-        }
+        },
+        DatePipe
     ]
 })
 export class DealsModule { }

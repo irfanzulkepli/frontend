@@ -20,9 +20,9 @@ export class LostReasonsComponent implements OnInit {
    * Open modal
    * @param content modal content
    */
-     openModal(content: any) {
-      this.modalService.open(content);
-    }
+  openModal(content: any) {
+    this.modalService.open(content);
+  }
 
   /**
    * Open center modal

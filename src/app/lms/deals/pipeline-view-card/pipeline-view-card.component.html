@@ -1,53 +1,61 @@
-<div class="card">
+<div class="card" style="cursor: move;">
   <!-- header -->
-  <div class="card-header bg-transparent border-bottom ">
-    <div class="d-flex align-items-start">
-      <div class="align-self-center me-3">
-        <img src="assets/images/users/avatar-1.jpg" class="avatar-xs rounded-circle" alt="">
-      </div>
-      <div class="media-body">
-        <h5 class="font-size-15 text-primary mt-0 mb-1" (click)="openProfile()" style="cursor: pointer;">{{ cardData.title }}</h5>
-        <h5><span class="badge rounded-pill bg-primary">{{ cardData.status.translatedName }}</span></h5>
+  <div class="card-header bg-transparent">
+    <div class="d-flex align-items-start justify-content-between">
+      <div class="d-flex align-items-center">
+        <span class="avatar bg-dark text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 32px;height: 32px;">AV</span>
+        <div class="media-body p-2" (click)="openProfile()" style="cursor: pointer;">
+          <span class="mt-0 mb-0 text-muted text-nowrap">{{ pipeline[0].name }}<b class="text-black"> #{{ cardData.id }}</b></span>
+          <p style="margin: 0;"><b>{{ cardData.title }}</b></p>
+        </div>
       </div>
       <div ngbDropdown>
-        <div class="btn-group ms-auto">
+        <div class="btn-group">
           <button id="btnGroupVerticalDrop1" ngbDropdownToggle type="button"
               class="btn dropdown-toggle " data-toggle="dropdown" aria-haspopup="true"
               aria-expanded="false">
               <i class="fas fa-ellipsis-v"></i>
           </button>
           <div class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupVerticalDrop1" ngbDropdownMenu>
-              <a class="dropdown-item" (click)="editModal(editContent)">Edit</a>
+              <a class="dropdown-item" (click)="activityModal(activityContent)">Add activity</a>
+              <a class="dropdown-item" (click)="openModal(tagContent)">Manage Tag</a>
+              <a class="dropdown-item">Won the deal</a>
+              <a class="dropdown-item">Make it lost</a>
+              <a class="dropdown-item">Mark</a>
+              <a class="dropdown-item" (click)="openModal(editContent)">Edit</a>
               <a class="dropdown-item" (click)="deleteModal(deleteContent)">Delete</a>
           </div>
         </div>
-      </div>
+      </div> <!-- end dropdown -->
     </div>
   </div>
     
   <!-- body -->
-  <ul class="list-group list-group-flush">
-    <li class="list-group-item border-0 d-flex justify-content-between align-items-center mt-3">
-      <div class="d-flex align-items-center">
-        <span class="avatar bg-dark text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 32px;height: 32px;">{{ getInitials() }}</span>
-        <P class="p-2 ml-2 mb-0">{{ cardData.owner.fullName }}</P>
+  <div class="card-body">
+    <div *ngIf="cardData.contactPerson.length > 0; else nolead">
+      <div class="d-flex-inline" *ngFor="let person of cardData.contactPerson" >
+        <p class="text-muted font-size-90" style="margin: 0;" >
+          {{ person.name }}
+        </p>
       </div>
-      <p class="text-info text-nowrap mb-0">$ {{ cardData.value | number : '1.2-2' }}</p>
-    </li>
-    <li class="list-group-item border-0">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-briefcase size-20 text-muted"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-      Not added yet TODO</li>
-    <li class="list-group-item border-0" text-muted>
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar size-20 text-muted"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-      {{ cardData.createdAt | date:'dd-MM-yyyy h:mm a' }}</li>
-  </ul>
-
+    </div>
+    <ng-template #nolead>No lead added yet</ng-template>
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center">
+        <span class="badge bg-dark text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 16px;height: 16px;">{{ getInitials(cardData.owner.fullName) }}</span>
+        <p class="p-2 ml-2 mb-0">{{ cardData.owner.fullName }}</p>
+      </div>
+      <p class="text-nowrap mb-0">$ {{ cardData.value | number : '1.2-2' }}</p>
+    </div>
+  </div>
+  
   <!-- Footer -->
-  <div class="card-footer bg-transparent border-top ">
-    <p class="text-muted">Comment <span class="badge bg-light">0 TODO</span></p>
-    <p class="text-muted">Proposal <span class="badge bg-light">{{ cardData.proposals.length }}</span></p>
+  <div class="card-footer bg-transparent border-top">
+    <p class="card-text"><em><small>Created At :<b>{{ cardData.createdAt | date:'dd-MM-yyyy' }}</b></small></em></p>
   </div>
 </div>
+
+
 
 <!-- Edit Modal -->
 <ng-template #editContent role="document" let-modal>
@@ -101,7 +109,7 @@
         <label for="formLeadTypeInput" class="col-sm-2 col-form-label text-nowrap">Pipeline</label>
         <div class="col-sm-10 d-flex align-items-center">
           <select class="form-select">
-            <option *ngFor="let pipeline of pipelineOptions">{{ pipeline }}</option>
+            <option *ngFor="let pipelineOptions of pipeline">{{ pipelineOptions.name }}</option>
           </select>
         </div>
       </div>
@@ -109,7 +117,7 @@
         <label for="formStageTypeInput" class="col-sm-2 col-form-label text-nowrap">Stage</label>
         <div class="col-sm-10 d-flex align-items-center">
           <select class="form-select">
-            <option *ngFor="let stage of stageTypes">{{ stage }}</option>
+            <option *ngFor="let stage of stageTypes">{{ stage.name }}</option>
           </select>
         </div>
       </div>
@@ -135,6 +143,44 @@
   <div class="modal-footer">
     <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cancel</button>
     <button type="button" class="btn btn-primary">Save</button>
+  </div>
+</ng-template>
+
+<!-- Manage Tag Modal -->
+<ng-template #tagContent let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title mt-0">Manage Tag</h3>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
+  </div>
+  <div class="modal-body">
+    <div class="col-form-label">
+      <mat-select [formControl]="tagsCtrl" placeholder="+ Add">
+        <mat-option>
+          <ngx-mat-select-search [formControl]="tagsFilterCtrl" placeholderLabel="Search" noEntriesFoundLabel="Didnt match anything"></ngx-mat-select-search>
+        </mat-option>
+        <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+          {{tag.name}}
+        </mat-option>
+      </mat-select>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+  </div>
+</ng-template>
+
+<!-- Add activity Modal -->
+<ng-template #activityContent let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Are you sure?</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
+  </div>
+  <div class="modal-body">
+    <p>This content will be deleted permenantly.</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">No</button>
+    <button type="button" class="btn btn-primary">Yes</button>
   </div>
 </ng-template>
 
