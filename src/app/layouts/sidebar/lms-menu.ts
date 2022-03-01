@@ -63,29 +63,78 @@ export const LMS_MENU: MenuItem[] = [
             }
         ]
     },
-    // {
-    //     id: 11,
-    //     label: 'LMS.SIDEBAR.PROPOSALS',
-    //     icon: 'bx-home-circle'
-    // },
-    // {
-    //     id: 12,
-    //     label: 'LMS.SIDEBAR.ACTIVITIES',
-    //     icon: 'bx-home-circle'
-    // },
-    // {
-    //     id: 13,
-    //     label: 'LMS.SIDEBAR.REPORTS',
-    //     icon: 'bx-home-circle'
-    // },
-    // {
-    //     id: 14,
-    //     label: 'LMS.SIDEBAR.USERROLE',
-    //     icon: 'bx-home-circle'
-    // },
-    // {
-    //     id: 15,
-    //     label: 'LMS.SIDEBAR.SETTINGS',
-    //     icon: 'bx-home-circle'
-    // }
+    {
+        id: 11,
+        label: 'LMS.SIDEBAR.PROPOSALS',
+        icon: 'bx-home-circle',
+        subItems: [
+            {
+                id: 12,
+                label: 'LMS.SIDEBAR.PROPOSALSSUB.LIST',
+                parentId: 11,
+                link: '/lms/proposals/proposal-list'
+            },
+            {
+                id: 13,
+                label: 'LMS.SIDEBAR.PROPOSALSSUB.TEMPLATES',
+                parentId: 11,
+                link: '/lms/proposals/templates'
+            }
+        ]
+    },
+    {
+        id: 13,
+        label: 'LMS.SIDEBAR.ACTIVITIES',
+        icon: 'dripicons-graph-line',
+        subItems: [
+            {
+                id: 14,
+                label: 'LMS.SIDEBAR.ACTIVITIESSUB.CALENDAR',
+                parentId: 13,
+                link: '/lms/activities/calendar-view'
+            },
+            {
+                id: 15,
+                label: 'LMS.SIDEBAR.ACTIVITIESSUB.LIST',
+                parentId: 13,
+                link: '/lms/activities/activity-list'
+            }
+        ]
+    },
+    {
+        id: 16,
+        label: 'LMS.SIDEBAR.REPORTS',
+        icon: 'bx bx-bar-chart',
+        subItems: [
+            {
+                id: 17,
+                label: 'LMS.SIDEBAR.REPORTSSUB.DEAL',
+                parentId: 16,
+                link: '/lms/reports/deal'
+            },
+            {
+                id: 18,
+                label: 'LMS.SIDEBAR.REPORTSSUB.PROPOSAL',
+                parentId: 16,
+                link: '/lms/reports/proposal'
+            }, {
+                id: 19,
+                label: 'LMS.SIDEBAR.REPORTSSUB.PIPELINE',
+                parentId: 16,
+                link: '/lms/reports/pipeline'
+            }
+        ]
+    },
+    {
+        id: 20,
+        label: 'LMS.SIDEBAR.USERSROLE',
+        icon: 'bx bx-user-check',
+        link: '/lms/users-role'
+    },
+    {
+        id: 21,
+        label: 'LMS.SIDEBAR.SETTINGS',
+        icon: 'bx bx-cog',
+        link: '/lms/settings'
+    }
 ];

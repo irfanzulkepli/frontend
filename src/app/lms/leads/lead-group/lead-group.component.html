@@ -15,65 +15,9 @@
 
   <div class="row">
     <div class="col-lg-12">
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title">
-            <div class="row">
-              <div class="col-sm-12 col-md-6">
-                Showing {{service.startIndex}} to
-                {{service.endIndex}} items of {{service.totalRecords}}
-              </div>
-              <div class="col-sm-12 col-md-6">
-                <div id="tickets-table_filter" class="dataTables_filter text-md-end">
-                  <label class="d-inline-flex align-items-center">Search:
-                    <input type="text" name="searchTerm" class="form-control form-control-sm ms-2"
-                      aria-controls="tickets-table" [(ngModel)]="service.searchTerm">
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div class="table-responsive">
-              <table class="table align-middle table-striped dt-responsive nowrap datatables dtr-inline">
-                <thead class="table-light">
-                  <tr>
-                    <th sortable="name" (sort)="onSort($event)">Name</th>
-                    <th sortable="class" (sort)="onSort($event)">Class</th>
-                    <th scope="col">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let table of tables$ | async;let i=index">
-                    <td>
-                      <ngb-highlight [result]="table.name" [term]="service.searchTerm"></ngb-highlight>
-                    </td>
-                    <td>
-                      <span class="badge rounded-pill {{table.class}} font-size-12">
-                        <ngb-highlight [result]="table.class" [term]="service.searchTerm"></ngb-highlight>
-                      </span>
-                    </td>
-                    <td>
-                      <ul class="list-inline font-size-20 contact-links mb-0">
-                        <li class="list-inline-item px-2">
-                          <i class="bx bx-edit" (click)="openLeadsModal(editLeadGroup, table)"></i>
-                        </li>
-                        <li class="list-inline-item px-2">
-                          <i class="bx bx-trash-alt" (click)="deleteLeadsModal(deleteLeadGroup, table)"></i>
-                        </li>
-                      </ul>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="row">
-              <div class="col-lg-12 d-flex justify-content-center">
-                <ngb-pagination [collectionSize]="leadGroups.length" [(page)]="page" [maxSize]="5" [rotate]="true"
-                  [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <app-custom-table [columnsInfo]="columnsInfo" [dataSource]="leadGroups"
+        (onEditClick)="onEditEmit(editLeadGroup, $event)" (onDeleteClick)="onDeleteEmit(deleteLeadGroup, $event)">
+      </app-custom-table>
     </div>
   </div>
 </div>

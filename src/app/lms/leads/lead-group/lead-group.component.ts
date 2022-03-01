@@ -1,10 +1,8 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable } from 'rxjs';
 import { LEADTYPES } from '../../data/lead-type-data';
-import { AdvancedSortableDirective, SortEvent } from '../advanced-sortable.directive';
 import { AdvancedService } from '../advanced.service';
 
 @Component({
@@ -15,35 +13,52 @@ import { AdvancedService } from '../advanced.service';
 })
 export class LeadGroupComponent implements OnInit {
 
+  columnsInfo = [
+    {
+      displayName: 'Name',
+      columnDef: 'name',
+      type: 'text'
+    },
+    {
+      displayName: 'Class',
+      columnDef: 'class',
+      type: 'badge'
+    },
+    {
+      displayName: 'Action',
+      columnDef: 'action',
+      type: 'actionIcon',
+      iconList: [
+        {
+          name: 'bx bx-edit',
+          function: 'edit'
+        },
+        {
+          name: 'bx bx-trash-alt',
+          function: 'delete'
+        }
+      ]
+    }
+  ];
+
   page: number = 1;
   pageSize: number = 10;
   class: string = 'primary';
 
   public leadGroups = LEADTYPES;
 
-  public selected: any;
-
-  tables$: Observable<any[]>;
-  total$: Observable<number>;
-
   leadGroupForm: FormGroup;
 
   isEditLeadGroup: boolean = false;
   leadGroupIdToDelete: string;
 
-  @ViewChildren(AdvancedSortableDirective) headers: QueryList<AdvancedSortableDirective>;
-
   constructor(
     private modalService: NgbModal,
     private fb: FormBuilder,
-    public service: AdvancedService
   ) { }
 
   ngOnInit() {
     this.initForm();
-    this.service.setData(LEADTYPES);
-    this.tables$ = this.service.tables$;
-    this.total$ = this.service.total$;
   }
 
   openLeadsModal(content, leadGroup?) {
@@ -79,16 +94,15 @@ export class LeadGroupComponent implements OnInit {
     });
   }
 
-  onSort({ column, direction }: SortEvent) {
-    console.log('clicked?');
+  onDeleteEmit(modal, ev) {
+    console.log('ev: ', ev);
 
-    // resetting other headers
-    this.headers.forEach(header => {
-      if (header.sortable !== column) {
-        header.direction = '';
-      }
-    });
-    this.service.sortColumn = column;
-    this.service.sortDirection = direction;
+    this.deleteLeadsModal(modal, ev);
+  }
+
+  onEditEmit(modal, ev) {
+    console.log('ev: ', ev);
+
+    this.openLeadsModal(modal, ev);
   }
 }

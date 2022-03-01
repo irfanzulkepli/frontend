@@ -1,0 +1,53 @@
+td {
+    padding-top: 30px !important;
+    padding-bottom: 30px !important;
+    vertical-align: middle !important;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+// .badge {
+//     padding: 0.5em;
+// }
+
+.action-column {
+    overflow: visible !important;
+}
+
+.text-ellipsis {
+    max-width: 150px !important;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    .mat-table {
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 1rem;
+        display: table;
+        border-collapse: collapse;
+        margin: 0px;
+    }
+    .mat-row,
+    .mat-header-row {
+        display: table-row;
+    }
+    .mat-cell,
+    .mat-header-cell {
+        word-wrap: initial;
+        display: table-cell;
+        padding: 0px 10px;
+        line-break: unset;
+        width: auto;
+        white-space: nowrap;
+        overflow: hidden;
+        vertical-align: middle;
+    }
+  }

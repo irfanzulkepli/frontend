@@ -1,0 +1,190 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table mat-table [dataSource]="dataSource" class="table table-striped mat-elevation-z8">
+            <div *ngFor="let column of columnsInfo" [ngSwitch]="column.type">
+
+              <ng-container *ngSwitchCase="'text'" [matColumnDef]="column['columnDef']">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ column['displayName'] }}
+                </th>
+                <ng-container *matCellDef="let element">
+                  <td mat-cell *ngIf="!column.columnDef.includes('.')">
+                    {{ ( element[column.columnDef] ) ? element[column.columnDef] : '-' }}
+                  </td>
+                  <td mat-cell *ngIf="column.columnDef.includes('.') && column.columnDef.split('.') as temp">
+                    {{ ( element[temp[0]] !== undefined && element[temp[0]][temp[1]] !== undefined) ?
+                    element[temp[0]][temp[1]] : '-' }}
+                  </td>
+                </ng-container>
+              </ng-container>
+
+              <ng-container *ngSwitchCase="'action'" [matColumnDef]="column['columnDef']">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ column['displayName'] }}
+                </th>
+                <ng-container *matCellDef="let element">
+                  <td mat-cell class="action-column">
+                    <span ngbDropdown>
+                      <i class="bx bx-dots-vertical-rounded font-size-24 cursor-pointer" ngbDropdownToggle></i>
+                      <div class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+                        <a class="dropdown-item">
+                          <span>Send invitation</span>
+                        </a>
+                        <a class="dropdown-item">
+                          <span>Edit</span>
+                        </a>
+                        <a class="dropdown-item">
+                          <span>Delete</span>
+                        </a>
+                      </div>
+                    </span>
+                  </td>
+                </ng-container>
+              </ng-container>
+
+              <ng-container *ngSwitchCase="'textWithBadge'" [matColumnDef]="column['columnDef']">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ column['displayName'] }}
+                </th>
+                <ng-container *matCellDef="let element">
+                  <td mat-cell>
+                    <span class="d-flex align-items-center" *ngFor="let field of element[column['columnDef']]">
+                      <span class="me-2"> {{ field.value }} </span>
+                      <span class="badge rounded-pill
+                   {{ field.type?.class ? field.type?.class : '' }}  font-size-12">
+                        {{ field.type?.name }}
+                      </span>
+                    </span>
+                  </td>
+                </ng-container>
+              </ng-container>
+
+              <ng-container *ngSwitchCase="'badge'" [matColumnDef]="column['columnDef']">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ column['displayName'] }}
+                </th>
+                <ng-container *matCellDef="let element">
+                  <td mat-cell>
+                    <span class="badge rounded-pill {{ element[column['columnDef']] ? element[column['columnDef']] : ''}}
+                  {{ element[column['columnDef']]?.class ? element[column['columnDef']]?.class : ''}}  font-size-12">
+                      {{ element[column['columnDef']].name ? element[column['columnDef']].name :
+                      element[column['columnDef']] }}
+                    </span>
+                  </td>
+                </ng-container>
+              </ng-container>
+
+              <ng-container *ngSwitchCase="'number'" [matColumnDef]="column['columnDef']">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ column['displayName'] }}
+                </th>
+                <ng-container *matCellDef="let element">
+                  <td mat-cell>
+                    {{ element[column['columnDef']] }}
+                  </td>
+                </ng-container>
+              </ng-container>
+
+              <ng-continaer *ngSwitchCase="'profile'" [matColumnDef]="column['columnDef']">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ column['displayName'] }}
+                </th>
+                <ng-container *matCellDef="let element">
+                  <td mat-cell>
+                    <div class="d-flex align-items-center cursor-pointer" (click)="redirectToProfile(element)">
+                      <div class="avatar-xs me-2">
+                        <span class="avatar-title rounded-circle">
+                          {{ getInitial(element[column['columnDef']]) }}
+                        </span>
+                      </div>
+                      <span class="link cursor-pointer">
+                        {{ element[column['columnDef']] }}
+                      </span>
+                    </div>
+                  </td>
+                </ng-container>
+              </ng-continaer>
+
+              <ng-container *ngSwitchCase="'link'" [matColumnDef]="column['columnDef']">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ column['displayName'] }}
+                </th>
+                <ng-container *matCellDef="let element">
+                  <td mat-cell>
+                    <ng-container *ngFor="let field of element[column['columnDef']]">
+                      <span class="d-flex align-items-center link fw-normal cursor-pointer"
+                        (click)="redirectToOrganization(field.id)">
+                        <span class="text-ellipsis me-1">
+                          {{ field.name }}
+                        </span>
+                        <i class="mdi mdi-exit-to-app font-size-12"></i>
+                      </span>
+                    </ng-container>
+                  </td>
+                </ng-container>
+              </ng-container>
+
+              <ng-container *ngSwitchCase="'address'" [matColumnDef]="column['columnDef']">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ column['displayName'] }}
+                </th>
+                <ng-container *matCellDef="let element">
+                  <td mat-cell>
+                    {{ getAddress(element) }}
+                  </td>
+                </ng-container>
+              </ng-container>
+
+              <ng-container *ngSwitchCase="'tag'" [matColumnDef]="column['columnDef']">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ column['displayName'] }}
+                </th>
+                <ng-container *matCellDef="let element">
+                  <td mat-cell>
+                    <mat-chip-list>
+                      <mat-chip class="d-flex align-items-center" [style.background-color]="tag.colorCode"
+                        *ngFor="let tag of element[column['columnDef']]">
+                        {{ tag.name }}
+                      </mat-chip>
+                    </mat-chip-list>
+                  </td>
+                </ng-container>
+              </ng-container>
+
+              <ng-container *ngSwitchCase="'actionIcon'" [matColumnDef]="column['columnDef']">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ column['displayName'] }}
+                </th>
+                <ng-container *matCellDef="let element">
+                  <td mat-cell>
+                    <ul class="list-inline font-size-20 contact-links mb-0">
+                      <li class="list-inline-item px-2" *ngFor="let icon of column['iconList']">
+                        <i class="{{icon.name}}" (click)="onIconClick(icon.function, element)"></i>
+                      </li>
+                    </ul>
+                  </td>
+                </ng-container>
+              </ng-container>
+
+            </div>
+
+            <tr mat-header-row class="table-light" *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-lg-12 d-flex justify-content-end">
+            <ngb-pagination [collectionSize]="dataSource.length" [(page)]="page" [maxSize]="5" [rotate]="true"
+              [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

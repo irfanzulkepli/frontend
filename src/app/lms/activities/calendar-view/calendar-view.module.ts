@@ -1,14 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { PeopleComponent } from './people/people.component';
-import { LeadGroupComponent } from './lead-group/lead-group.component';
-import { LeadProfileComponent } from './lead-profile/lead-profile.component';
-import { OrganizationComponent } from './organization/organization.component';
-import { LeadsRoutingModule } from './leads-routing.module';
 import { UIModule } from 'src/app/shared/ui/ui.module';
 import { NgbDropdownModule, NgbModalModule, NgbNavModule, NgbPaginationModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
-import { DropzoneConfigInterface, DropzoneModule, DROPZONE_CONFIG } from 'ngx-dropzone-wrapper';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -19,34 +13,29 @@ import { Ng2TelInputModule } from 'ng2-tel-input';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { MatSelectModule } from '@angular/material/select';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
-import { AdvancedSortableDirective } from './advanced-sortable.directive';
-import { AdvancedService } from './advanced.service';
 import { CustomTableModule } from 'src/app/components/custom-table/custom-table.module';
+import { CalendarViewComponent } from './calendar-view.component';
+import { FullCalendarModule } from '@fullcalendar/angular';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import bootstrapPlugin from "@fullcalendar/bootstrap";
 
-
-const config: DropzoneConfigInterface = {
-    // Change this to your upload POST address:
-    url: 'https://httpbin.org/post',
-    maxFilesize: 100,
-};
-
+FullCalendarModule.registerPlugins([
+    dayGridPlugin,
+    interactionPlugin,
+    bootstrapPlugin
+]);
 
 @NgModule({
     declarations: [
-        PeopleComponent,
-        LeadGroupComponent,
-        LeadProfileComponent,
-        OrganizationComponent,
-        AdvancedSortableDirective
+        CalendarViewComponent
     ],
     imports: [
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        LeadsRoutingModule,
         UIModule,
         NgbNavModule,
-        DropzoneModule,
         CKEditorModule,
         MatChipsModule,
         MatAutocompleteModule,
@@ -62,14 +51,6 @@ const config: DropzoneConfigInterface = {
         NgbPaginationModule,
         NgbTypeaheadModule,
         CustomTableModule
-    ],
-    providers: [
-        {
-            provide: DROPZONE_CONFIG,
-            useValue: config
-        },
-        DecimalPipe,
-        AdvancedService
     ]
 })
-export class LeadsModule { }
+export class CalendarViewModule { }

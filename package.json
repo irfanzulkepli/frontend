@@ -57,6 +57,8 @@
     "echarts": "^5.1.2",
     "firebase": "^8.6.8",
     "metismenujs": "^1.2.1",
+    "mobile-drag-drop": "^2.3.0-rc.2",
+    "moment": "^2.29.1",
     "ng-apexcharts": "^1.5.12",
     "ng-chartist": "^4.1.0",
     "ng-click-outside": "^8.0.0",

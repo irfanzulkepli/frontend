@@ -70,7 +70,11 @@
   background: var(--bs-secondary);
 }
 
-.link {
+.badge, mat-chip {
+  color: white !important;
+}
+
+.link, .btn-link {
   background: none !important;
-  color: darkblue !important;
+  color: #4466f2 !important;
 }

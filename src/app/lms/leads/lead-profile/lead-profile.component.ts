@@ -1,15 +1,16 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { map, startWith } from 'rxjs/operators';
 import { FormControl, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LMSService } from '../../lms-service';
 import { PEOPLE } from '../../data/people-data';
 import { Router } from '@angular/router';
+import { ORGANIZATION } from '../../data/organization-single.data';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-lead-profile',
@@ -20,7 +21,6 @@ export class LeadProfileComponent implements OnInit {
 
   public Editor = ClassicEditor;
 
-  separatorKeysCodes: number[] = [ENTER, COMMA];
   fruitCtrl = new FormControl();
   personCtrl = new FormControl();
   tagCtrl = new FormControl();
@@ -33,17 +33,21 @@ export class LeadProfileComponent implements OnInit {
   allPerson = [];
   filteredPersons: Observable<string[]>;
 
-  tags: any[] = [];
-  allTag = [];
-  filteredTags: Observable<any[]>;
+  tags: Array<Tags> = [];
+  allTag: Array<Tags> = [];
+  filteredTags: Observable<Array<Tags>>;
 
-  users: any[] = [];
-  allUser = [];
-  filteredUsers: Observable<any[]>;
+  users: Array<User> = [];
+  allUser: Array<User> = [];
+  filteredUsers: Observable<Array<User>> = of();
 
-  followerList;
-  allFollowers;
+  followerList: Array<People>;
+  allFollowers: Array<People>;
   filteredFollowers = [];
+
+  organizationPeoples: Array<People> = [];
+  allOrganizationPeoples: Array<People> = [];
+  filteredOrganizationPeoples = [];
 
   isEditDetails: boolean = false;
   isEditOrganization: boolean = false;
@@ -58,18 +62,25 @@ export class LeadProfileComponent implements OnInit {
 
   detailForm: FormGroup;
   organizationForms: FormGroup;
+  organizationPersonsForms: FormGroup;
   phoneForms: FormGroup;
   emailForms: FormGroup;
   followerForms: FormGroup;
   addressForm: FormGroup;
   activityForm: FormGroup;
 
-  countries: any[] = [];
-  leadTypes = [];
+  countries: Array<Country> = [];
+  leadTypes: Array<LeadType> = [];
   organizationsAndJobs = [];
 
   contactType = [];
-  public leadProfileData = PEOPLE;
+  leadProfileData;
+
+  profileType: string;
+
+  tasksTodo = [];
+  tasksDone = [];
+  tasksOpen = [];
 
   constructor(
     private fb: FormBuilder,
@@ -80,16 +91,20 @@ export class LeadProfileComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.profileType = this.getProfileType();
+    this.leadProfileData = this.profileType == 'people' ? PEOPLE : ORGANIZATION;
     this.allTag = await this.lmsService.getTags();
     this.allPerson = await this.lmsService.getPersons();
     this.allUser = await this.lmsService.getUsers();
     this.allFollowers = await this.lmsService.getPersons();
+    this.allOrganizationPeoples = await this.lmsService.getPersons();
     this.countries = await this.lmsService.getCountry();
     this.leadTypes = await this.lmsService.getLeadTypes();
     this.contactType = await this.lmsService.getTypes();
     this.organizationsAndJobs = await this.lmsService.getOrganizations();
 
     this.initForm();
+    this.filterActivity();
 
     this.filteredFruits = this.fruitCtrl.valueChanges.pipe(
       startWith(null),
@@ -106,6 +121,10 @@ export class LeadProfileComponent implements OnInit {
   }
 
   initForm() {
+    const dateNow = moment().format('YYYY-MM-DD');
+    const timeNow = moment().format('HH:mm');
+    const timeTo = moment().add(30, 'm').format('HH:mm');
+
     this.detailForm = this.fb.group({
       name: [this.leadProfileData.name, Validators.required],
       leadGroup: [this.leadProfileData.contactType.id, Validators.required],
@@ -113,6 +132,9 @@ export class LeadProfileComponent implements OnInit {
     });
     this.organizationForms = this.fb.group({
       organizations: this.fb.array([])
+    });
+    this.organizationPersonsForms = this.fb.group({
+      organizationPersons: this.fb.array([])
     });
     this.phoneForms = this.fb.group({
       phones: this.fb.array([])
@@ -135,10 +157,10 @@ export class LeadProfileComponent implements OnInit {
       activity: ['call', Validators.required],
       title: ['', Validators.required],
       description: [''],
-      startDate: ['2022-02-09'],
-      startTime: ['00:00'],
-      endDate: ['2022-02-09'],
-      endTime: ['00:00'],
+      startDate: [dateNow, Validators.required],
+      startTime: [timeNow, Validators.required],
+      endDate: [dateNow, Validators.required],
+      endTime: [timeTo, Validators.required],
       participants: [''],
       collaborators: [''],
       isDone: [false]
@@ -150,25 +172,27 @@ export class LeadProfileComponent implements OnInit {
       }
     }
 
-    if (this.leadProfileData.email.length > 0) {
-      for (const email of this.leadProfileData.email) {
-        const emailForm = this.fb.group({
-          email: [email.value],
-          emailType: [email.type.id]
-        });
+    if (this.profileType == 'people') {
+      if (this.leadProfileData.email.length > 0) {
+        for (const email of this.leadProfileData.email) {
+          const emailForm = this.fb.group({
+            email: [email.value],
+            emailType: [email.type ? email.type.id : '']
+          });
 
-        this.emails.push(emailForm);
+          this.emails.push(emailForm);
+        }
       }
-    }
 
-    if (this.leadProfileData.phone.length > 0) {
-      for (const phone of this.leadProfileData.phone) {
-        const phoneForm = this.fb.group({
-          contactNumber: [phone.value],
-          contactType: [phone.type.id]
-        });
+      if (this.leadProfileData.phone.length > 0) {
+        for (const phone of this.leadProfileData.phone) {
+          const phoneForm = this.fb.group({
+            contactNumber: [phone.value],
+            contactType: [phone.type ? phone.type.id : '']
+          });
 
-        this.phones.push(phoneForm);
+          this.phones.push(phoneForm);
+        }
       }
     }
   }
@@ -198,6 +222,32 @@ export class LeadProfileComponent implements OnInit {
 
   deleteOrganization(index: number) {
     this.organizations.removeAt(index);
+  }
+
+  addOrganizationPersons() {
+    const organizationPersonForm = this.fb.group({
+      organizationPersons: ['', Validators.required],
+      organizationPersonName: [''],
+      jobTitle: ['']
+    });
+
+    this.organizationPersons.push(organizationPersonForm);
+    this.manageOrganizationPersonFilter(this.organizationPersons.controls.length - 1);
+  }
+
+  manageOrganizationPersonFilter(index: number) {
+    this.filteredOrganizationPeoples[index] = {};
+    this.filteredOrganizationPeoples[index] = this.organizationPersons.at(index).get('organizationPersonName').valueChanges
+      .pipe(
+        startWith(null),
+        map((value) => (value ? this._filterOrganizationPersons(value) : this.allOrganizationPeoples.slice())
+        )
+      );
+  }
+
+  deleteOrganizationPersons(index: number) {
+    this.organizationPersons.removeAt(index);
+    this.filteredOrganizationPeoples.slice(index, 1);
   }
 
   addPhone() {
@@ -308,21 +358,6 @@ export class LeadProfileComponent implements OnInit {
     this.personCtrl.setValue(null);
   }
 
-  addTag(event: MatChipInputEvent): void {
-    console.log('addTag event: ', event);
-
-    const value = (event.value || '').trim();
-    if (value) {
-      this.tags.push(value);
-    }
-
-    event.chipInput!.clear();
-
-    this.tagCtrl.setValue(null);
-    console.log('tags: ', this.tags);
-
-  }
-
   removeTag(id): void {
     const index = this.tags.findIndex(tag => tag.id == id);
 
@@ -332,35 +367,37 @@ export class LeadProfileComponent implements OnInit {
   }
 
   selectedTag(event: MatAutocompleteSelectedEvent): void {
-    this.tags.push(event.option.value);
+    const tag: Tags = event.option.value;
+
+    this.tags.push(tag);
     this.tagInput.nativeElement.value = '';
     this.tagCtrl.setValue(null);
   }
 
-  addCollaborator(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-    if (value) {
-      this.users.push(value);
-    }
+  // addCollaborator(event: MatChipInputEvent): void {
+  //   const value = (event.value || '').trim();
+  //   if (value) {
+  //     this.users.push(value);
+  //   }
 
-    event.chipInput!.clear();
+  //   event.chipInput!.clear();
 
-    this.tagCtrl.setValue(null);
-  }
+  //   this.tagCtrl.setValue(null);
+  // }
 
-  removeCollaborator(fruit: string): void {
-    const index = this.tags.indexOf(fruit);
+  // removeCollaborator(fruit: string): void {
+  //   const index = this.tags.indexOf(fruit);
 
-    if (index >= 0) {
-      this.users.splice(index, 1);
-    }
-  }
+  //   if (index >= 0) {
+  //     this.users.splice(index, 1);
+  //   }
+  // }
 
-  selectedCollaborator(event: MatAutocompleteSelectedEvent): void {
-    this.users.push(event.option.viewValue);
-    this.tagInput.nativeElement.value = '';
-    this.tagCtrl.setValue(null);
-  }
+  // selectedCollaborator(event: MatAutocompleteSelectedEvent): void {
+  //   this.users.push(event.option.viewValue);
+  //   this.tagInput.nativeElement.value = '';
+  //   this.tagCtrl.setValue(null);
+  // }
 
   private _filterFruit(value: string): string[] {
     const filterValue = value.toLowerCase();
@@ -374,24 +411,74 @@ export class LeadProfileComponent implements OnInit {
     return this.allPerson.filter(person => person.toLowerCase().includes(filterValue));
   }
 
-  private _filterTag(value): string[] {
+  private _filterTag(value): Array<Tags> {
     const filterValue = value.name ? value.name.toLowerCase() : value.toLowerCase();
 
     return this.allTag.filter(tag => tag.name.toLowerCase().includes(filterValue));
   }
 
-  private _filterCollaborator(value: string): string[] {
-    const filterValue = value.toLowerCase();
+  // private _filterCollaborator(value: string): string[] {
+  //   const filterValue = value.toLowerCase();
 
-    return this.allUser.filter(user => user.toLowerCase().includes(filterValue));
-  }
+  //   return this.allUser.filter(user => user.toLowerCase().includes(filterValue));
+  // }
 
-  private _filterFollower(value): string[] {
-    console.log('value: ', value);
-
+  private _filterFollower(value): Array<People> {
     const filterValue = value;
 
     return this.allFollowers.filter(follower => follower.name.toLowerCase().includes(filterValue));
+  }
+
+  private _filterOrganizationPersons(value): Array<People> {
+    const filterValue = value;
+
+    return this.allOrganizationPeoples.filter(person => person.name.toLowerCase().includes(filterValue));
+  }
+
+  private getProfileType() {
+    if (this.router.url.includes('organization'))
+      return 'organization';
+    if (this.router.url.includes('people'))
+      return 'people';
+    if (this.router.url.includes('deal'))
+      return 'deal';
+  }
+
+  getInitial(name) {
+    if (name) {
+      const fullName = name.split(' ');
+
+      let initials;
+      if (fullName.length > 1) {
+        initials = fullName.shift().charAt(0) + fullName.pop().charAt(0);
+      }
+      else {
+        initials = fullName.shift().charAt(0);
+      }
+      return initials.toUpperCase();
+    }
+    else {
+      return 'AZ';
+    }
+  }
+
+  private filterActivity() {
+    const activities = this.leadProfileData.activity;
+
+    if (activities.length <= 0)
+      return;
+
+    for (const activity of activities) {
+      if (activity.status.name == 'status_todo')
+        this.tasksTodo.push(activity);
+      if (activity.status.name == 'status_done')
+        this.tasksDone.push(activity);
+      if (activity.status.name == 'status_open')
+        this.tasksOpen.push(activity);
+    }
+
+    console.log('taksOpen: ', this.tasksOpen);
+
   }
 
   openDealsModal(content) {
@@ -426,6 +513,10 @@ export class LeadProfileComponent implements OnInit {
     return this.organizationForms.controls.organizations as FormArray;
   }
 
+  get organizationPersons() {
+    return this.organizationPersonsForms.controls.organizationPersons as FormArray;
+  }
+
   get phones() {
     return this.phoneForms.controls.phones as FormArray;
   }
@@ -441,4 +532,68 @@ export class LeadProfileComponent implements OnInit {
 
 export interface Fruit {
   name: string;
+}
+
+interface Tags {
+  id: number;
+  name: string;
+  colorCode: string;
+}
+
+interface Country {
+  id: number;
+  code: string;
+  name: string;
+}
+
+interface LeadType {
+  id: number;
+  name: string;
+  class: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface User {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  lastLoginAt: any;
+  createdBy: number;
+  statusId: number;
+  invitationToken: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: any;
+  fullName: string;
+}
+
+interface People {
+  id: number;
+  name: string;
+  organizations: Array<Organization>;
+}
+
+interface Pivot {
+  personId: number;
+  organizationId: number;
+  jobTitle: string;
+}
+
+interface Organization {
+  id: number;
+  name: string;
+  address: string;
+  contactTypeId: number;
+  createdBy: number;
+  ownerId: number;
+  createdAt: string;
+  updatedAt: string;
+  countryId: number;
+  area: string;
+  state: string;
+  city: string;
+  zipCode: string;
+  pivot: Pivot;
 }

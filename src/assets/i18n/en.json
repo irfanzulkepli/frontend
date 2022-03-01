@@ -329,8 +329,21 @@
         "LOSTREASONS": "Lost Reasons"
       },
       "PROPOSALS": "Proposals",
+      "PROPOSALSSUB": {
+        "LIST": "Proposal List",
+        "TEMPLATES": "Templates"
+      },
       "ACTIVITIES": "Activities",
+      "ACTIVITIESSUB": {
+        "CALENDAR": "Calendar",
+        "LIST": "List"
+      },
       "REPORTS": "Reports",
+      "REPORTSSUB": {
+        "DEAL": "Deal",
+        "PROPOSAL": "Proposal",
+        "PIPELINE": "Pipeline"
+      },
       "USERSROLE": "Users & Roles",
       "SETTINGS": "Settings"
     }

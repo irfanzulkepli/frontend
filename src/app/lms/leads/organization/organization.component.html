@@ -6,7 +6,7 @@
         <h4 class="mb-0 font-size-18"> People </h4>
         <div class="page-title-right">
           <button type="button" class="btn btn-primary btn-rounded">
-            Add people
+            Add Organization
           </button>
         </div>
       </div>
@@ -15,111 +15,7 @@
 
   <div class="row">
     <div class="col-lg-12">
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title">
-            <div class="row">
-              <div class="col-sm-12 col-md-6">
-                Showing {{service.startIndex}} to
-                {{service.endIndex}} items of {{service.totalRecords}}
-              </div>
-              <div class="col-sm-12 col-md-6">
-                <div id="tickets-table_filter" class="dataTables_filter text-md-end">
-                  <label class="d-inline-flex align-items-center">Search:
-                    <input type="text" name="searchTerm" class="form-control form-control-sm ms-2"
-                      aria-controls="tickets-table" [(ngModel)]="service.searchTerm">
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div class="table-responsive">
-              <table class="table align-middle table-striped dt-responsive nowrap datatables dtr-inline">
-                <thead class="table-light">
-                  <tr>
-                    <th>Name</th>
-                    <th>Lead groups</th>
-                    <th>Person</th>
-                    <th>Address</th>
-                    <th>Closed deal(s)</th>
-                    <th>Open deal(s)</th>
-                    <th>Owner</th>
-                    <th>Tags</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let table of (tables$ | async);let i=index">
-                    <td>
-                      <div class="d-flex align-items-center cursor-pointer" (click)="redirectToProfile(table)">
-                        <div class="avatar-xs me-2">
-                          <span class="avatar-title rounded-circle">
-                            {{ getInitial(table) }}
-                          </span>
-                        </div>
-                        <ngb-highlight [result]="table.name" [term]="service.searchTerm" style="max-width: 120px;">
-                        </ngb-highlight>
-                      </div>
-                    </td>
-                    <td>
-                      <span class="badge rounded-pill
-                       {{ table.contactType?.class ? table.contactType?.class : ''}}  font-size-12">
-                        <ngb-highlight [result]="table.contactType?.name" [term]="service.searchTerm"></ngb-highlight>
-                      </span>
-                    </td>
-                    <td>
-                      <span class="d-flex align-items-center me-2" *ngFor="let person of table.persons">
-                        <span class="text-ellipsis">{{ person.name }}</span> <i class="mdi mdi-exit-to-app font-size-14"></i>
-                      </span>
-                    </td>
-                    <td>
-                      <ngb-highlight [result]="getAddress(table)" [term]="service.searchTerm"></ngb-highlight>
-                    </td>
-                    <td>
-                      <ngb-highlight [result]="table.closeDealsCount" [term]="service.searchTerm"></ngb-highlight>
-                    </td>
-                    <td>
-                      <ngb-highlight [result]="table.openDealsCount" [term]="service.searchTerm"></ngb-highlight>
-                    </td>
-                    <td>
-                      <ngb-highlight [result]="table.owner?.fullName" [term]="service.searchTerm"></ngb-highlight>
-                    </td>
-                    <td style="width: 225px;">
-                      <mat-chip-list>
-                        <mat-chip class="d-flex align-items-center" [style.background-color]="tag.colorCode"
-                          *ngFor="let tag of table.tags">
-                          <ngb-highlight [result]="tag.name" [term]="service.searchTerm"></ngb-highlight>
-                        </mat-chip>
-                      </mat-chip-list>
-                    </td>
-                    <td>
-                      <div class="page-title-right" ngbDropdown>
-                        <i class="bx bx-dots-vertical-rounded font-size-24 cursor-pointer" ngbDropdownToggle></i>
-                        <div class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
-                          <a class="dropdown-item">
-                            <span>Send invitation</span>
-                          </a>
-                          <a class="dropdown-item">
-                            <span>Edit</span>
-                          </a>
-                          <a class="dropdown-item">
-                            <span>Delete</span>
-                          </a>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="row">
-              <div class="col-lg-12 d-flex justify-content-center">
-                <ngb-pagination [collectionSize]="total$ | async" [(page)]="service.page" [maxSize]="5" [rotate]="true"
-                  [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <app-custom-table [columnsInfo]="columnsInfo" [dataSource]="organizations"></app-custom-table>
     </div>
   </div>
 </div>

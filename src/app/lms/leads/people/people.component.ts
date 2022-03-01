@@ -18,6 +18,64 @@ import { AdvancedService } from '../advanced.service';
  */
 export class PeopleComponent implements OnInit {
 
+  public columnInfos = [
+    {
+      displayName: 'Name',
+      columnDef: 'name',
+      type: 'profile'
+    },
+    {
+      displayName: 'Lead Group',
+      columnDef: 'contactType',
+      type: 'badge'
+    },
+    {
+      displayName: 'Organization(s)',
+      columnDef: 'organizations',
+      type: 'link'
+    },
+    {
+      displayName: 'Email(s)',
+      columnDef: 'email',
+      type: 'textWithBadge'
+    },
+    {
+      displayName: 'Phone(s)',
+      columnDef: 'phone',
+      type: 'textWithBadge'
+    },
+    {
+      displayName: 'Address',
+      columnDef: 'address',
+      type: 'address'
+    },
+    {
+      displayName: 'Closed deal(s)',
+      columnDef: 'closeDealsCount',
+      type: 'number'
+    },
+    {
+      displayName: 'Open deal(s)',
+      columnDef: 'openDealsCount',
+      type: 'number'
+    },
+    {
+      displayName: 'Owner',
+      columnDef: 'owner.fullName',
+      type: 'text'
+    },
+    {
+      displayName: 'Tags',
+      columnDef: 'tags',
+      type: 'tag'
+    },
+    {
+      displayName: 'Action',
+      columnDef: 'action',
+      type: 'action'
+    }
+  ];
+
   page: number = 1;
   pageSize: number = 10;
   class: string = 'primary';
@@ -136,5 +194,9 @@ export class PeopleComponent implements OnInit {
     else {
       return 'AZ';
     }
+  }
+
+  redirectToOrganization(id) {
+    this.router.navigate([`/lms/leads/organization/${id}`]);
   }
 }
