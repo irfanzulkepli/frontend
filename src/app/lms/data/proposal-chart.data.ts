@@ -1,0 +1,1 @@
+export const PROPOSALCHART = [{ "owner": "Von Feng", "counter": 1 }, { "owner": "Average", "counter": 1 }];
