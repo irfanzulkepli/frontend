@@ -8,7 +8,11 @@ import { PERSON, Person } from '../../data/person-data';
 import { PIPELINES } from '../../data/pipelines.data';
 import { USER } from '../../data/user-data';
 import { TAGS } from '../../data/tags-data';
-import { AddDealModalComponent } from '../add-deal-modal/add-deal-modal.component';
+import { ALLDEALS } from '../../data/all-deals.data';
+import { ProfileModalComponent } from '../profile-modal/profile-modal.component';
+import {MatChipInputEvent} from '@angular/material/chips';
+import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import { LOSTREASONS } from '../../data/lost-reasons';
 
 @Component({
   selector: 'app-pipeline-view-card',
@@ -20,6 +24,7 @@ export class PipelineViewCardComponent implements OnInit {
   // public pipelineView = PIPELINEVIEW;
   public pipeline = PIPELINES;
   public userData = USER;
+  public lostReasons = LOSTREASONS;
   public leadTypes: string[] = ["Person", "Organization"];
   public stageTypes: any[] = [
     { id: 0, name: "Lead generation" },
@@ -30,8 +35,22 @@ export class PipelineViewCardComponent implements OnInit {
     { id: 5, name: "Closed deals"},
     { id: 6, name: "Post-sale"}
   ];
+  public activities: string[] = ["Call", "Meeting", "Email", "Task", "Deadline", "Others", ]
+  public activityTypes: string[] = ["Deal", "Person", "Organization"]
+  public dateTime = new Date();
+  public currentDate = this.dateTime.toISOString().substring(0,10);
+  public currentTime = this.dateTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
+  public endDateTime = new Date(this.dateTime.getTime() + 15*60000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
 
-  protected person: Person[] = PERSON;
+  // mat chip tags
+  visible = true;
+  selectable = true;
+  removable = true;
+/*set the separator keys.*/
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA];  
+  tempTags: string[] = [];
+
+  public person: Person[] = PERSON;
   public personCtrl: FormControl = new FormControl();
   public personFilterCtrl: FormControl = new FormControl();
   public filteredPerson: ReplaySubject<Person[]> = new ReplaySubject<Person[]>(1);
@@ -40,6 +59,11 @@ export class PipelineViewCardComponent implements OnInit {
   public tagsCtrl: FormControl = new FormControl();
   public tagsFilterCtrl: FormControl = new FormControl();
   public filteredTags: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+  protected dealTitle: any[] = ALLDEALS;
+  public dealTitlesCtrl: FormControl = new FormControl();
+  public dealTitleFilterCtrl: FormControl = new FormControl();
+  public filteredDealTitles: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
   @ViewChild('singleSelect') singleSelect: MatSelect;
   @Input() cardData;
@@ -66,7 +90,17 @@ export class PipelineViewCardComponent implements OnInit {
     this.tagsFilterCtrl.valueChanges
       .pipe(takeUntil(this._onDestroy))
       .subscribe(() => {
-        this.filterPerson();
+        this.filterTags();
+      });
+
+    // load the initial deal title list
+    this.filteredDealTitles.next(this.dealTitle.slice());
+
+    // listen for search field value changes
+    this.dealTitleFilterCtrl.valueChanges
+      .pipe(takeUntil(this._onDestroy))
+      .subscribe(() => {
+        this.filterDealsTitle();
       });
   }
 
@@ -95,6 +129,17 @@ export class PipelineViewCardComponent implements OnInit {
       });
 
     this.filteredTags
+    .pipe(take(1), takeUntil(this._onDestroy))
+    .subscribe(() => {
+      // setting the compareWith property to a comparison function
+      // triggers initializing the selection according to the initial value of
+      // the form control (i.e. _initializeSelection())
+      // this needs to be done after the filteredBanks are loaded initially
+      // and after the mat-option elements are available
+      this.singleSelect.compareWith = (a: Person, b: Person) => a && b && a.id === b.id;
+      });
+
+    this.filteredDealTitles
     .pipe(take(1), takeUntil(this._onDestroy))
     .subscribe(() => {
       // setting the compareWith property to a comparison function
@@ -142,6 +187,61 @@ export class PipelineViewCardComponent implements OnInit {
     );
   }
 
+  protected filterDealsTitle() {
+    if (!this.dealTitle) {
+      return;
+    }
+    // get the search keyword
+    let search = this.dealTitleFilterCtrl.value;
+    if (!search) {
+      this.filteredDealTitles.next(this.dealTitle.slice());
+      return;
+    } else {
+      search = search.toLowerCase();
+    }
+    // filter the tag
+    this.filteredDealTitles.next(
+      this.dealTitle.filter(dealTitle => dealTitle.name.toLowerCase().indexOf(search) > -1)
+    );
+  }
+
+  participantsControl = new FormControl([]);
+  collaboratorsControl = new FormControl([]);
+  personControl = new FormControl([]);
+
+  onParticipantRemoved(participant: string) {
+    const participants = this.participantsControl.value as string[];
+    this.removeFirst(participants, participant);
+    this.participantsControl.setValue(participants); // To trigger change detection
+  }
+
+  onCollaboratorRemoved(collaborator: string) {
+    const collaborators = this.collaboratorsControl.value as string[];
+    this.removeFirst(collaborators, collaborator);
+    this.collaboratorsControl.setValue(collaborators); // To trigger change detection
+  }
+
+  onPersonRemoved(person: string) {
+    const personArray = this.personControl.value as string[];
+    this.removeFirst(personArray, person);
+    this.personControl.setValue(personArray); // To trigger change detection
+  }
+
+  private removeFirst<T>(array: T[], toRemove: T): void {
+    const index = array.indexOf(toRemove);
+    if (index !== -1) {
+      array.splice(index, 1);
+    }
+  }
+
+  addMinutes(minutes) {
+    const newDateTime = new Date(this.dateTime.getTime() + parseInt(minutes)*60000);
+    const newDate = newDateTime.toISOString().substring(0,10);
+    const newTime = newDateTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
+    (<HTMLInputElement>document.getElementById('endDateInput')).value = newDate;
+    (<HTMLInputElement>document.getElementById('endTimeInput')).value = newTime;
+}
+
   getInitials(fullName: string) {
     const splitName = fullName.split(' ')
     const ownerInitials = splitName[0].charAt(0) + splitName[1].charAt(0);
@@ -149,12 +249,12 @@ export class PipelineViewCardComponent implements OnInit {
   }
 
   openProfile() {
-    const modalRef = this.modalService.open(AddDealModalComponent, { size: 'xl'});
-    (<AddDealModalComponent>modalRef.componentInstance).inputData = this.cardData;
+    const modalRef = this.modalService.open(ProfileModalComponent, { size: 'xl'});
+    (<ProfileModalComponent>modalRef.componentInstance).inputData = this.cardData;
   }
 
   activityModal(content: any) {
-    this.modalService.open(content, {size: 'xl'});
+    this.modalService.open(content, {size: 'lg'});
   }
 
   /**
@@ -169,7 +269,7 @@ export class PipelineViewCardComponent implements OnInit {
    * Open center modal
    * @param centerDataModal center modal data
    */
-  deleteModal(content: any) {
+  openCenteredModal(content: any) {
     this.modalService.open(content, { centered: true });
   }
 }

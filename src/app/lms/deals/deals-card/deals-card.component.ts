@@ -6,7 +6,7 @@ import { FormControl } from '@angular/forms';
 import { MatSelect } from '@angular/material/select';
 import { ReplaySubject, Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
-import { AddDealModalComponent } from '../add-deal-modal/add-deal-modal.component';
+import { ProfileModalComponent } from '../profile-modal/profile-modal.component';
 
 @Component({
   selector: 'app-deals-card',
@@ -95,8 +95,8 @@ export class DealsCardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   openProfile() {
-    const modalRef = this.modalService.open(AddDealModalComponent, { size: 'xl'});
-    (<AddDealModalComponent>modalRef.componentInstance).inputData = this.cardData;
+    const modalRef = this.modalService.open(ProfileModalComponent, { size: 'xl'});
+    (<ProfileModalComponent>modalRef.componentInstance).inputData = this.cardData;
   }
 
   /**

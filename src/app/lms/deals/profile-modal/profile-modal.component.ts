@@ -1,20 +1,37 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { DatePipe } from '@angular/common'
+import { FormControl } from '@angular/forms';
+import { PERSON } from '../../data/person-data';
 
 @Component({
-  selector: 'app-add-deal-modal',
-  templateUrl: './add-deal-modal.component.html',
-  styleUrls: ['./add-deal-modal.component.scss'],
+  selector: 'app-profile-modal',
+  templateUrl: './profile-modal.component.html',
+  styleUrls: ['./profile-modal.component.scss'],
 })
-export class AddDealModalComponent implements OnInit {
+export class ProfileModalComponent implements OnInit {
 
   @Input() inputData;
+  public person = PERSON;
   stageTypes: string[] = ["Lead generation", "Lead nurturing", "Marketing qualified lead", "Sales accepted lead", "Sales qualified lead", "Closed deals", "Post-sale"];
+  personControl = new FormControl([]);
 
   constructor(public activeModal: NgbActiveModal, private datepipe: DatePipe) { }
 
   ngOnInit() {}
+
+  onPersonRemoved(person: string) {
+    const personArray = this.personControl.value as string[];
+    this.removeFirst(personArray, person);
+    this.personControl.setValue(personArray); // To trigger change detection
+  }
+
+  private removeFirst<T>(array: T[], toRemove: T): void {
+    const index = array.indexOf(toRemove);
+    if (index !== -1) {
+      array.splice(index, 1);
+    }
+  }
 
   getInitials(fullName: string) {
     const splitName = fullName.split(' ')

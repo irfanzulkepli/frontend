@@ -19,11 +19,11 @@
           <div class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupVerticalDrop1" ngbDropdownMenu>
               <a class="dropdown-item" (click)="activityModal(activityContent)">Add activity</a>
               <a class="dropdown-item" (click)="openModal(tagContent)">Manage Tag</a>
-              <a class="dropdown-item">Won the deal</a>
-              <a class="dropdown-item">Make it lost</a>
+              <a class="dropdown-item" (click)="openCenteredModal(wonContent)">Won the deal</a>
+              <a class="dropdown-item" (click)="openModal(lostContent)">Make it lost</a>
               <a class="dropdown-item">Mark</a>
               <a class="dropdown-item" (click)="openModal(editContent)">Edit</a>
-              <a class="dropdown-item" (click)="deleteModal(deleteContent)">Delete</a>
+              <a class="dropdown-item" (click)="openCenteredModal(deleteContent)">Delete</a>
           </div>
         </div>
       </div> <!-- end dropdown -->
@@ -154,13 +154,17 @@
   </div>
   <div class="modal-body">
     <div class="col-form-label">
-      <mat-select [formControl]="tagsCtrl" placeholder="+ Add">
-        <mat-option>
-          <ngx-mat-select-search [formControl]="tagsFilterCtrl" placeholderLabel="Search" noEntriesFoundLabel="Didnt match anything"></ngx-mat-select-search>
-        </mat-option>
-        <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
-          {{tag.name}}
-        </mat-option>
+      <mat-select [formControl]="personControl" placeholder="+ Add" multiple>
+        <mat-select-trigger>
+          <mat-chip-list>
+            <mat-chip *ngFor="let selectedPerson of personControl.value"
+              [removable]="true" (removed)="onPersonRemoved(selectedPerson)">
+              {{ selectedPerson.name }}
+              <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+          </mat-chip-list>
+        </mat-select-trigger>
+        <mat-option *ngFor="let selectedPerson of person" [value]="selectedPerson">{{selectedPerson.name}}</mat-option>
       </mat-select>
     </div>
   </div>
@@ -172,15 +176,193 @@
 <!-- Add activity Modal -->
 <ng-template #activityContent let-modal>
   <div class="modal-header">
-    <h5 class="modal-title mt-0">Are you sure?</h5>
+    <h5 class="modal-title mt-0">Add activity</h5>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group row mb-3">
+        <label for="formDealTitleInput" class="col-sm-2 col-form-label">Activity</label>
+        <div class="col-sm-10">
+          <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+            <div *ngFor= "let activity of activities">
+              <input type="radio" class="btn-check" name="btnradio" id="{{activity}}btn" autocomplete="off">
+              <label class="btn btn-outline-primary" for="{{activity}}btn">{{ activity }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formDealTitleInput" class="col-sm-2 col-form-label">Title</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="formDealTitleInput" placeholder="Enter Deal Title Here">    
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formDescriptionInput" class="col-sm-2 col-form-label">Description</label>
+        <div class="col-sm-10">
+          <textarea class="form-control text-muted" id="formDescriptionInput" rows="3" placeholder="Enter description"></textarea>  
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formLeadTypeInput" class="col-sm-2 col-form-label text-nowrap">Set schedule</label>
+        <div class="col-sm-10">
+          <div class="row mb-1">
+            <div class="col-lg-7 pr-lg-0">
+              <input class="form-control" type="date" id="startDateInput" value="{{currentDate}}">
+            </div>
+            <div class="col-lg-5 pl-lg-0">
+              <input class="form-control" type="time" id="startTimeInput" value="{{currentTime}}">
+            </div>
+          </div>
+          <div class="row mb-1">
+            <div class="col-lg-7 pr-lg-0">
+              <input class="form-control" type="date" id="endDateInput" value="{{currentDate}}">
+            </div>
+            <div class="col-lg-5 pl-lg-0">
+              <input class="form-control" type="time" id="endTimeInput" value="{{endDateTime}}">
+            </div>
+          </div>
+          <div class="button-items">
+            <button type="button" class="btn btn-light btn-rounded" (click)="addMinutes(15)">00:15 H</button>
+            <button type="button" class="btn btn-light btn-rounded" (click)="addMinutes(30)">00:30 H</button>
+            <button type="button" class="btn btn-light btn-rounded" (click)="addMinutes(45)">00:45 H</button>
+            <button type="button" class="btn btn-light btn-rounded" (click)="addMinutes(600)">10:00 H</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formActivityTypeInput" class="col-sm-2 col-form-label text-nowrap">Activity Types</label>
+        <div class="col-sm-10 d-flex align-items-center">
+          <select class="form-select">
+            <option *ngFor="let activityType of activityTypes">{{ activityType }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formDealValueInput" class="col-sm-2 col-form-label">Deal</label>
+        <div class="col-sm-10">
+          <div class="row mb-1">
+            <mat-select [formControl]="personCtrl" placeholder="{{cardData.title}}"> 
+              <mat-option>
+                <ngx-mat-select-search [formControl]="dealTitleFilterCtrl" placeholderLabel="Search" noEntriesFoundLabel="Didnt match anything"></ngx-mat-select-search>
+              </mat-option>
+              <mat-option *ngFor="let dealTitle of filteredDealTitles | async" [value]="dealTitle">
+                {{dealTitle.title}}
+              </mat-option>
+            </mat-select>
+          </div>
+          <div class="form-row">
+            <div class="d-flex align-items-center">
+              <div class="col-sm-5 d-flex align-items-center">
+                <div class="avatar-sm ml-2">
+                  <span class="avatar-title rounded-circle bg-light text-black font-size-16">{{  getInitials(cardData.owner.fullName) }}</span>
+                </div>
+                <div class="media-body p-2">
+                  <p style="margin: 0;font-size: large;">{{ cardData.owner.fullName }}</p>
+                  <p class="text-muted font-size-90 mb-0">Owner</p>
+                </div>
+              </div>
+              <div class="pt-4"><p class="text-muted font-size-90 mb-2">
+                No lead added yet
+              </p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formActivityTypeInput" class="col-sm-2 col-form-label text-nowrap">Participants</label>
+        <div class="col-sm-10">
+            <mat-select [formControl]="participantsControl" placeholder="+ Add" multiple>
+              <mat-select-trigger>
+                <mat-chip-list>
+                  <mat-chip *ngFor="let participant of participantsControl.value"
+                    [removable]="true" (removed)="onParticipantRemoved(participant)">
+                    {{ participant.name }}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                  </mat-chip>
+                </mat-chip-list>
+              </mat-select-trigger>
+              <mat-option *ngFor="let participant of person" [value]="participant">{{participant.name}}</mat-option>
+            </mat-select>
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formActivityTypeInput" class="col-sm-2 col-form-label text-nowrap">Collaborators</label>
+        <div class="col-sm-10 d-flex align-items-center">
+          <mat-select [formControl]="collaboratorsControl" placeholder="+ Add" multiple>
+            <mat-select-trigger>
+              <mat-chip-list>
+                <mat-chip *ngFor="let collaborator of collaboratorsControl.value"
+                  [removable]="true" (removed)="onCollaboratorRemoved(collaborator)">
+                  {{ collaborator.fullName }}
+                  <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+              </mat-chip-list>
+            </mat-select-trigger>
+            <mat-option *ngFor="let collaborator of userData" [value]="collaborator">{{collaborator.fullName}}</mat-option>
+          </mat-select>
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formStageTypeInput" class="col-sm-2 col-form-label text-nowrap">Save as done</label>
+        <div class="col-sm-10 d-flex align-items-center">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
+            <label class="form-check-label" for="flexCheckChecked"></label>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cancel</button>
+    <button type="button" class="btn btn-primary">Save</button>
+  </div>
+</ng-template>
+
+<!-- Won Modal -->
+<ng-template #wonContent let-modal>
+  <div class="modal-body d-flex flex-column justify-content-center modal-alert">
+    <div class="text-center">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle text-success">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+    </div> 
+    <h5 class="text-center font-weight-bold mt-4">Congratulation!</h5>
+    <p class="mb-primary text-center font-size-90 p-0">You won the deal successfully</p>
+    <div class="text-center">
+      <button class="btn btn-success" (click)="modal.dismiss('Cross click')">Thank You</button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Lost Modal -->
+<ng-template #lostContent let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Deal lost</h5>
     <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
   </div>
   <div class="modal-body">
-    <p>This content will be deleted permenantly.</p>
+    <div class="form-group row mb-3">
+      <label for="formLostReasonInput" class="col-sm-2 col-form-label text-nowrap">Lost Reason</label>
+      <div class="col-sm-10 d-flex align-items-center">
+        <select class="form-select">
+          <option *ngFor="let lostReason of lostReasons">{{ lostReason.lostReason }}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row mb-3">
+      <label for="formCommentInput" class="col-sm-2 col-form-label">Comment</label>
+      <div class="col-sm-10">
+        <textarea class="form-control text-muted" id="formCommentInput" rows="3"></textarea>  
+      </div>
+    </div>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">No</button>
-    <button type="button" class="btn btn-primary">Yes</button>
+    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cancel</button>
+    <button type="button" class="btn btn-primary">Confirm</button>
   </div>
 </ng-template>
 

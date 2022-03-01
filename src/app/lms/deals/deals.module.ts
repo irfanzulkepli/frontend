@@ -20,7 +20,7 @@ import { DealsCardComponent } from './deals-card/deals-card.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatSelectModule } from '@angular/material/select';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
-import { AddDealModalComponent } from './add-deal-modal/add-deal-modal.component';
+import { ProfileModalComponent } from './profile-modal/profile-modal.component';
 import { PipelineViewCardComponent } from './pipeline-view-card/pipeline-view-card.component';
 
 const config: DropzoneConfigInterface = {
@@ -37,7 +37,7 @@ const config: DropzoneConfigInterface = {
         LostReasonsComponent,
         PipelinesComponent,
         PipelineViewComponent,
-        AddDealModalComponent,
+        ProfileModalComponent,
         PipelineViewCardComponent
     ],
     imports: [

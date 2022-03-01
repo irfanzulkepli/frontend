@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { AddDealModalComponent } from './add-deal-modal.component';
+import { ProfileModalComponent } from './profile-modal.component';
 
-describe('AddDealModalComponent', () => {
-  let component: AddDealModalComponent;
-  let fixture: ComponentFixture<AddDealModalComponent>;
+describe('ProfileModalComponent', () => {
+  let component: ProfileModalComponent;
+  let fixture: ComponentFixture<ProfileModalComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddDealModalComponent ],
+      declarations: [ ProfileModalComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AddDealModalComponent);
+    fixture = TestBed.createComponent(ProfileModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
