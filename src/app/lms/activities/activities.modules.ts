@@ -54,7 +54,8 @@ FullCalendarModule.registerPlugins([
         Ng2SmartTableModule,
         NgbPaginationModule,
         NgbTypeaheadModule,
-        CustomTableModule
+        CustomTableModule,
+        FullCalendarModule
     ]
 })
 export class ActivitiesModule { }

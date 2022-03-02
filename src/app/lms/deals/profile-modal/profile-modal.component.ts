@@ -34,8 +34,13 @@ export class ProfileModalComponent implements OnInit {
   }
 
   getInitials(fullName: string) {
-    const splitName = fullName.split(' ')
-    const ownerInitials = splitName[0].charAt(0) + splitName[1].charAt(0);
+    const splitName = fullName.split(' ');
+    let ownerInitials: string;
+    if (splitName.length > 1) {
+      ownerInitials = splitName[0].charAt(0) + splitName[1].charAt(0);
+    } else {
+      ownerInitials = splitName[0].charAt(0);
+    }
     return ownerInitials.toUpperCase();
   }
 

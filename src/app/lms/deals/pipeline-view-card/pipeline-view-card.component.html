@@ -290,7 +290,7 @@
       <div class="form-group row mb-3">
         <label for="formActivityTypeInput" class="col-sm-2 col-form-label text-nowrap">Collaborators</label>
         <div class="col-sm-10 d-flex align-items-center">
-          <mat-select [formControl]="collaboratorsControl" placeholder="+ Add" multiple>
+          <mat-select class="form-control" [formControl]="collaboratorsControl" placeholder="+ Add" multiple>
             <mat-select-trigger>
               <mat-chip-list>
                 <mat-chip *ngFor="let collaborator of collaboratorsControl.value"

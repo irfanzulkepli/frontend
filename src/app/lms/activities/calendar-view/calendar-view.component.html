@@ -1,3 +1,176 @@
-<p>
-  calendar-view works!
-</p>
+<app-loader></app-loader>
+
+<div class="container-fluid">
+  <app-page-title title="Calendar"></app-page-title>
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="app-calendar">
+            <!-- calendar -->
+            <full-calendar [options]="calendarOptions"></full-calendar>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add activity Modal -->
+<ng-template #activityContent let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Add activity</h5>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group row mb-3">
+        <label for="formDealTitleInput" class="col-sm-2 col-form-label">Activity</label>
+        <div class="col-sm-10">
+          <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+            <div *ngFor= "let activity of activities">
+              <input type="radio" class="btn-check" name="btnradio" id="{{activity}}btn" autocomplete="off">
+              <label class="btn btn-outline-primary" for="{{activity}}btn">{{ activity }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formActivityTitleInput" class="col-sm-2 col-form-label">Title</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="formActivityTitleInput" placeholder="Enter Deal Title Here" value="">    
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formDescriptionInput" class="col-sm-2 col-form-label">Description</label>
+        <div class="col-sm-10">
+          <textarea class="form-control text-muted" id="formDescriptionInput" rows="3" placeholder="Enter description"></textarea>  
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formLeadTypeInput" class="col-sm-2 col-form-label text-nowrap">Set schedule</label>
+        <div class="col-sm-10">
+          <div class="row mb-1">
+            <div class="col-lg-7 pr-lg-0">
+              <input class="form-control" type="date" id="startDateInput" value="{{startDate}}">
+            </div>
+            <div class="col-lg-5 pl-lg-0">
+              <input class="form-control" type="time" id="startTimeInput" value="{{startTime}}">
+            </div>
+          </div>
+          <div class="row mb-1">
+            <div class="col-lg-7 pr-lg-0">
+              <input class="form-control" type="date" id="endDateInput" value="{{endDate}}">
+            </div>
+            <div class="col-lg-5 pl-lg-0">
+              <input class="form-control" type="time" id="endTimeInput" value="{{endTime}}">
+            </div>
+          </div>
+          <div class="button-items">
+            <button type="button" class="btn btn-light btn-rounded" (click)="addMinutes(15)">00:15 H</button>
+            <button type="button" class="btn btn-light btn-rounded" (click)="addMinutes(30)">00:30 H</button>
+            <button type="button" class="btn btn-light btn-rounded" (click)="addMinutes(45)">00:45 H</button>
+            <button type="button" class="btn btn-light btn-rounded" (click)="addMinutes(600)">10:00 H</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formActivityTypeInput" class="col-sm-2 col-form-label text-nowrap">Activity Types</label>
+        <div class="col-sm-10 d-flex align-items-center">
+          <select class="form-select">
+            <option *ngFor="let activityType of activityTypes">{{ activityType }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formActivityTypeInput" class="col-sm-2 col-form-label text-nowrap">Participants</label>
+        <div class="col-sm-10">
+            <mat-select class="form-control" [formControl]="participantsControl" placeholder="+ Add" multiple>
+              <mat-select-trigger>
+                <mat-chip-list>
+                  <mat-chip *ngFor="let participant of participantsControl.value"
+                    [removable]="true" (removed)="onParticipantRemoved(participant)">
+                    {{ participant.name }}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                  </mat-chip>
+                </mat-chip-list>
+              </mat-select-trigger>
+              <mat-option *ngFor="let participant of person" [value]="participant">{{participant.name}}</mat-option>
+            </mat-select>
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formActivityTypeInput" class="col-sm-2 col-form-label text-nowrap">Collaborators</label>
+        <div class="col-sm-10 d-flex align-items-center">
+          <mat-select class="form-control" [formControl]="collaboratorsControl" placeholder="+ Add" multiple>
+            <mat-select-trigger>
+              <mat-chip-list>
+                <mat-chip *ngFor="let collaborator of collaboratorsControl.value"
+                  [removable]="true" (removed)="onCollaboratorRemoved(collaborator)">
+                  {{ collaborator.fullName }}
+                  <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+              </mat-chip-list>
+            </mat-select-trigger>
+            <mat-option *ngFor="let collaborator of userData" [value]="collaborator">{{collaborator.fullName}}</mat-option>
+          </mat-select>
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formStageTypeInput" class="col-sm-2 col-form-label text-nowrap">Save as done</label>
+        <div class="col-sm-10 d-flex align-items-center">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
+            <label class="form-check-label" for="flexCheckChecked"></label>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cancel</button>
+    <button type="button" class="btn btn-primary">Save</button>
+  </div>
+</ng-template>
+
+<!-- Edit event modal -->
+<!-- <ng-template #editmodalShow let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Edit Event</h5>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body p-4">
+    <form [formGroup]="formEditData" (ngSubmit)="editEventSave()">
+      <div class="row">
+        <div class="col-12">
+          <div class="mb-3">
+            <label class="control-label">Event name</label>
+            <input class="form-control" placeholder="Insert Event Name" type="text" name="editTitle"
+              formControlName="editTitle">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="mb-3">
+            <label class="control-label">Event category</label>
+            <select class="form-control" name="ecategory" formControlName="editCategory" required>
+              <option *ngFor="let option of category" value="{{ option.value }}"> {{ option.name }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-6">
+          <button type="button" class="btn btn-danger delete-event ms-1" (click)="confirm()">Delete</button>
+        </div>
+        <div class="col-6 text-end">
+          <button type="button" class="btn btn-light" (click)="modal.dismiss('Close')">Close</button>
+          <button type="submit" class="btn btn-success ms-1">Save</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+</ng-template> -->

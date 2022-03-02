@@ -89,8 +89,13 @@ export class DealsCardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getInitials() {
-    const ownerName = this.cardData.owner.fullName.split(' ')
-    const ownerInitials = ownerName[0].charAt(0) + ownerName[1].charAt(0);
+    const ownerName = this.cardData.owner.fullName.split(' ');
+    let ownerInitials: string;
+    if (ownerName.length > 1) {
+      ownerInitials = ownerName[0].charAt(0) + ownerName[1].charAt(0);
+    } else {
+      ownerInitials = ownerName[0].charAt(0);
+    }
     return ownerInitials.toUpperCase();
   }
 
