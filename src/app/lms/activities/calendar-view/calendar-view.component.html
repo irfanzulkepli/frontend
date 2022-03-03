@@ -27,7 +27,7 @@
       <div class="form-group row mb-3">
         <label for="formDealTitleInput" class="col-sm-2 col-form-label">Activity</label>
         <div class="col-sm-10">
-          <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+          <div class="btn-group flex-wrap" role="group" aria-label="Basic radio toggle button group">
             <div *ngFor= "let activity of activities">
               <input type="radio" class="btn-check" name="btnradio" id="{{activity}}btn" autocomplete="off">
               <label class="btn btn-outline-primary" for="{{activity}}btn">{{ activity }}</label>
@@ -48,7 +48,7 @@
         </div>
       </div>
       <div class="form-group row mb-3">
-        <label for="formLeadTypeInput" class="col-sm-2 col-form-label text-nowrap">Set schedule</label>
+        <label for="formLeadTypeInput" class="col-sm-2 col-form-label">Set schedule</label>
         <div class="col-sm-10">
           <div class="row mb-1">
             <div class="col-lg-7 pr-lg-0">
@@ -75,7 +75,7 @@
         </div>
       </div>
       <div class="form-group row mb-3">
-        <label for="formActivityTypeInput" class="col-sm-2 col-form-label text-nowrap">Activity Types</label>
+        <label for="formActivityTypeInput" class="col-sm-2 col-form-label">Activity Types</label>
         <div class="col-sm-10 d-flex align-items-center">
           <select class="form-select">
             <option *ngFor="let activityType of activityTypes">{{ activityType }}</option>
@@ -83,7 +83,7 @@
         </div>
       </div>
       <div class="form-group row mb-3">
-        <label for="formActivityTypeInput" class="col-sm-2 col-form-label text-nowrap">Participants</label>
+        <label for="formActivityTypeInput" class="col-sm-2 col-form-label">Participants</label>
         <div class="col-sm-10">
             <mat-select class="form-control" [formControl]="participantsControl" placeholder="+ Add" multiple>
               <mat-select-trigger>
@@ -100,7 +100,7 @@
         </div>
       </div>
       <div class="form-group row mb-3">
-        <label for="formActivityTypeInput" class="col-sm-2 col-form-label text-nowrap">Collaborators</label>
+        <label for="formActivityTypeInput" class="col-sm-2 col-form-label">Collaborators</label>
         <div class="col-sm-10 d-flex align-items-center">
           <mat-select class="form-control" [formControl]="collaboratorsControl" placeholder="+ Add" multiple>
             <mat-select-trigger>
@@ -117,7 +117,7 @@
         </div>
       </div>
       <div class="form-group row mb-3">
-        <label for="formStageTypeInput" class="col-sm-2 col-form-label text-nowrap">Save as done</label>
+        <label for="formStageTypeInput" class="col-sm-2 col-form-label">Save as done</label>
         <div class="col-sm-10 d-flex align-items-center">
           <div class="form-check">
             <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">

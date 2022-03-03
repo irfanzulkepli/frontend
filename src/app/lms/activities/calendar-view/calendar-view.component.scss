@@ -2,6 +2,12 @@
     .cdk-overlay-container{
         z-index: 1100 !important;
     }
+
+    .fc-popover {
+        z-index: 1000 !important;
+        background: white;
+    }
 }
 
 ::ng-deep .mat-select-arrow { opacity: 0; }
+

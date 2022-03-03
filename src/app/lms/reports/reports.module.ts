@@ -22,6 +22,7 @@ import { DealComponent } from './deal/deal.component';
 import { PipelineComponent } from './pipeline/pipeline.component';
 import { ProposalComponent } from './proposal/proposal.component';
 import { ReportsRoutingModule } from './reports-routing.module';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 FullCalendarModule.registerPlugins([
     dayGridPlugin,
@@ -56,7 +57,8 @@ FullCalendarModule.registerPlugins([
         Ng2SmartTableModule,
         NgbPaginationModule,
         NgbTypeaheadModule,
-        CustomTableModule
+        CustomTableModule,
+        NgApexchartsModule
     ]
 })
 export class ReportsModule { }

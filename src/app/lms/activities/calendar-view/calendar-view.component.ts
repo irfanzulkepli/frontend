@@ -120,6 +120,7 @@ export class CalendarViewComponent implements OnInit {
   }
 
   handleDateClick(clickInfo: EventClickArg) {
+    this.modalService.dismissAll();
     this.isDate = true;
     this.editEvent = clickInfo;
     this.startDate = this.editEvent.dateStr;
@@ -130,6 +131,7 @@ export class CalendarViewComponent implements OnInit {
   }
 
   handleEventClick(clickInfo: EventClickArg) {
+    this.modalService.dismissAll();
     this.isDate = false;
     this.editEvent = clickInfo.event;
     let start = new Date(Date.parse(this.editEvent.start));
