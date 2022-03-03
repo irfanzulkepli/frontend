@@ -1,35 +1,22 @@
-<div>
-  <div class="card">
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-striped mb-0">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Created By</th>
-              <th style="text-align: right;">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let lostReason of lostReasons">
-              <td>{{ lostReason.lostReason }}</td>
-              <td>{{ lostReason.createdBy.fullName }}</td>
-              <td style="text-align:right">
-                <span>
-                  <div class="btn-group btn-group-action" role="group">
-                    <button type="button" class="btn" (click)="openModal(content)">
-                      <i class="mdi mdi-square-edit-outline font-size-24"></i>
-                    </button>
-                    <button type="button" class="btn" (click)="centerModal(centerDataModal)">
-                      <i class="mdi mdi-delete font-size-24"></i>
-                    </button>
-                  </div>
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col-12">
+      <div class="page-title-box d-flex align-items-center justify-content-between">
+        <h4 class="mb-0 font-size-18"> Lost reasons </h4>
+        <div class="page-title-right">
+          <button type="button" class="btn btn-primary btn-rounded">
+            Add lost reason
+          </button>
+        </div>
       </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <app-custom-table [columnsInfo]="columnsInfo" [dataSource]="lostReasons">
+      </app-custom-table>
     </div>
   </div>
 </div>
@@ -44,27 +31,12 @@
     <div class="form-group row mb-3">
       <label for="formDealTitleInput" class="col-sm-2 col-form-label">Name</label>
       <div class="col-sm-10">
-        <input type="text" class="form-control" id="formDealTitleInput" placeholder="Enter name" value="TODO">    
+        <input type="text" class="form-control" id="formDealTitleInput" placeholder="Enter name" value="TODO">
       </div>
     </div>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cancel</button>
     <button type="button" class="btn btn-primary">Save</button>
-  </div>
-</ng-template>
-
-<!-- Exit modal -->
-<ng-template #centerDataModal let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title mt-0">Are you sure?</h5>
-    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
-  </div>
-  <div class="modal-body">
-    <p>This content will be deleted permenantly.</p>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">No</button>
-    <button type="button" class="btn btn-primary">Yes</button>
   </div>
 </ng-template>

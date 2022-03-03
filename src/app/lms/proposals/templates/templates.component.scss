@@ -1,0 +1,51 @@
+.template-card {
+    height: 300px;
+    font-size: 50%;
+    overflow: hidden;
+    position: relative;
+    border-radius: 0.25rem;
+    box-shadow: var(--default-box-shadow);
+    transition: .25s;
+    background-size: cover;
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-clip: initial;
+    cursor: pointer !important;
+    background-image: url("http://lms-demo.imocha.com.my/leads/images/default-card-view-img.png");
+
+    .overlay-options {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        opacity: 0;
+        width: 100%;
+        border: none;
+        height: 300px;
+        font-size: .935rem;
+        box-shadow: var(--default-box-shadow);
+        border-radius: 0.25rem;
+        transition: .25s;
+        opacity: 0;
+        visibility: hidden;
+
+        ul {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+
+            li {
+                position: relative;
+                display: block;
+                padding: 0.75rem 1.25rem;
+                margin-bottom: -1px;
+            }
+        }
+    }
+}
+
+.template-card:hover .overlay-options {
+    visibility: visible;
+    opacity: 0.5;
+}

@@ -4,6 +4,7 @@ import { MatTableModule } from '@angular/material/table';
 import { CustomTableComponent } from './custom-table.component';
 import { NgbDropdownModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [CustomTableComponent],
@@ -12,7 +13,8 @@ import { MatChipsModule } from '@angular/material/chips';
     MatTableModule,
     NgbDropdownModule,
     MatChipsModule,
-    NgbPaginationModule
+    NgbPaginationModule,
+    MatCheckboxModule
   ],
   exports: [CustomTableComponent]
 })

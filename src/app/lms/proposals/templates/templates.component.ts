@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TEMPLATES } from '../../data/templates.data';
 
 @Component({
   selector: 'app-templates',
@@ -6,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./templates.component.scss']
 })
 export class TemplatesComponent implements OnInit {
+
+  public templates = TEMPLATES;
 
   constructor() { }
 

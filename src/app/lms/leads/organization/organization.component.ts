@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ORGANIZATION } from '../../data/organization-data';
+import { ColumnsInfo } from '../../lms-service';
 
 @Component({
   selector: 'app-organization',
@@ -10,7 +11,7 @@ export class OrganizationComponent implements OnInit {
 
   public organizations = ORGANIZATION;
 
-  columnsInfo = [
+  columnsInfo: Array<ColumnsInfo> = [
     {
       displayName: 'Name',
       columnDef: 'name',
@@ -24,7 +25,8 @@ export class OrganizationComponent implements OnInit {
     {
       displayName: 'Person(s)',
       columnDef: 'persons',
-      type: 'link'
+      type: 'link',
+      isList: true
     },
     {
       displayName: 'Address',

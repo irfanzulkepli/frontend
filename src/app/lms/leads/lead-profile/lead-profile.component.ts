@@ -21,25 +21,22 @@ export class LeadProfileComponent implements OnInit {
 
   public Editor = ClassicEditor;
 
-  fruitCtrl = new FormControl();
-  personCtrl = new FormControl();
+  collaboratorCtrl = new FormControl();
+  participantCtrl = new FormControl();
   tagCtrl = new FormControl();
-
-  allFruits: string[] = ['Apple', 'Lemon', 'Lime', 'Orange', 'Strawberry'];
-  filteredFruits: Observable<string[]>;
-  fruits: string[] = ['Lemon'];
-
-  persons: any[] = [];
-  allPerson = [];
-  filteredPersons: Observable<string[]>;
+  tagChipCtrl = new FormControl([]);
 
   tags: Array<Tags> = [];
   allTag: Array<Tags> = [];
   filteredTags: Observable<Array<Tags>>;
 
-  users: Array<User> = [];
-  allUser: Array<User> = [];
-  filteredUsers: Observable<Array<User>> = of();
+  collaborators: Array<User> = [];
+  allCollaborators: Array<User> = [];
+  filteredCollaborators: Observable<Array<User>>;
+
+  participants: Array<People> = [];
+  allParticipants: Array<People> = [];
+  filteredParticipants: Observable<Array<People>>;
 
   followerList: Array<People>;
   allFollowers: Array<People>;
@@ -56,9 +53,10 @@ export class LeadProfileComponent implements OnInit {
   isEditCustomField: boolean = false;
   isEditFollower: boolean = false;
 
-  @ViewChild('fruitInput') fruitInput: ElementRef<HTMLInputElement>;
   @ViewChild('personInput') personInput: ElementRef<HTMLInputElement>;
   @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
+  @ViewChild('collaboratorInput') collaboratorInput: ElementRef<HTMLInputElement>;
+  @ViewChild('participantInput') participantInput: ElementRef<HTMLInputElement>;
 
   detailForm: FormGroup;
   organizationForms: FormGroup;
@@ -67,13 +65,25 @@ export class LeadProfileComponent implements OnInit {
   emailForms: FormGroup;
   followerForms: FormGroup;
   addressForm: FormGroup;
-  activityForm: FormGroup;
+  activityForm: FormGroup = this.fb.group({
+    activity: ['call', Validators.required],
+    title: ['', Validators.required],
+    description: [''],
+    startDate: ['', Validators.required],
+    startTime: ['', Validators.required],
+    endDate: ['', Validators.required],
+    endTime: ['', Validators.required],
+    participants: [''],
+    collaborators: [''],
+    markAsDone: [false]
+  });
 
   countries: Array<Country> = [];
   leadTypes: Array<LeadType> = [];
   organizationsAndJobs = [];
 
   contactType = [];
+  allUser: Array<User> = [];
   leadProfileData;
 
   profileType: string;
@@ -94,29 +104,30 @@ export class LeadProfileComponent implements OnInit {
     this.profileType = this.getProfileType();
     this.leadProfileData = this.profileType == 'people' ? PEOPLE : ORGANIZATION;
     this.allTag = await this.lmsService.getTags();
-    this.allPerson = await this.lmsService.getPersons();
     this.allUser = await this.lmsService.getUsers();
     this.allFollowers = await this.lmsService.getPersons();
     this.allOrganizationPeoples = await this.lmsService.getPersons();
     this.countries = await this.lmsService.getCountry();
+    this.allCollaborators = await this.lmsService.getUsers();
     this.leadTypes = await this.lmsService.getLeadTypes();
     this.contactType = await this.lmsService.getTypes();
     this.organizationsAndJobs = await this.lmsService.getOrganizations();
+    this.allParticipants = await this.lmsService.getPersons();
 
     this.initForm();
     this.filterActivity();
 
-    this.filteredFruits = this.fruitCtrl.valueChanges.pipe(
+    this.filteredParticipants = this.participantCtrl.valueChanges.pipe(
       startWith(null),
-      map((fruit: string | null) => (fruit ? this._filterFruit(fruit) : this.allFruits.slice())),
+      map((participantName: string) => (participantName ? this._filterParticipants(participantName) : this.allParticipants.slice()))
     );
-    this.filteredPersons = this.personCtrl.valueChanges.pipe(
+    this.filteredCollaborators = this.collaboratorCtrl.valueChanges.pipe(
       startWith(null),
-      map((person: string | null) => (person ? this._filterPerson(person) : this.allPerson.slice())),
+      map((collaboratorName: string | null) => (collaboratorName ? this._filterCollaborator(collaboratorName) : this.allCollaborators.slice()))
     );
     this.filteredTags = this.tagCtrl.valueChanges.pipe(
       startWith(null),
-      map((tag) => (tag ? this._filterTag(tag) : this.allTag.slice())),
+      map((tag) => (tag ? this._filterTag(tag) : this.allTag.slice()))
     );
   }
 
@@ -153,22 +164,18 @@ export class LeadProfileComponent implements OnInit {
       zipcode: [this.leadProfileData.zipCode],
       address: [this.leadProfileData.address]
     });
-    this.activityForm = this.fb.group({
-      activity: ['call', Validators.required],
-      title: ['', Validators.required],
-      description: [''],
-      startDate: [dateNow, Validators.required],
-      startTime: [timeNow, Validators.required],
-      endDate: [dateNow, Validators.required],
-      endTime: [timeTo, Validators.required],
-      participants: [''],
-      collaborators: [''],
-      isDone: [false]
-    })
+    this.activityForm.patchValue({
+      startDate: dateNow,
+      startTime: timeNow,
+      endDate: dateNow,
+      endTime: timeTo
+    });
 
     if (this.leadProfileData.tags.length > 0) {
+      const tagList = [];
       for (const tag of this.leadProfileData.tags) {
-        this.tags.push(tag);
+        tagList.push(tag.id);
+        this.tagChipCtrl.setValue(tagList);
       }
     }
 
@@ -301,69 +308,41 @@ export class LeadProfileComponent implements OnInit {
     this.filteredFollowers.splice(index, 1);
   }
 
-  addFruit(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
+  removeCollaborator(id: number): void {
+    const collaborator = this.activityForm.get('collaborators').value as Array<People>;
+    const newCollaborators = collaborator.filter(collaborator => collaborator.id != id);
 
-    // Add our fruit
-    if (value && this.allFruits.includes(value)) {
-      this.fruits.push(value);
-    }
-
-    // Clear the input value
-    event.chipInput!.clear();
-
-    this.fruitCtrl.setValue(null);
+    this.activityForm.get('collaborators').setValue(newCollaborators);
   }
 
-  removeFruit(fruit: string): void {
-    const index = this.fruits.indexOf(fruit);
+  selectedCollaborator(event: MatAutocompleteSelectedEvent): void {
+    const collaborator: User = event.option.value;
 
-    if (index >= 0) {
-      this.fruits.splice(index, 1);
-    }
+    this.collaborators.push(collaborator);
+    this.tagInput.nativeElement.value = '';
+    this.tagCtrl.setValue(null);
   }
 
-  selectedFruit(event: MatAutocompleteSelectedEvent): void {
-    this.fruits.push(event.option.viewValue);
-    this.fruitInput.nativeElement.value = '';
-    this.fruitCtrl.setValue(null);
+  removeParticipant(id: number): void {
+    const participants = this.activityForm.get('participants').value as Array<People>;
+    const newParticipants = participants.filter(participant => participant.id != id);
+
+    this.activityForm.get('participants').setValue(newParticipants);
   }
 
-  selectedFollower(event: MatAutocompleteSelectedEvent, index: number) {
+  selectedParticipant(event: MatAutocompleteSelectedEvent): void {
+    const paricipant: People = event.option.value;
 
-  }
-
-  addPerson(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-    if (value) {
-      this.persons.push(value);
-    }
-
-    event.chipInput!.clear();
-
-    this.personCtrl.setValue(null);
-  }
-
-  removePerson(fruit: string): void {
-    const index = this.persons.indexOf(fruit);
-
-    if (index >= 0) {
-      this.persons.splice(index, 1);
-    }
-  }
-
-  selectedPerson(event: MatAutocompleteSelectedEvent): void {
-    this.persons.push(event.option.viewValue);
-    this.personInput.nativeElement.value = '';
-    this.personCtrl.setValue(null);
+    this.participants.push(paricipant);
+    this.participantInput.nativeElement.value = '';
+    this.participantCtrl.setValue(null);
   }
 
   removeTag(id): void {
-    const index = this.tags.findIndex(tag => tag.id == id);
+    const tags = this.tagChipCtrl.value as Array<number>;
+    const newTags = tags.filter(tagId => tagId !== id);
 
-    if (index >= 0) {
-      this.tags.splice(index, 1);
-    }
+    this.tagChipCtrl.setValue(newTags);
   }
 
   selectedTag(event: MatAutocompleteSelectedEvent): void {
@@ -374,41 +353,10 @@ export class LeadProfileComponent implements OnInit {
     this.tagCtrl.setValue(null);
   }
 
-  // addCollaborator(event: MatChipInputEvent): void {
-  //   const value = (event.value || '').trim();
-  //   if (value) {
-  //     this.users.push(value);
-  //   }
-
-  //   event.chipInput!.clear();
-
-  //   this.tagCtrl.setValue(null);
-  // }
-
-  // removeCollaborator(fruit: string): void {
-  //   const index = this.tags.indexOf(fruit);
-
-  //   if (index >= 0) {
-  //     this.users.splice(index, 1);
-  //   }
-  // }
-
-  // selectedCollaborator(event: MatAutocompleteSelectedEvent): void {
-  //   this.users.push(event.option.viewValue);
-  //   this.tagInput.nativeElement.value = '';
-  //   this.tagCtrl.setValue(null);
-  // }
-
-  private _filterFruit(value: string): string[] {
+  private _filterCollaborator(value: string): Array<User> {
     const filterValue = value.toLowerCase();
 
-    return this.allFruits.filter(fruit => fruit.toLowerCase().includes(filterValue));
-  }
-
-  private _filterPerson(value: string): string[] {
-    const filterValue = value.toLowerCase();
-
-    return this.allPerson.filter(person => person.toLowerCase().includes(filterValue));
+    return this.allCollaborators.filter(collaborator => collaborator.fullName.toLowerCase().includes(filterValue));
   }
 
   private _filterTag(value): Array<Tags> {
@@ -416,12 +364,6 @@ export class LeadProfileComponent implements OnInit {
 
     return this.allTag.filter(tag => tag.name.toLowerCase().includes(filterValue));
   }
-
-  // private _filterCollaborator(value: string): string[] {
-  //   const filterValue = value.toLowerCase();
-
-  //   return this.allUser.filter(user => user.toLowerCase().includes(filterValue));
-  // }
 
   private _filterFollower(value): Array<People> {
     const filterValue = value;
@@ -435,6 +377,12 @@ export class LeadProfileComponent implements OnInit {
     return this.allOrganizationPeoples.filter(person => person.name.toLowerCase().includes(filterValue));
   }
 
+  private _filterParticipants(value: string): Array<People> {
+    const filterValue = value;
+
+    return this.allParticipants.filter(person => person.name.toLowerCase().includes(filterValue));
+  }
+
   private getProfileType() {
     if (this.router.url.includes('organization'))
       return 'organization';
@@ -444,11 +392,11 @@ export class LeadProfileComponent implements OnInit {
       return 'deal';
   }
 
-  getInitial(name) {
+  getInitial(name: string) {
     if (name) {
       const fullName = name.split(' ');
 
-      let initials;
+      let initials: string;
       if (fullName.length > 1) {
         initials = fullName.shift().charAt(0) + fullName.pop().charAt(0);
       }
@@ -476,29 +424,47 @@ export class LeadProfileComponent implements OnInit {
       if (activity.status.name == 'status_open')
         this.tasksOpen.push(activity);
     }
+  }
 
-    console.log('taksOpen: ', this.tasksOpen);
+  public getTag(id: number) {
+    return this.allTag.find(tag => tag.id == id);
+  }
 
+  public getIcon(task) {
+    switch (task.activityTypeId) {
+      case 1: {
+        return 'bx bx-phone-call';
+        break;
+      }
+      case 2: {
+        return 'bx bx-group';
+        break;
+      }
+      case 3: {
+        return 'bx bx-envelope';
+        break;
+      }
+      case 4: {
+        return 'bx bx-credit-card';
+        break;
+      }
+      case 5: {
+        return 'bx bx-calendar';
+        break;
+      }
+      case 6: {
+        return 'bx bx-chip';
+        break;
+      }
+    }
   }
 
   openDealsModal(content) {
     this.modalService.open(content, { scrollable: true })
   }
 
-  getNumber(ev) {
-    console.log('number ev: ', ev);
-  }
-
-  hasError(ev) {
-    console.warn('tel error: ', ev);
-  }
-
   onCountryChange(ev) {
     console.log('on country change: ', ev);
-  }
-
-  telInputObject(ev) {
-    console.log('ev: ', ev);
   }
 
   onBack() {
@@ -554,7 +520,7 @@ interface LeadType {
   updatedAt: string;
 }
 
-interface User {
+export interface User {
   id: number;
   firstName: string;
   lastName: string;
@@ -569,7 +535,7 @@ interface User {
   fullName: string;
 }
 
-interface People {
+export interface People {
   id: number;
   name: string;
   organizations: Array<Organization>;
@@ -581,7 +547,7 @@ interface Pivot {
   jobTitle: string;
 }
 
-interface Organization {
+export interface Organization {
   id: number;
   name: string;
   address: string;

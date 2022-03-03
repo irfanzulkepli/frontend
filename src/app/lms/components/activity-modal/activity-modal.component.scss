@@ -1,0 +1,15 @@
+::ng-deep {
+    .mat-select-arrow { opacity: 0; }
+
+    mat-select.chip-bg {
+        border: none;
+    }
+    .mat-chip-list-wrapper::after {
+        content: '+ Add';
+        color: rgba(0,0,0,.42);
+    }
+}
+
+.chip-bg {
+    background-color: rgba(0,0,0,0.04);
+}

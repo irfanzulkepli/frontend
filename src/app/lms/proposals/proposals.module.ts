@@ -19,6 +19,8 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import bootstrapPlugin from "@fullcalendar/bootstrap";
 import { ProposalsRoutingModule } from './proposals-routing.module';
+import { TemplatesComponent } from './templates/templates.component';
+import { ProposalListComponent } from './proposal-list/proposal-list.component';
 
 FullCalendarModule.registerPlugins([
     dayGridPlugin,
@@ -28,7 +30,8 @@ FullCalendarModule.registerPlugins([
 
 @NgModule({
     declarations: [
-
+        TemplatesComponent,
+        ProposalListComponent
     ],
     imports: [
         ProposalsRoutingModule,

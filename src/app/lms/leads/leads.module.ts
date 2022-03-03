@@ -22,6 +22,7 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { AdvancedSortableDirective } from './advanced-sortable.directive';
 import { AdvancedService } from './advanced.service';
 import { CustomTableModule } from 'src/app/components/custom-table/custom-table.module';
+import { ComponentsModule } from '../components/component.module';
 
 
 const config: DropzoneConfigInterface = {
@@ -61,7 +62,8 @@ const config: DropzoneConfigInterface = {
         Ng2SmartTableModule,
         NgbPaginationModule,
         NgbTypeaheadModule,
-        CustomTableModule
+        CustomTableModule,
+        ComponentsModule
     ],
     providers: [
         {

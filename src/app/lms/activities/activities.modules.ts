@@ -55,7 +55,8 @@ FullCalendarModule.registerPlugins([
         NgbPaginationModule,
         NgbTypeaheadModule,
         CustomTableModule,
-        FullCalendarModule
+        FullCalendarModule,
+        NgxMatSelectSearchModule
     ]
 })
 export class ActivitiesModule { }

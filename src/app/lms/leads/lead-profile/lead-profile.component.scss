@@ -30,6 +30,19 @@
     .mat-select-search-clear {
         top: 0px !important;
     }
+    .mat-chip-list-wrapper::after {
+        content: '+ Add';
+        color: rgba(0,0,0,.42);
+    }
+    .mat-select-arrow { opacity: 0; }
+
+    mat-select.chip-bg {
+        border: none;
+    }
+}
+
+.chip-bg {
+    background-color: rgba(0,0,0,0.04);
 }
 
 .address-grid {

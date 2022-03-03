@@ -22,6 +22,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { ProfileModalComponent } from './profile-modal/profile-modal.component';
 import { PipelineViewCardComponent } from './pipeline-view-card/pipeline-view-card.component';
+import { ComponentsModule } from '../components/component.module';
+import { CustomTableModule } from 'src/app/components/custom-table/custom-table.module';
 
 const config: DropzoneConfigInterface = {
     // Change this to your upload POST address:
@@ -59,7 +61,9 @@ const config: DropzoneConfigInterface = {
         NgbModalModule,
         DragDropModule,
         MatSelectModule,
-        NgxMatSelectSearchModule
+        NgxMatSelectSearchModule,
+        ComponentsModule,
+        CustomTableModule
     ],
     providers: [
         {

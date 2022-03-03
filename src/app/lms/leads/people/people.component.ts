@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 import { LEADPEOPLELIST } from '../../data/lead-people-list';
+import { ColumnsInfo } from '../../lms-service';
 import { AdvancedSortableDirective, SortEvent } from '../advanced-sortable.directive';
 import { AdvancedService } from '../advanced.service';
 
@@ -18,7 +19,7 @@ import { AdvancedService } from '../advanced.service';
  */
 export class PeopleComponent implements OnInit {
 
-  public columnInfos = [
+  public columnInfos: Array<ColumnsInfo> = [
     {
       displayName: 'Name',
       columnDef: 'name',
@@ -32,17 +33,20 @@ export class PeopleComponent implements OnInit {
     {
       displayName: 'Organization(s)',
       columnDef: 'organizations',
-      type: 'link'
+      type: 'link',
+      isList: true
     },
     {
       displayName: 'Email(s)',
       columnDef: 'email',
-      type: 'textWithBadge'
+      type: 'textWithBadge',
+      isList: true
     },
     {
       displayName: 'Phone(s)',
       columnDef: 'phone',
-      type: 'textWithBadge'
+      type: 'textWithBadge',
+      isList: true
     },
     {
       displayName: 'Address',

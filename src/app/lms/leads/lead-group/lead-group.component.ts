@@ -2,7 +2,9 @@ import { DecimalPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DeleteModal2Component } from '../../components/delete-modal2/delete-modal2.component';
 import { LEADTYPES } from '../../data/lead-type-data';
+import { ColumnsInfo } from '../../lms-service';
 import { AdvancedService } from '../advanced.service';
 
 @Component({
@@ -13,7 +15,7 @@ import { AdvancedService } from '../advanced.service';
 })
 export class LeadGroupComponent implements OnInit {
 
-  columnsInfo = [
+  columnsInfo: Array<ColumnsInfo> = [
     {
       displayName: 'Name',
       columnDef: 'name',
@@ -54,7 +56,7 @@ export class LeadGroupComponent implements OnInit {
 
   constructor(
     private modalService: NgbModal,
-    private fb: FormBuilder,
+    private fb: FormBuilder
   ) { }
 
   ngOnInit() {
@@ -81,11 +83,6 @@ export class LeadGroupComponent implements OnInit {
     this.modalService.open(content, { scrollable: true });
   }
 
-  deleteLeadsModal(content, leadGroup) {
-    this.leadGroupIdToDelete = leadGroup.id;
-    this.modalService.open(content, { scrollable: true, centered: true });
-  }
-
   initForm() {
     this.leadGroupForm = this.fb.group({
       id: [''],
@@ -94,10 +91,15 @@ export class LeadGroupComponent implements OnInit {
     });
   }
 
-  onDeleteEmit(modal, ev) {
-    console.log('ev: ', ev);
+  onDeleteEmit(leadGroup) {
+    const modalRef = this.modalService.open(DeleteModal2Component, { scrollable: true, centered: true });
+    modalRef.result.then(result => {
+      if (result) {
+        const leadGroupIdToDelete = leadGroup.id;
 
-    this.deleteLeadsModal(modal, ev);
+        console.log('leadGroupId: ', leadGroupIdToDelete);
+      }
+    });
   }
 
   onEditEmit(modal, ev) {

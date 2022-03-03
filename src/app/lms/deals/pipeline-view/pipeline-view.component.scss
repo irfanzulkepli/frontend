@@ -3,10 +3,14 @@
   overflow-x: scroll;
 }
 
+.card-column {
+  width: 350px !important;
+}
+
 .example-list {
     width: 500px;
     max-width: 100%;
-    min-height: 60px;
+    min-height: 600px;
     max-height: 600px;
     overflow-y: scroll;
     display: block;

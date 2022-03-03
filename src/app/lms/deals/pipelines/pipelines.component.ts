@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DeleteModalComponent } from '../../components/delete-modal/delete-modal.component';
 import { PIPELINES } from '../../data/pipelines.data';
+import { ColumnsInfo } from '../../lms-service';
 
 @Component({
   selector: 'app-pipelines',
@@ -9,7 +11,51 @@ import { PIPELINES } from '../../data/pipelines.data';
 })
 export class PipelinesComponent implements OnInit {
 
-  public colNames: string[] = ["Name", "Total Deal Value", "No. of Deals", "No. of Stage", "Date Created"];
+  public columnsInfo: Array<ColumnsInfo> = [
+    {
+      displayName: 'Name',
+      columnDef: 'name',
+      type: 'link',
+      isList: false,
+      showIcon: false
+    },
+    {
+      displayName: 'Total deal value',
+      columnDef: 'totalDealValue',
+      type: 'currency'
+    },
+    {
+      displayName: 'No. of deals',
+      columnDef: 'dealsCount',
+      type: 'text'
+    },
+    {
+      displayName: 'No. of stage',
+      columnDef: 'stageCount',
+      type: 'text'
+    },
+    {
+      displayName: 'Created date',
+      columnDef: 'createdAt',
+      type: 'date'
+    },
+    {
+      displayName: 'Action',
+      columnDef: 'action',
+      type: 'actionIcon',
+      iconList: [
+        {
+          name: 'bx bx-edit',
+          function: 'edit'
+        },
+        {
+          name: 'bx bx-trash-alt',
+          function: 'delete'
+        }
+      ]
+    }
+  ];
+
   public pipelines = PIPELINES;
 
   constructor(private modalService: NgbModal) { }
@@ -21,8 +67,10 @@ export class PipelinesComponent implements OnInit {
    * Open center modal
    * @param centerDataModal center modal data
    */
-   centerModal(centerDataModal: any) {
-    this.modalService.open(centerDataModal, { centered: true });
+  deleteModal() {
+    const modalRef = this.modalService.open(DeleteModalComponent, { centered: true });
+
+    modalRef.result.then(result => result);
   }
 
 }

@@ -1,58 +1,21 @@
-<div>
-  <div class="card">
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-striped mb-0">
-
-          <thead>
-            <tr>
-              <th *ngFor="let colName of colNames">{{ colName }}</th>
-              <th style="text-align:right">Action</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr *ngFor="let pipeline of pipelines">
-              <td>
-                <div>
-                  <a href="#">{{ pipeline.name }}</a>
-                </div>
-              </td>
-              <td>$ {{ pipeline.totalDealValue | number : '1.2-2' }}</td>
-              <td>{{ pipeline.dealsCount }}</td>
-              <td>{{ pipeline.stageCount }}</td>
-              <td>{{ pipeline.createdAt | date:'dd-MM-yyyy' }}</td>
-              <td style="text-align:right">
-                <span>
-                  <div class="btn-group btn-group-action" role="group">
-                    <button type="button" class="btn">
-                      <i class="mdi mdi-square-edit-outline font-size-24"></i>
-                    </button>
-                    <button type="button" class="btn" (click)="centerModal(centerDataModal)">
-                      <i class="mdi mdi-delete font-size-24"></i>
-                    </button>
-                  </div>
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="page-title-box d-flex align-items-center justify-content-between">
+        <h4 class="mb-0 font-size-18"> Pipelines </h4>
+        <div class="page-title-right">
+          <button type="button" class="btn btn-primary btn-rounded">
+            Add pipeline
+          </button>
+        </div>
       </div>
+    </div>
+  </div>
 
+  <div class="row">
+    <div class="col-lg-12">
+      <app-custom-table [columnsInfo]="columnsInfo" [dataSource]="pipelines">
+      </app-custom-table>
     </div>
   </div>
 </div>
-
-<ng-template #centerDataModal let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title mt-0">Are you sure?</h5>
-    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
-  </div>
-  <div class="modal-body">
-    <p>This content will be deleted permenantly.</p>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">No</button>
-    <button type="button" class="btn btn-primary">Yes</button>
-  </div>
-</ng-template>

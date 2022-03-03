@@ -66,7 +66,7 @@ export const LMS_MENU: MenuItem[] = [
     {
         id: 11,
         label: 'LMS.SIDEBAR.PROPOSALS',
-        icon: 'bx-home-circle',
+        icon: 'mdi mdi-hexagon-outline',
         subItems: [
             {
                 id: 12,

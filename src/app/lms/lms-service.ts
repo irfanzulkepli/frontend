@@ -46,3 +46,13 @@ export class LMSService {
         return ORGANIZATION;
     }
 }
+
+export interface ColumnsInfo {
+    displayName: string;
+    columnDef: string;
+    type: string;
+    badgePosition?: string;
+    isList?: boolean;
+    showIcon?: boolean;
+    iconList?: Array<any>;
+}

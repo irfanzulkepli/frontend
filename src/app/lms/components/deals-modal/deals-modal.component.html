@@ -1,0 +1,92 @@
+<form [formGroup]="dealForm">
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">{{ dealDatas ? 'Edit' : 'Add' }} Deal</h5>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="activeModal.close()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group row mb-3">
+      <label for="formDealTitleInput" class="col-sm-2 col-form-label">Title</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="formDealTitleInput" placeholder="Enter deal title"
+          formControlName="title">
+      </div>
+    </div>
+    <div class="form-group row mb-3">
+      <label for="formDescriptionInput" class="col-sm-2 col-form-label">Description</label>
+      <div class="col-sm-10">
+        <textarea class="form-control text-muted" id="formDescriptionInput" rows="3" placeholder="Enter description"
+          formControlName="description"></textarea>
+      </div>
+    </div>
+    <div class="form-group row mb-3">
+      <label for="formLeadTypeInput" class="col-sm-2 col-form-label text-nowrap">Lead Type</label>
+      <div class="col-sm-10 d-flex align-items-center">
+        <div class="form-check form-check-inline" *ngFor="let lead of leadTypes">
+          <input class="form-check-input" type="radio" id="inlineRadio1" [value]="lead" formControlName="leadType">
+          <label class="form-check-label" for="inlineRadio1">{{ lead }}</label>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row mb-3">
+      <label for="formLeadTypeInput" class="col-sm-2 col-form-label text-nowrap">Person</label>
+      <div class="col-sm-10 d-flex align-items-center">
+        <mat-select class="form-select" formControlName="person" placeholder="Choose a contact person">
+          <mat-option>
+            <ngx-mat-select-search [formControl]="personFilterCtrl" placeholderLabel="Search"
+              noEntriesFoundLabel="No Results"></ngx-mat-select-search>
+          </mat-option>
+          <mat-option *ngFor="let person of filteredPerson | async" [value]="person.id">
+            {{person.name}}
+          </mat-option>
+        </mat-select>
+      </div>
+    </div>
+    <div class="form-group row mb-3">
+      <label for="formDealValueInput" class="col-sm-2 col-form-label">Deal Value</label>
+      <div class="col-sm-10">
+        <input type="number" class="form-control" id="formDealValueInput" placeholder="Enter Deal Value"
+          formControlName="dealValue">
+      </div>
+    </div>
+    <div class="form-group row mb-3">
+      <label for="formLeadTypeInput" class="col-sm-2 col-form-label text-nowrap">Pipeline</label>
+      <div class="col-sm-10 d-flex align-items-center">
+        <select class="form-select" formControlName="pipeline">
+          <option hidden value="">Pipeline</option>
+          <option *ngFor="let pipelineOption of pipeline" [value]="pipelineOption.id">{{ pipelineOption.name }}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row mb-3">
+      <label for="formStageTypeInput" class="col-sm-2 col-form-label text-nowrap">Stage</label>
+      <div class="col-sm-10 d-flex align-items-center">
+        <select class="form-select" formControlName="stage">
+          <option hidden value="">Stage</option>
+          <option *ngFor="let stage of stageTypes" [value]="stage.id">{{ stage.name }}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row mb-3">
+      <label for="formExpClosingDateInput" class="col-sm-2 col-form-label">Expecting Closing Date</label>
+      <div class="col-sm-10 d-flex align-items-center">
+        <input class="form-control" type="date" id="formExpClosingDateInput" formControlName="expectedClosingDate"
+          placeholder="Choose a date">
+      </div>
+    </div>
+    <div class="form-group row mb-3">
+      <label for="formLeadTypeInput" class="col-sm-2 col-form-label text-nowrap">Owner</label>
+      <div class="col-sm-10 d-flex align-items-center">
+        <select class="form-select" formControlName="owner">
+          <option hidden value="">Owner</option>
+          <option *ngFor="let user of userData" [value]="user.id">
+            {{ user.fullName }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="onCancelClick()">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="onSaveClick()">Save</button>
+  </div>
+</form>

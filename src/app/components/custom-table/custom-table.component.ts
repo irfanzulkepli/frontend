@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-custom-table',
@@ -89,5 +90,9 @@ export class CustomTableComponent implements OnInit {
         break;
       }
     }
+  }
+
+  convert24HTo12H(timestring: string) {
+    return moment(timestring, 'HH:mm:ss').format('hh:mm A');
   }
 }

@@ -10,9 +10,12 @@ import { USER } from '../../data/user-data';
 import { TAGS } from '../../data/tags-data';
 import { ALLDEALS } from '../../data/all-deals.data';
 import { ProfileModalComponent } from '../profile-modal/profile-modal.component';
-import {MatChipInputEvent} from '@angular/material/chips';
-import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { LOSTREASONS } from '../../data/lost-reasons';
+import { DealsModalComponent } from '../../components/deals-modal/deals-modal.component';
+import { DeleteModalComponent } from '../../components/delete-modal/delete-modal.component';
+import { ActivityModalComponent } from '../../components/activity-modal/activity-modal.component';
 
 @Component({
   selector: 'app-pipeline-view-card',
@@ -28,26 +31,19 @@ export class PipelineViewCardComponent implements OnInit {
   public leadTypes: string[] = ["Person", "Organization"];
   public stageTypes: any[] = [
     { id: 0, name: "Lead generation" },
-    { id: 1, name: "Lead nurturing"},
-    { id: 2, name: "Marketing qualified lead"},
-    { id: 3, name: "Sales accepted lead"},
-    { id: 4, name: "Sales qualified lead"},
-    { id: 5, name: "Closed deals"},
-    { id: 6, name: "Post-sale"}
+    { id: 1, name: "Lead nurturing" },
+    { id: 2, name: "Marketing qualified lead" },
+    { id: 3, name: "Sales accepted lead" },
+    { id: 4, name: "Sales qualified lead" },
+    { id: 5, name: "Closed deals" },
+    { id: 6, name: "Post-sale" }
   ];
-  public activities: string[] = ["Call", "Meeting", "Email", "Task", "Deadline", "Others", ]
-  public activityTypes: string[] = ["Deal", "Person", "Organization"]
-  public dateTime = new Date();
-  public currentDate = this.dateTime.toISOString().substring(0,10);
-  public currentTime = this.dateTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
-  public endDateTime = new Date(this.dateTime.getTime() + 15*60000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
-
   // mat chip tags
   visible = true;
   selectable = true;
   removable = true;
-/*set the separator keys.*/
-  readonly separatorKeysCodes: number[] = [ENTER, COMMA];  
+  /*set the separator keys.*/
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   tempTags: string[] = [];
 
   public person: Person[] = PERSON;
@@ -59,11 +55,6 @@ export class PipelineViewCardComponent implements OnInit {
   public tagsCtrl: FormControl = new FormControl();
   public tagsFilterCtrl: FormControl = new FormControl();
   public filteredTags: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-
-  protected dealTitle: any[] = ALLDEALS;
-  public dealTitlesCtrl: FormControl = new FormControl();
-  public dealTitleFilterCtrl: FormControl = new FormControl();
-  public filteredDealTitles: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
   @ViewChild('singleSelect') singleSelect: MatSelect;
   @Input() cardData;
@@ -92,16 +83,6 @@ export class PipelineViewCardComponent implements OnInit {
       .subscribe(() => {
         this.filterTags();
       });
-
-    // load the initial deal title list
-    this.filteredDealTitles.next(this.dealTitle.slice());
-
-    // listen for search field value changes
-    this.dealTitleFilterCtrl.valueChanges
-      .pipe(takeUntil(this._onDestroy))
-      .subscribe(() => {
-        this.filterDealsTitle();
-      });
   }
 
   ngAfterViewInit() {
@@ -113,44 +94,22 @@ export class PipelineViewCardComponent implements OnInit {
     this._onDestroy.complete();
   }
 
-    /**
-     * Sets the initial value after the filteredPerson are loaded initially
-     */
+  /**
+   * Sets the initial value after the filteredPerson are loaded initially
+   */
   protected setInitialValue() {
     this.filteredPerson
-    .pipe(take(1), takeUntil(this._onDestroy))
-    .subscribe(() => {
-      // setting the compareWith property to a comparison function
-      // triggers initializing the selection according to the initial value of
-      // the form control (i.e. _initializeSelection())
-      // this needs to be done after the filteredBanks are loaded initially
-      // and after the mat-option elements are available
-      this.singleSelect.compareWith = (a: Person, b: Person) => a && b && a.id === b.id;
+      .pipe(take(1), takeUntil(this._onDestroy))
+      .subscribe(() => {
+        // setting the compareWith property to a comparison function
+        // triggers initializing the selection according to the initial value of
+        // the form control (i.e. _initializeSelection())
+        // this needs to be done after the filteredBanks are loaded initially
+        // and after the mat-option elements are available
+        this.singleSelect.compareWith = (a: Person, b: Person) => a && b && a.id === b.id;
       });
+  }
 
-    this.filteredTags
-    .pipe(take(1), takeUntil(this._onDestroy))
-    .subscribe(() => {
-      // setting the compareWith property to a comparison function
-      // triggers initializing the selection according to the initial value of
-      // the form control (i.e. _initializeSelection())
-      // this needs to be done after the filteredBanks are loaded initially
-      // and after the mat-option elements are available
-      this.singleSelect.compareWith = (a: Person, b: Person) => a && b && a.id === b.id;
-      });
-
-    this.filteredDealTitles
-    .pipe(take(1), takeUntil(this._onDestroy))
-    .subscribe(() => {
-      // setting the compareWith property to a comparison function
-      // triggers initializing the selection according to the initial value of
-      // the form control (i.e. _initializeSelection())
-      // this needs to be done after the filteredBanks are loaded initially
-      // and after the mat-option elements are available
-      this.singleSelect.compareWith = (a: Person, b: Person) => a && b && a.id === b.id;
-      });
-    }
-  
   protected filterPerson() {
     if (!this.person) {
       return;
@@ -187,38 +146,24 @@ export class PipelineViewCardComponent implements OnInit {
     );
   }
 
-  protected filterDealsTitle() {
-    if (!this.dealTitle) {
-      return;
-    }
-    // get the search keyword
-    let search = this.dealTitleFilterCtrl.value;
-    if (!search) {
-      this.filteredDealTitles.next(this.dealTitle.slice());
-      return;
-    } else {
-      search = search.toLowerCase();
-    }
-    // filter the tag
-    this.filteredDealTitles.next(
-      this.dealTitle.filter(dealTitle => dealTitle.name.toLowerCase().indexOf(search) > -1)
-    );
-  }
-
-  participantsControl = new FormControl([]);
-  collaboratorsControl = new FormControl([]);
   personControl = new FormControl([]);
 
-  onParticipantRemoved(participant: string) {
-    const participants = this.participantsControl.value as string[];
-    this.removeFirst(participants, participant);
-    this.participantsControl.setValue(participants); // To trigger change detection
-  }
+  getInitials(name: string) {
+    if (name) {
+      const fullName = name.split(' ');
 
-  onCollaboratorRemoved(collaborator: string) {
-    const collaborators = this.collaboratorsControl.value as string[];
-    this.removeFirst(collaborators, collaborator);
-    this.collaboratorsControl.setValue(collaborators); // To trigger change detection
+      let initials;
+      if (fullName.length > 1) {
+        initials = fullName.shift().charAt(0) + fullName.pop().charAt(0);
+      }
+      else {
+        initials = fullName.shift().charAt(0);
+      }
+      return initials.toUpperCase();
+    }
+    else {
+      return 'AZ';
+    }
   }
 
   onPersonRemoved(person: string) {
@@ -234,27 +179,17 @@ export class PipelineViewCardComponent implements OnInit {
     }
   }
 
-  addMinutes(minutes) {
-    const newDateTime = new Date(this.dateTime.getTime() + parseInt(minutes)*60000);
-    const newDate = newDateTime.toISOString().substring(0,10);
-    const newTime = newDateTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
-    (<HTMLInputElement>document.getElementById('endDateInput')).value = newDate;
-    (<HTMLInputElement>document.getElementById('endTimeInput')).value = newTime;
-}
-
-  getInitials(fullName: string) {
-    const splitName = fullName.split(' ')
-    const ownerInitials = splitName[0].charAt(0) + splitName[1].charAt(0);
-    return ownerInitials.toUpperCase();
-  }
-
   openProfile() {
-    const modalRef = this.modalService.open(ProfileModalComponent, { size: 'xl'});
+    const modalRef = this.modalService.open(ProfileModalComponent, { size: 'xl' });
     (<ProfileModalComponent>modalRef.componentInstance).inputData = this.cardData;
   }
 
-  activityModal(content: any) {
-    this.modalService.open(content, {size: 'lg'});
+  activityModal() {
+    const modalRef = this.modalService.open(ActivityModalComponent, { size: 'lg', scrollable: true });
+    modalRef.componentInstance.activityData = this.cardData;
+    modalRef.componentInstance.isEdit = false;
+
+    modalRef.result.then(result => result);
   }
 
   /**
@@ -263,6 +198,19 @@ export class PipelineViewCardComponent implements OnInit {
    */
   openModal(content: any) {
     this.modalService.open(content);
+  }
+
+  openEditModal(cardData) {
+    const modalRef = this.modalService.open(DealsModalComponent);
+    modalRef.componentInstance.dealDatas = cardData;
+
+    modalRef.result.then(data => console.log('data: ', data));
+  }
+
+  openDeleteModal() {
+    const modalRef = this.modalService.open(DeleteModalComponent);
+
+    modalRef.result.then(result => console.log(result));
   }
 
   /**
