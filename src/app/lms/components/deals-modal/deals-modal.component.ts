@@ -71,12 +71,12 @@ export class DealsModalComponent implements OnInit {
         title: formValue.title ? formValue.title : '',
         description: formValue.description ? formValue.description : '',
         dealValue: formValue.value ? formValue.value : '',
-        pipeline: formValue.pipelineId ? formValue.pipelineId : '',
-        stage: formValue.stageId ? formValue.stageId : '',
-        owner: formValue.ownerId ? formValue.ownerId : '',
+        pipeline: formValue.pipelines.id ? formValue.pipelines.id : '',
+        stage: formValue.stages.id ? formValue.stages.id : '',
+        owner: formValue.owner.id ? formValue.owner.id : '',
         leadType: leadTypeIndicator ? 'Person' : 'Organization',
         expectedClosingDate: formValue.expiredAt ? moment(formValue.expiredAt, 'YYYY-MM-DD HH:mm:ss').format('DD/MM/YYYY') : '',
-        person: formValue.contactPerson[0]?.id ? formValue.contactPerson[0]?.id : ''
+        person: formValue.createdBy.id ? formValue.createdBy.id : ''
       });
 
       console.log('dealForm: ', this.dealForm);

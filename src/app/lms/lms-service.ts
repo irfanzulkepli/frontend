@@ -1,7 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-
-import { Subject, Subscription } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { COUNTRY } from './data/country-data';
 import { LEADTYPES } from './data/lead-type-data';
 import { ORGANIZATION } from './data/organization-data';
@@ -10,11 +10,14 @@ import { TAGS } from './data/tags-data';
 import { TYPE } from './data/type-data';
 import { USER } from './data/user-data';
 
+
 @Injectable({
     providedIn: 'root'
 })
 export class LMSService {
-    constructor() {
+    constructor(
+        private httpClient: HttpClient
+    ) {
 
     }
 
@@ -44,6 +47,14 @@ export class LMSService {
 
     getOrganizations() {
         return ORGANIZATION;
+    }
+
+    getStagesList(): Observable<any> {
+        return this.httpClient.get(environment.baseUrl + '/stages/list');
+    }
+
+    getUsersList(): Observable<any> {
+        return this.httpClient.get(environment.baseUrl + '/users/list');
     }
 }
 

@@ -3,6 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DeleteModalComponent } from '../../components/delete-modal/delete-modal.component';
 import { PIPELINES } from '../../data/pipelines.data';
 import { ColumnsInfo } from '../../lms-service';
+import { PipelinesService } from '../pipelines.service';
 
 @Component({
   selector: 'app-pipelines',
@@ -57,10 +58,28 @@ export class PipelinesComponent implements OnInit {
   ];
 
   public pipelines = PIPELINES;
+  public pipelinesData: any = {};
 
-  constructor(private modalService: NgbModal) { }
+  constructor(
+    private modalService: NgbModal,
+    private pipelinesService: PipelinesService
+  ) { }
 
   ngOnInit() {
+    this.getPipelines();
+  }
+
+  getPipelines() {
+    this.pipelines = [];
+    this.modalService.dismissAll();
+    this.pipelinesService.getPipelinesPage().subscribe({
+      next: (n) => {
+        this.pipelines = n.payload;
+        // this.pipelines = PIPELINES;
+      },
+      error: (e) => { },
+      complete: () => { }
+    })
   }
 
   /**
@@ -71,6 +90,16 @@ export class PipelinesComponent implements OnInit {
     const modalRef = this.modalService.open(DeleteModalComponent, { centered: true });
 
     modalRef.result.then(result => result);
+  }
+
+  deletePipeliines() {
+    this.pipelinesService.deletePipelines(this.pipelinesData.id).subscribe({
+      next: (n) => {
+        this.getPipelines();
+      },
+      error: (e) => { },
+      complete: () => { }
+    })
   }
 
 }

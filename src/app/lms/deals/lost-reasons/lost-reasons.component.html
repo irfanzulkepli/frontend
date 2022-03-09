@@ -28,15 +28,17 @@
     <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-    <div class="form-group row mb-3">
-      <label for="formDealTitleInput" class="col-sm-2 col-form-label">Name</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" id="formDealTitleInput" placeholder="Enter name" value="TODO">
+    <form>
+      <div class="form-group row mb-3">
+        <label for="formDealTitleInput" class="col-sm-2 col-form-label">Name</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="formDealTitleInput" placeholder="Enter name" value="TODO">
+        </div>
       </div>
-    </div>
+    </form>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cancel</button>
-    <button type="button" class="btn btn-primary">Save</button>
+    <button type="button" class="btn btn-primary" (click)="updateLostReasons()">Save</button>
   </div>
 </ng-template>

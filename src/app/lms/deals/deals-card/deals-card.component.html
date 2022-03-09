@@ -8,7 +8,7 @@
       <div class="media-body">
         <h5 class="font-size-15 text-primary mt-0 mb-1" (click)="openProfile()" style="cursor: pointer;">{{
           cardData.title }}</h5>
-        <h5><span class="badge rounded-pill bg-primary">{{ cardData.status.translatedName }}</span></h5>
+        <h5><span class="badge rounded-pill bg-primary">{{ cardData.statuses.name }}</span></h5>
       </div>
       <div ngbDropdown>
         <div class="btn-group ms-auto">
@@ -31,7 +31,7 @@
       <div class="d-flex align-items-center">
         <span class="avatar bg-dark text-white rounded-circle d-flex align-items-center justify-content-center"
           style="width: 32px;height: 32px;">{{ getInitials() }}</span>
-        <P class="p-2 ml-2 mb-0">{{ cardData.owner.fullName }}</P>
+        <P class="p-2 ml-2 mb-0">{{ cardData.owner.firstName }} {{ cardData.owner.lastName }}</P>
       </div>
       <p class="text-info text-nowrap mb-0">$ {{ cardData.value | number : '1.2-2' }}</p>
     </li>
@@ -60,6 +60,6 @@
   <!-- Footer -->
   <div class="card-footer bg-transparent border-top ">
     <p class="text-muted">Comment <span class="badge bg-light">0 TODO</span></p>
-    <p class="text-muted">Proposal <span class="badge bg-light">{{ cardData.proposals.length }}</span></p>
+    <!-- <p class="text-muted">Proposal <span class="badge bg-light">{{ cardData.proposals.length }}</span></p> -->
   </div>
 </div>
