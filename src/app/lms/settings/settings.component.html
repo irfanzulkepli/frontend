@@ -1,3 +1,546 @@
-<p>
-  settings works!
-</p>
+<div class="vertical tab">
+  <div class="row no-gutters">
+    <div class="col-md-3 pr-md-3 tab-menu">
+      <div class="card">
+        <div class="header-icon mt-5 mb-4">
+          <div class="icon-position d-flex justify-content-center">
+            <div class="tab-icon d-flex justify-content-center align-items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+              stroke-linejoin="round" class="feather feather-settings">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 
+                1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65
+                1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 
+                1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 
+                2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-center">
+          <ul ngbNav #nav="ngbNav" [activeId]="1" class="nav-tabs nav-tabs-custom nav-justified" orientation="vertical">
+            <li [ngbNavItem]="1" class="mb-2">
+              <a ngbNavLink>General</a>
+              <ng-template ngbNavContent>
+                <ng-template [ngTemplateOutlet]="generalTab"></ng-template>
+              </ng-template>
+            </li>
+            <li [ngbNavItem]="2" class="mb-2">
+              <a ngbNavLink>Custom Fields</a>
+              <ng-template ngbNavContent>
+                <ng-template [ngTemplateOutlet]="customTab"></ng-template>
+              </ng-template>
+            </li>
+            <li [ngbNavItem]="3" class="mb-2">
+              <a ngbNavLink>Email Setup</a>
+              <ng-template ngbNavContent>
+                <ng-template [ngTemplateOutlet]="emailTab"></ng-template>
+              </ng-template>
+            </li>
+            <li [ngbNavItem]="4" class="mb-2">
+              <a ngbNavLink>Broadcast Setup</a>
+              <ng-template ngbNavContent>
+                <ng-template [ngTemplateOutlet]="broadCastTab"></ng-template>
+              </ng-template>
+            </li>
+            <li [ngbNavItem]="5" class="mb-2">
+              <a ngbNavLink>Notification</a>
+              <ng-template ngbNavContent>
+                <ng-template [ngTemplateOutlet]="notificationTab"></ng-template>
+              </ng-template>
+            </li>
+            <li [ngbNavItem]="6" class="mb-2">
+              <a ngbNavLink>Update</a>
+              <ng-template ngbNavContent>
+                <ng-template [ngTemplateOutlet]="updateTab"></ng-template>
+              </ng-template>
+            </li>
+          </ul>
+        </div>
+    </div>
+  </div>
+
+  <div class="col-md-9 pl-md-3 pt-md-0 pt-sm-4 pt-4">
+    <div class="card">
+      <div class="card-header bg-white mt-3 mb-3 border-bottom">
+        <h3>General TODO</h3>
+      </div>
+      <div class="tab-content px-primary">
+        <div [ngbNavOutlet]="nav" class="card-body ms-4 mt-3 mb-3"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #generalTab ngbNavContent>
+  <div class="row">
+    <legend class="col-12 col-form-label text-primary pt-0 mb-3">Company Info</legend>
+    <div class="col-md-12">
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">Company name</label>
+        <div class="col-sm-8">
+          <input type="text" name="appSettings_company_name" id="appSettings_company_name" required="required" placeholder="Type your company name" class="form-control ">
+        </div>
+      </div>
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">Company logo<br>
+          <small class="text-muted font-italic">(Recommended size: 210 x 50 px)</small>
+        </label>
+        <div class="col-sm-8">
+          <div>
+            <div class="custom-image-upload-wrapper">
+              <div class="image-area">
+                <img src="not-found.png" alt="">
+              </div>
+              <div class="input-area">
+                <input id="appSettings_company_logo" type="file" class="custom-file-input">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">Company icon<br>
+          <small class="text-muted font-italic">(Recommended size: 50 x 50 px)</small>
+        </label>
+        <div class="col-sm-8">
+          <div>
+            <div class="custom-image-upload-wrapper">
+              <div class="image-area">
+                <img src="not-found.png" alt="">
+              </div>
+              <div class="input-area">
+                <input id="appSettings_company_logo" type="file" class="custom-file-input">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">Company banner<br>
+          <small class="text-muted font-italic">(Recommended size: 1920 x 1080 px)</small>
+        </label>
+        <div class="col-sm-8">
+          <div>
+            <div class="custom-image-upload-wrapper">
+              <div class="image-area">
+                <img src="not-found.png" alt="">
+              </div>
+              <div class="input-area">
+                <input id="appSettings_company_logo" type="file" class="custom-file-input">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">Language</label>
+        <div class="col-sm-8">
+          <select class="form-select">
+            <option>Custom</option>
+            <option selected>English</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-5">
+    <legend class="col-12 col-form-label text-primary pt-0 mb-3">Date and time setting</legend>
+    <div class="col-md-12">
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">Date Format</label>
+        <div class="col-sm-9">
+          <select class="form-select">
+            <option selected>DD-MM-YYYY</option>
+            <option>MM-DD-YYYY</option>
+            <option>YYYY-MM-DD</option>
+            <option>MM/DD/YYYY</option>
+            <option>DD/MM/YYYY</option>
+            <option>YYYY/MM/DD</option>
+            <option>MM.DD.YYYY</option>
+            <option>DD.MM.YYY</option>
+            <option>YYYY.MM.DD</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">Time format</label>
+        <div class="col-sm-9">
+          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <input type="radio" class="btn-check" name="tfbtnradio" id="btnradio1" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="btnradio1">12 HOURS</label>
+          
+            <input type="radio" class="btn-check" name="tfbtnradio" id="btnradio2" autocomplete="off">
+            <label class="btn btn-outline-primary" for="btnradio2">24 HOURS</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">Time zone</label>
+        <div class="col-sm-9">
+          <select class="form-select">
+            <option *ngFor="let timezone of country">{{timezone.value}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-5">
+    <legend class="col-12 col-form-label text-primary pt-0 mb-3">Currency Setting</legend>
+    <div class="col-md-12">
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">Currency symbol</label>
+        <div class="col-sm-9">
+          <input type="text" required="required" class="form-control" value="$">
+        </div>
+      </div>
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">Decimal separator</label>
+        <div class="col-sm-9">
+          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <input type="radio" class="btn-check" name="dsbtnradio" id="btnradio3" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="btnradio6">DOT (.)</label>
+          
+            <input type="radio" class="btn-check" name="dsbtnradio" id="btnradio4" autocomplete="off">
+            <label class="btn btn-outline-primary" for="btnradio5">COMMA (,)</label>
+          </div>
+        </div>
+      </div> 
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">Thousand separator</label>
+        <div class="col-sm-9">
+          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <input type="radio" class="btn-check" name="tsbtnradio" id="btnradio5" autocomplete="off">
+            <label class="btn btn-outline-primary" for="btnradio4">DOT (.)</label>
+          
+            <input type="radio" class="btn-check" name="tsbtnradio" id="btnradio6" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="btnradio3">COMMA (,)</label>
+
+            <input type="radio" class="btn-check" name="tsbtnradio" id="btnradio7" autocomplete="off">
+            <label class="btn btn-outline-primary" for="btnradio7">SPACE</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">Number of decimal</label>
+        <div class="col-sm-9">
+          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <input type="radio" class="btn-check" name="ndbtnradio" id="btnradio8" autocomplete="off">
+            <label class="btn btn-outline-primary" for="btnradio8">ZERO (0)</label>
+          
+            <input type="radio" class="btn-check" name="ndbtnradio" id="btnradio9" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="btnradio9">TWO (2)</label>
+          </div>
+        </div>
+      </div> 
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">Currency position</label>
+        <div class="col-sm-9">
+          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <input type="radio" class="btn-check" name="cpbtnradio" id="btnradio10" autocomplete="off">
+            <label class="btn btn-outline-primary" for="btnradio10">$1,100.00</label>
+          
+            <input type="radio" class="btn-check" name="cpbtnradio" id="btnradio11" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="btnradio11">$ 1,100.00</label>
+
+            <input type="radio" class="btn-check" name="cpbtnradio" id="btnradio12" autocomplete="off">
+            <label class="btn btn-outline-primary" for="btnradio12">1,100.00$</label>
+
+            <input type="radio" class="btn-check" name="cpbtnradio" id="btnradio13" autocomplete="off">
+            <label class="btn btn-outline-primary" for="btnradio13">1,100.00 $</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" class="btn btn-primary mt-5">Save</button>
+</ng-template>
+
+<ng-template #customTab ngbNavContent>
+  <div style="float: right;">
+    <form>
+      <input type="text" placeholder="Search" matInput>
+    </form>
+  </div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Context</th>
+        <th scope="col" style="text-align: right">Action</th>
+      </tr>
+    </thead>
+  </table>
+  <div class="d-flex flex-column align-items-center">
+    <h5>Nothing to show here</h5>
+    <p>Please add a new entity or manage the data table to see the content here</p>
+    <p>Thank You</p>
+  </div>
+</ng-template>
+
+<ng-template #emailTab ngbNavContent>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">Selected mail services</label>
+        <div class="col-sm-8">
+          <select class="form-select">
+            <option>Choose one</option>
+            <option>Amazon SES</option>
+            <option>Mailgun</option>
+            <option selected>SMTP</option>
+            <option>Sendmail</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">Email sent from name</label>
+        <div class="col-sm-8">
+          <input type="text" required="required" placeholder="Type email sent from name" 
+          value="{{emailSetup.fromName}}" class="form-control">
+        </div>
+      </div>
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">Email sent from email</label>
+        <div class="col-sm-8">
+          <input type="text" required="required" placeholder="Type email sent from email"
+          value="{{emailSetup.fromEmail}}" class="form-control ">
+        </div>
+      </div>
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">User name</label>
+        <div class="col-sm-8">
+          <input type="text" required="required" placeholder="User name"
+          value="{{emailSetup.smtpUserName}}" class="form-control ">
+        </div>
+      </div>
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">SMTP host</label>
+        <div class="col-sm-8">
+          <input type="text" required="required" placeholder="Type SMTP host"
+          value="{{emailSetup.smtpHost}}" class="form-control ">
+        </div>
+      </div>
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">Port</label>
+        <div class="col-sm-8">
+          <input type="number" class="form-control" value="{{emailSetup.smtpPort}}">
+        </div>
+      </div>
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">Password to access</label>
+        <div class="col-sm-8">
+          <input type="password" required="required" placeholder="Type password to access"
+          value="{{emailSetup.emailPassword}}" class="form-control ">
+        </div>
+      </div>
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">Encryption type</label>
+        <div class="col-sm-8">
+          <select class="form-select">
+            <option>Choose one</option>
+            <option selected>TLS</option>
+            <option>SSL</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #broadCastTab ngbNavContent>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">Broadcast driver</label>
+        <div class="col-sm-8">
+          <select class="form-select">
+            <option>Choose one</option>
+            <option selected>Pusher</option>
+            <option>Ajax</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">Pusher App Id</label>
+        <div class="col-sm-8">
+          <input type="text" required="required" placeholder="Pusher App Id" 
+          value="{{broadcast.pusherAppId}}" class="form-control">
+        </div>
+      </div>
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">Pusher App Key</label>
+        <div class="col-sm-8">
+          <input type="text" required="required" placeholder="Pusher App Key"
+          value="{{broadcast.pusherAppKey}}" class="form-control ">
+        </div>
+      </div>
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">Pusher App Secret</label>
+        <div class="col-sm-8">
+          <input type="text" required="required" placeholder="Pusher App Secret"
+          value="{{broadcast.pusherAppSecret}}" class="form-control ">
+        </div>
+      </div>
+      <div class="form-group row mb-2">
+        <label class="col-sm-3 col-form-label">Pusher App Cluster</label>
+        <div class="col-sm-8">
+          <input type="text" required="required" placeholder="Pusher App Cluster"
+          value="{{broadcast.pusherAppCluster}}" class="form-control ">
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #notificationTab ngbNavContent>
+  <input class="form" type="text" name="searchTerm" placeholder="Search" style="float: right;"
+  [(ngModel)]="searchTerm" (input)="search($event.target.value)"/>
+  <table class="table table-striped table-bordered table-sm row-border hover" id="datatableexample">
+    <thead>
+      <tr>
+        <th>Event Name</th>
+        <th>Notification channel</th>
+        <th>Templates</th>
+        <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let notification of notificationsData | listFilter: searchTerm">
+          <td>{{notification.translatedName}}</td>
+          <td>
+            <h5>
+              <span class="badge rounded-pill bg-primary">{{getNotificationChannel(notification)[0]}}</span>&nbsp;
+              <span class="badge rounded-pill bg-success">{{getNotificationChannel(notification)[1]}}</span>
+            </h5>
+          </td>
+          <td>
+            <button class="btn btn-primary d-flex align-items-center" (click)="openModal(updateContent)">
+              <i class="bx bxl-trello"></i>Update</button>
+          </td>
+          <td><button class="btn" (click)="openModal(settingContent)"><i class="bx bx-cog"></i></button></td>
+      </tr>
+    </tbody>
+  </table>
+</ng-template>
+
+<ng-template #updateTab ngbNavContent>
+  <p>To be Available</p>
+</ng-template>
+
+<ng-template #updateContent let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Template : TODO</h5>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="activeModal.close()"></button>
+  </div>
+
+  <div class="modal-body">
+    <mat-tab-group>
+      <mat-tab label="System">
+        <div class="card">
+          <div class="card-body">
+            <h4>Contents</h4>
+            <input #updateContent type="text" name="template_custom_content" id="database-template-title" required="required" 
+            placeholder="" value="todo" autocomplete="off" class="form-control">
+          </div>
+          <div class="d-flex justify-content-center">
+            <button class="btn btn-primary" (click)="addName()">name</button>
+            <button class="btn btn-primary" (click)="addBrand_name()">brand_name</button>
+            <button class="btn btn-primary" (click)="addAction_by()">action_by</button>
+          </div>
+        </div>
+      </mat-tab>
+      
+      <mat-tab label="Mail">
+        <div class="card">
+          <div class="card-body">
+            <div>
+              <h4>Mail Subject</h4>
+              <span class="text-muted font-size-90">This field will be used as the email subject and identify the template</span>
+              <input #updateContent2 type="text" name="template_custom_content" id="database-template-title" required="required" 
+              placeholder="" value="notificationsData.templates[0].subject" autocomplete="off" class="form-control">
+            </div>
+            <div class="mt-2">
+              <h4>Contents</h4>
+              <textarea class="form-control" id="FormControlTextarea" rows="3"></textarea>
+            </div>
+            <div class="d-flex justify-content-center">
+              <button class="btn btn-primary" (click)="addName()">name</button>
+              <button class="btn btn-primary" (click)="addBrand_name()">brand_name</button>
+              <button class="btn btn-primary" (click)="addAction_by()">action_by</button>
+            </div>
+          </div>
+        </div>      
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light">Cancel</button>
+    <button type="button" class="btn btn-primary">Save</button>
+  </div>
+</ng-template>
+
+<ng-template #settingContent let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Settings : TODO</h5>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="activeModal.close()"></button>
+  </div>
+
+  <div class="modal-body form-group">
+    <label for="notificationChannelInput" class="col-sm-2 col-form-label">Notifiction channel</label>
+    <mat-select class="form-control chip-bg" placeholder=" + Add" [formControl]="notificationCtrl" multiple>
+      <mat-select-trigger>
+        <mat-chip-list>
+          <mat-chip *ngFor="let notificaton of notificationCtrl.value"
+            [removable]="true" (removed)="onNotificationRemoved(notificaton)">
+            {{ notificaton }}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+        </mat-chip-list>
+      </mat-select-trigger>
+      <mat-option *ngFor="let notificaton of notificatonChannel" [value]="notificaton">{{notificaton}}</mat-option>
+    </mat-select>
+
+    <div class="row mt-3">
+      <label for="notificationRolesInput" class="col-form-label">Notifiction audiences</label>
+      <span>Roles</span>
+    </div>
+    <mat-select class="form-control chip-bg" placeholder=" + Add" [formControl]="notificationRolesCtrl" multiple>
+      <mat-select-trigger>
+        <mat-chip-list>
+          <mat-chip *ngFor="let role of notificationRolesCtrl.value"
+            [removable]="true" (removed)="onRolesRemoved(role)">
+            {{ role }}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+        </mat-chip-list>
+      </mat-select-trigger>
+      <mat-option *ngFor="let role of notificationRoles" [value]="role">{{role}}</mat-option>
+    </mat-select>
+
+    <label for="notificationUsersInput" class="col-sm-2 col-form-label">User</label>
+    <mat-select class="form-control chip-bg" placeholder=" + Add" [formControl]="notificationUsersCtrl" multiple>
+      <mat-select-trigger>
+        <mat-chip-list>
+          <mat-chip *ngFor="let user of notificationUsers"
+            [removable]="true" (removed)="onUsersRemoved(user)">
+            {{ user }}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+        </mat-chip-list>
+      </mat-select-trigger>
+      <mat-option *ngFor="let user of notificationUsers" [value]="user">{{user}}</mat-option>
+    </mat-select>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light">Cancel</button>
+    <button type="button" class="btn btn-primary">Save</button>
+  </div>
+
+</ng-template>
