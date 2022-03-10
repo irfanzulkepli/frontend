@@ -31,18 +31,6 @@ export class DealsCardComponent implements OnInit, OnDestroy {
   /** Subject that emits when the component has been destroyed. */
   protected _onDestroy = new Subject<void>();
 
-  form = new FormGroup({
-    id: new FormControl(''),
-    title: new FormControl(''),
-    description: new FormControl(''),
-    createdById: new FormControl(''),
-    value: new FormControl(''),
-    pipelinesId: new FormControl(''),
-    stagesId: new FormControl(''),
-    expiredAt: new FormControl(''),
-    ownerId: new FormControl('')
-  });
-
   constructor(
     private modalService: NgbModal,
     private dealsService: DealsService
@@ -81,47 +69,24 @@ export class DealsCardComponent implements OnInit, OnDestroy {
   }
 
   editModal() {
-    const modalRef = this.modalService.open(DealsModalComponent);
+    const modalRef = this.modalService.open(DealsModalComponent, { centered: true });
 
     modalRef.componentInstance.dealDatas = this.cardData;
-    modalRef.result.then(result => console.log('result: ', result));
+    modalRef.result.then(result => {
+      if (result === true){
+        this.refreshData();
+      }
+    });
   }
 
   deleteModal() {
     const modalRef = this.modalService.open(DeleteModal2Component, { centered: true });
 
-    modalRef.result.then(result => console.log('result: ', result));
-  }
-
-  getDeals() {
-    this.dealsService.getDealsById(this.cardData.id).subscribe({
-      next: (n) => {
-        console.log(n);
-        this.form.patchValue({
-          id: n.id,
-          title: n.title,
-          description: n.description,
-          createdById: n.createdBy?.id,
-          value: n.value,
-          pipelinesId: n.pipelines?.id,
-          stagesId: n.stages?.id,
-          expiredAt: n.expiredAt,
-          ownerId: n.owner?.id
-        })
-      },
-      error: (e) => { },
-      complete: () => { }
-    })
-  }
-
-  updateDeals() {
-    this.dealsService.updateDeals(this.form.value).subscribe({
-      next: (n) => {
-        this.refreshData();
-      },
-      error: (e) => { },
-      complete: () => { }
-    })
+    modalRef.result.then(result => {
+      if (result === true){
+        this.deleteDeals();
+      }
+    });
   }
 
   deleteDeals() {

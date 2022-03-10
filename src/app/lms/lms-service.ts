@@ -56,6 +56,10 @@ export class LMSService {
     getUsersList(): Observable<any> {
         return this.httpClient.get(environment.baseUrl + '/users/list');
     }
+
+    getPersonList(): Observable<any> {
+        return this.httpClient.get(environment.baseUrl + '/person/list');
+    }
 }
 
 export interface ColumnsInfo {

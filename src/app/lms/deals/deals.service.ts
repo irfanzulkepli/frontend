@@ -12,8 +12,8 @@ export class DealsService {
     private httpClient: HttpClient
   ) { }
 
-  getDealsPage(): Observable<any> {
-    return this.httpClient.get(environment.baseUrl + '/deals/page');
+  getDealsPage(pageableRequest: any): Observable<any> {
+    return this.httpClient.get(environment.baseUrl + '/deals/page', { params: pageableRequest });
   }
 
   getDealsById(id: number): Observable<any> {
@@ -21,7 +21,7 @@ export class DealsService {
   }
 
   updateDeals(body: any): Observable<any> {
-    return this.httpClient.put(environment.baseUrl + '/deals', body);
+    return this.httpClient.put(environment.baseUrl + '/deals/' + body.id, body);
   }
 
   deleteDealsById(id: number): Observable<any> {

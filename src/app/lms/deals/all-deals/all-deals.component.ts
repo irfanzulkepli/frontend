@@ -17,60 +17,35 @@ export class AllDealsComponent implements OnInit {
   persons: any[] = [];
   users: any[] = [];
 
+  page: number = 1;
+  pageSize: number = 12;
+  collectionSize: number = 0;
+
   constructor(
     private dealsService: DealsService,
-    private pipelinesService: PipelinesService,
-    private lmsService: LMSService
   ) { }
 
   ngOnInit() {
     this.getDealsPage();
-    this.getPipelinesList();
-    this.getStagesList();
-    // this.getPersonList();
-    this.getUsersList();
   }
 
   getDealsPage() {
     this.deals = [];
-    this.dealsService.getDealsPage().subscribe({
+
+    let pageableRequest: any = {
+      page: this.page - 1,
+      size: this.pageSize
+    }
+
+    this.dealsService.getDealsPage(pageableRequest).subscribe({
       next: (n) => {
+        // this.collectionSize = n.totalSize;
+        this.collectionSize = 49;
         this.deals = n.payload;
       },
       error: (e) => { },
       complete: () => { }
-    })
-  }
-
-  getPipelinesList() {
-    this.pipelinesService.getPipelinesList().subscribe({
-      next: (n) => {
-        this.pipelines = n;
-      },
-      error: (e) => { },
-      complete: () => { }
-    })
-  }
-
-  getStagesList() {
-    this.lmsService.getStagesList().subscribe({
-      next: (n) => {
-        this.stages = n;
-      },
-      error: (e) => { },
-      complete: () => { }
-    })
-  }
-
-  getUsersList() {
-    this.lmsService.getUsersList().subscribe({
-      next: (n) => {
-        this.users = n;
-        this.persons = n;
-      },
-      error: (e) => { },
-      complete: () => { }
-    })
+    });
   }
 
 }

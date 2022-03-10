@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DeleteModal2Component } from '../../components/delete-modal2/delete-modal2.component';
@@ -19,8 +19,13 @@ export class LostReasonsComponent implements OnInit {
       type: 'text'
     },
     {
+      displayName: 'Active',
+      columnDef: 'active',
+      type: 'text'
+    },
+    {
       displayName: 'Created by',
-      columnDef: 'createdBy.fullName',
+      columnDef: 'createdBy.firstName',
       type: 'text'
     },
     {
@@ -41,9 +46,8 @@ export class LostReasonsComponent implements OnInit {
   ];
 
   // public lostReasons = LOSTREASONS;
-  // public lostReasons = LOSTREASONS;
   public lostReasons: any[] = [];
-  public lostReasonsData: any = {};
+  public action: String = '';
 
   form = new FormGroup({
     id: new FormControl(''),
@@ -75,26 +79,54 @@ export class LostReasonsComponent implements OnInit {
    * Open modal
    * @param content modal content
    */
-  openModal(content: any, lostReasonsData: any) {
+  openModal(content: any, lostReasonsData: any, action: string ) {
     this.form.patchValue({
-      id: lostReasonsData.id,
-      lostReason: lostReasonsData.lostReason
-    })
+      id: lostReasonsData?.id,
+      lostReason: lostReasonsData?.lostReason
+    });
     this.modalService.open(content);
+    this.action = action;
   }
 
   /**
    * Open center modal
    * @param centerDataModal center modal data
    */
-  deleteModal() {
+  deleteModal(data: any) {
     const modalRef = this.modalService.open(DeleteModal2Component, { centered: true });
 
-    modalRef.result.then(result => console.log('result: ', result));
+    modalRef.result.then(result => {
+      if (result === true) {
+        this.deleteLostReasons(data);
+      }
+    });
   }
 
-  deleteLostReasons() {
-    this.lostReasonsService.deleteLostReasons(this.lostReasonsData.id).subscribe({
+  onSaveLostReasons(){
+    switch (this.action) {
+      case 'add': {
+        this.addLostReasons();
+        break;
+      }
+      case 'edit': {
+        this.updateLostReasons();
+        break;
+      }
+    }
+  }
+
+  deleteLostReasons(data: any) {
+    this.lostReasonsService.deleteLostReasons(data.id).subscribe({
+      next: (n) => {
+        this.getLostReasons();
+      },
+      error: (e) => { },
+      complete: () => { }
+    })
+  }
+
+  addLostReasons() {
+    this.lostReasonsService.addLostReasons(this.form.value).subscribe({
       next: (n) => {
         this.getLostReasons();
       },

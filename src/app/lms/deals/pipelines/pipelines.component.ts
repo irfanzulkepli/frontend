@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { DeleteModalComponent } from '../../components/delete-modal/delete-modal.component';
-import { PIPELINES } from '../../data/pipelines.data';
+import { DeleteModal2Component } from '../../components/delete-modal2/delete-modal2.component';
 import { ColumnsInfo } from '../../lms-service';
 import { PipelinesService } from '../pipelines.service';
 
@@ -28,11 +27,16 @@ export class PipelinesComponent implements OnInit {
     {
       displayName: 'No. of deals',
       columnDef: 'dealsCount',
-      type: 'text'
+      type: 'number'
     },
     {
       displayName: 'No. of stage',
-      columnDef: 'stageCount',
+      columnDef: 'stagesCount',
+      type: 'number'
+    },
+    {
+      displayName: 'Active',
+      columnDef: 'active',
       type: 'text'
     },
     {
@@ -57,8 +61,7 @@ export class PipelinesComponent implements OnInit {
     }
   ];
 
-  public pipelines = PIPELINES;
-  public pipelinesData: any = {};
+  public pipelines;
 
   constructor(
     private modalService: NgbModal,
@@ -75,7 +78,6 @@ export class PipelinesComponent implements OnInit {
     this.pipelinesService.getPipelinesPage().subscribe({
       next: (n) => {
         this.pipelines = n.payload;
-        // this.pipelines = PIPELINES;
       },
       error: (e) => { },
       complete: () => { }
@@ -86,14 +88,23 @@ export class PipelinesComponent implements OnInit {
    * Open center modal
    * @param centerDataModal center modal data
    */
-  deleteModal() {
-    const modalRef = this.modalService.open(DeleteModalComponent, { centered: true });
+  deleteModal(data: any) {
+    const modalRef = this.modalService.open(DeleteModal2Component, { centered: true });
 
-    modalRef.result.then(result => result);
+    modalRef.result.then(result => {
+      if (result === true) {
+        this.deletePipelines(data);
+      }
+    });
   }
 
-  deletePipeliines() {
-    this.pipelinesService.deletePipelines(this.pipelinesData.id).subscribe({
+  editPipelines(data: any) {
+    console.log(data);
+    console.log("edit");
+  }
+
+  deletePipelines(data: any) {
+    this.pipelinesService.deletePipelines(data.id).subscribe({
       next: (n) => {
         this.getPipelines();
       },

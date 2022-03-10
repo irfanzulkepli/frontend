@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UIModule } from 'src/app/shared/ui/ui.module';
-import { NgbDropdownModule, NgbModalModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbModalModule, NgbNavModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { DropzoneConfigInterface, DropzoneModule, DROPZONE_CONFIG } from 'ngx-dropzone-wrapper';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { MatChipsModule } from '@angular/material/chips';
@@ -43,6 +43,7 @@ const config: DropzoneConfigInterface = {
         PipelineViewCardComponent
     ],
     imports: [
+        NgbPaginationModule,
         DealsRoutingModule,
         CommonModule,
         FormsModule,

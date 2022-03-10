@@ -5,7 +5,7 @@
       <div class="page-title-box d-flex align-items-center justify-content-between">
         <h4 class="mb-0 font-size-18"> Lost reasons </h4>
         <div class="page-title-right">
-          <button type="button" class="btn btn-primary btn-rounded">
+          <button type="button" class="btn btn-primary btn-rounded" (click)="openModal(content, null, 'add')">
             Add lost reason
           </button>
         </div>
@@ -15,7 +15,8 @@
 
   <div class="row">
     <div class="col-lg-12">
-      <app-custom-table [columnsInfo]="columnsInfo" [dataSource]="lostReasons">
+      <app-custom-table [columnsInfo]="columnsInfo" [dataSource]="lostReasons"
+        (onEditClick)="openModal(content, $event, 'edit')" (onDeleteClick)="deleteModal($event)">
       </app-custom-table>
     </div>
   </div>
@@ -28,17 +29,17 @@
     <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-    <form>
+    <form [formGroup]="form">
       <div class="form-group row mb-3">
         <label for="formDealTitleInput" class="col-sm-2 col-form-label">Name</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" id="formDealTitleInput" placeholder="Enter name" value="TODO">
+          <input type="text" class="form-control" placeholder="Enter name" formControlName="lostReason">
         </div>
       </div>
     </form>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cancel</button>
-    <button type="button" class="btn btn-primary" (click)="updateLostReasons()">Save</button>
+    <button type="button" class="btn btn-primary" (click)="onSaveLostReasons()">Save</button>
   </div>
 </ng-template>

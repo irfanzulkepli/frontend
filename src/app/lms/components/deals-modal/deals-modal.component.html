@@ -30,7 +30,7 @@
     <div class="form-group row mb-3">
       <label for="formLeadTypeInput" class="col-sm-2 col-form-label text-nowrap">Person</label>
       <div class="col-sm-10 d-flex align-items-center">
-        <mat-select class="form-select" formControlName="person" placeholder="Choose a contact person">
+        <mat-select class="form-select" formControlName="personId" placeholder="Choose a contact person">
           <mat-option>
             <ngx-mat-select-search [formControl]="personFilterCtrl" placeholderLabel="Search"
               noEntriesFoundLabel="No Results"></ngx-mat-select-search>
@@ -45,41 +45,41 @@
       <label for="formDealValueInput" class="col-sm-2 col-form-label">Deal Value</label>
       <div class="col-sm-10">
         <input type="number" class="form-control" id="formDealValueInput" placeholder="Enter Deal Value"
-          formControlName="dealValue">
+          formControlName="value">
       </div>
     </div>
     <div class="form-group row mb-3">
       <label for="formLeadTypeInput" class="col-sm-2 col-form-label text-nowrap">Pipeline</label>
       <div class="col-sm-10 d-flex align-items-center">
-        <select class="form-select" formControlName="pipeline">
+        <select class="form-select" formControlName="pipelinesId">
           <option hidden value="">Pipeline</option>
-          <option *ngFor="let pipelineOption of pipeline" [value]="pipelineOption.id">{{ pipelineOption.name }}</option>
+          <option *ngFor="let pipelineOption of pipelines" [value]="pipelineOption.id">{{ pipelineOption.name }}</option>
         </select>
       </div>
     </div>
     <div class="form-group row mb-3">
       <label for="formStageTypeInput" class="col-sm-2 col-form-label text-nowrap">Stage</label>
       <div class="col-sm-10 d-flex align-items-center">
-        <select class="form-select" formControlName="stage">
+        <select class="form-select" formControlName="stagesId">
           <option hidden value="">Stage</option>
-          <option *ngFor="let stage of stageTypes" [value]="stage.id">{{ stage.name }}</option>
+          <option *ngFor="let stage of stages" [value]="stage.id">{{ stage.name }}</option>
         </select>
       </div>
     </div>
     <div class="form-group row mb-3">
       <label for="formExpClosingDateInput" class="col-sm-2 col-form-label">Expecting Closing Date</label>
       <div class="col-sm-10 d-flex align-items-center">
-        <input class="form-control" type="date" id="formExpClosingDateInput" formControlName="expectedClosingDate"
+        <input class="form-control" type="date" id="formExpClosingDateInput" formControlName="expiredAt"
           placeholder="Choose a date">
       </div>
     </div>
     <div class="form-group row mb-3">
       <label for="formLeadTypeInput" class="col-sm-2 col-form-label text-nowrap">Owner</label>
       <div class="col-sm-10 d-flex align-items-center">
-        <select class="form-select" formControlName="owner">
+        <select class="form-select" formControlName="ownerId">
           <option hidden value="">Owner</option>
-          <option *ngFor="let user of userData" [value]="user.id">
-            {{ user.fullName }}
+          <option *ngFor="let user of users" [value]="user.id">
+            {{ user.firstName }} {{ user.lastName }}
           </option>
         </select>
       </div>
