@@ -40,7 +40,7 @@
       <div class="row mb-3">
         <label for="example-text-input" class="col-md-3 col-form-label">Class</label>
         <div class="col-md-6">
-          <select class="form-select" formControlName="class">
+          <select class="form-select" formControlName="clazz">
             <option value="primary">
               primary
             </option>
@@ -62,15 +62,15 @@
           </select>
         </div>
         <div class="col-md-3">
-          <button type="button" class="btn btn-{{leadGroupForm.get('class').value}} w-100">
-            {{ leadGroupForm.get('class').value }}
+          <button type="button" class="btn btn-{{leadGroupForm.get('clazz').value}} w-100">
+            {{ leadGroupForm.get('clazz').value }}
           </button>
         </div>
       </div>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cancel</button>
-      <button type="button" class="btn btn-primary">Save</button>
+      <button type="button" class="btn btn-primary" (click)="saveLeadGroups()">Save</button>
     </div>
   </form>
 </ng-template>

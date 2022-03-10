@@ -1,11 +1,11 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DeleteModal2Component } from '../../components/delete-modal2/delete-modal2.component';
-import { LEADTYPES } from '../../data/lead-type-data';
 import { ColumnsInfo } from '../../lms-service';
 import { AdvancedService } from '../advanced.service';
+import { LeadGroupService } from '../lead-group.service';
 
 @Component({
   selector: 'app-lead-group',
@@ -23,7 +23,7 @@ export class LeadGroupComponent implements OnInit {
     },
     {
       displayName: 'Class',
-      columnDef: 'class',
+      columnDef: 'clazz',
       type: 'badge'
     },
     {
@@ -47,20 +47,25 @@ export class LeadGroupComponent implements OnInit {
   pageSize: number = 10;
   class: string = 'primary';
 
-  public leadGroups = LEADTYPES;
+  public leadGroups: any[] = [];
 
-  leadGroupForm: FormGroup;
+  leadGroupForm = new FormGroup({
+    id: new FormControl(''),
+    name: new FormControl(''),
+    clazz: new FormControl('')
+  });
 
   isEditLeadGroup: boolean = false;
   leadGroupIdToDelete: string;
 
   constructor(
     private modalService: NgbModal,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private leadGroupService :LeadGroupService
   ) { }
 
   ngOnInit() {
-    this.initForm();
+    this.getLeadGroups();
   }
 
   openLeadsModal(content, leadGroup?) {
@@ -69,26 +74,30 @@ export class LeadGroupComponent implements OnInit {
       this.leadGroupForm.patchValue({
         id: leadGroup.id,
         name: leadGroup.name,
-        class: leadGroup.class
+        clazz: leadGroup.clazz
       });
     }
     else {
       this.isEditLeadGroup = false;
       this.leadGroupForm.patchValue({
         name: '',
-        class: 'primary'
+        clazz: 'primary'
       });
     }
 
     this.modalService.open(content, { scrollable: true });
   }
 
-  initForm() {
-    this.leadGroupForm = this.fb.group({
-      id: [''],
-      name: ['', Validators.required],
-      class: ['primary', Validators.required]
-    });
+  getLeadGroups() {
+    this.leadGroups = [];
+    this.modalService.dismissAll();
+    this.leadGroupService.getContactTypesPage().subscribe({
+      next: (n) => {
+        this.leadGroups = n.payload;
+      },
+      error: (e) => { },
+      complete: () => { }
+    })
   }
 
   onDeleteEmit(leadGroup) {
@@ -96,7 +105,7 @@ export class LeadGroupComponent implements OnInit {
     modalRef.result.then(result => {
       if (result) {
         const leadGroupIdToDelete = leadGroup.id;
-
+        this.deleteLeadGroups(leadGroupIdToDelete);
         console.log('leadGroupId: ', leadGroupIdToDelete);
       }
     });
@@ -106,5 +115,53 @@ export class LeadGroupComponent implements OnInit {
     console.log('ev: ', ev);
 
     this.openLeadsModal(modal, ev);
+  }
+
+  deleteLeadGroups(id) {
+    this.leadGroupService.deleteContactTypesById(id).subscribe({
+      next: (n) => {
+        this.getLeadGroups();
+      },
+      error: (e) => { },
+      complete: () => { }
+    })
+  }
+
+  updateLeadGroups() {
+    const data = {
+      name: this.leadGroupForm.value.name,
+      clazz: this.leadGroupForm.value.clazz
+    }
+
+    this.leadGroupService.updateContactTypes(this.leadGroupForm.value.id, data).subscribe({
+      next: (n) => {
+        this.getLeadGroups();
+      },
+      error: (e) => { },
+      complete: () => { }
+    })
+  }
+
+  addLeadGroups() {
+    const data = {
+      name: this.leadGroupForm.value.name,
+      clazz: this.leadGroupForm.value.clazz
+    }
+
+    this.leadGroupService.addContactTypes(data).subscribe({
+      next: (n) => {
+        this.getLeadGroups();
+      },
+      error: (e) => { },
+      complete: () => { }
+    })
+  }
+
+  saveLeadGroups() {
+    if (this.isEditLeadGroup) {
+      this.updateLeadGroups();
+    } else {
+      this.addLeadGroups();
+    }
   }
 }
