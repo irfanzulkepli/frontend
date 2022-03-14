@@ -20,8 +20,8 @@
           <div class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupVerticalDrop1" ngbDropdownMenu>
             <a class="dropdown-item" (click)="activityModal()">Add activity</a>
             <a class="dropdown-item" (click)="openModal(tagContent)">Manage Tag</a>
-            <a class="dropdown-item" (click)="openCenteredModal(wonContent)">Won the deal</a>
-            <a class="dropdown-item" (click)="openModal(lostContent)">Make it lost</a>
+            <a class="dropdown-item" (click)="openWonModal(wonContent)">Won the deal</a>
+            <a class="dropdown-item" (click)="openLostModal(lostContent)">Make it lost</a>
             <a class="dropdown-item">Mark</a>
             <a class="dropdown-item" (click)="openEditModal(cardData)">Edit</a>
             <a class="dropdown-item" (click)="openDeleteModal()">Delete</a>
@@ -33,8 +33,8 @@
 
   <!-- body -->
   <div class="card-body">
-    <div *ngIf="cardData.contactPerson.length > 0; else nolead">
-      <div class="d-flex-inline" *ngFor="let person of cardData.contactPerson">
+    <div *ngIf="cardData.person.length > 0; else nolead">
+      <div class="d-flex-inline" *ngFor="let person of cardData.person">
         <p class="text-muted font-size-90" style="margin: 0;">
           {{ person.name }}
         </p>
@@ -98,7 +98,7 @@
     <h5 class="text-center font-weight-bold mt-4">Congratulation!</h5>
     <p class="mb-primary text-center font-size-90 p-0">You won the deal successfully</p>
     <div class="text-center">
-      <button class="btn btn-success" (click)="modal.dismiss('Cross click')">Thank You</button>
+      <button class="btn btn-success" (click)="modal.dismiss('Cross click')" (click)="refreshData()">Thank You</button>
     </div>
   </div>
 </ng-template>
@@ -110,23 +110,26 @@
     <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
   </div>
   <div class="modal-body">
-    <div class="form-group row mb-3">
-      <label for="formLostReasonInput" class="col-sm-2 col-form-label text-nowrap">Lost Reason</label>
-      <div class="col-sm-10 d-flex align-items-center">
-        <select class="form-select">
-          <option *ngFor="let lostReason of lostReasons">{{ lostReason.lostReason }}</option>
-        </select>
+    <form [formGroup]="dealLostForm">
+      <div class="form-group row mb-3">
+        <label for="formLostReasonInput" class="col-sm-2 col-form-label text-nowrap">Lost Reason</label>
+        <div class="col-sm-10 d-flex align-items-center">
+          <select class="form-select" formControlName="lostReasonsId">
+            <option *ngFor="let lostReason of lostReasons" value="{{lostReason.id}}">{{ lostReason.lostReason }}
+            </option>
+          </select>
+        </div>
       </div>
-    </div>
-    <div class="form-group row mb-3">
-      <label for="formCommentInput" class="col-sm-2 col-form-label">Comment</label>
-      <div class="col-sm-10">
-        <textarea class="form-control text-muted" id="formCommentInput" rows="3"></textarea>
+      <div class="form-group row mb-3">
+        <label for="formCommentInput" class="col-sm-2 col-form-label">Comment</label>
+        <div class="col-sm-10">
+          <textarea class="form-control text-muted" id="formCommentInput" rows="3" formControlName="comment"></textarea>
+        </div>
       </div>
-    </div>
+    </form>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cancel</button>
-    <button type="button" class="btn btn-primary">Confirm</button>
+    <button type="button" class="btn btn-primary" (click)="updateDealsToLost()">Confirm</button>
   </div>
 </ng-template>

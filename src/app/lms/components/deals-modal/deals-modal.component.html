@@ -51,7 +51,7 @@
     <div class="form-group row mb-3">
       <label for="formLeadTypeInput" class="col-sm-2 col-form-label text-nowrap">Pipeline</label>
       <div class="col-sm-10 d-flex align-items-center">
-        <select class="form-select" formControlName="pipelinesId">
+        <select class="form-select" formControlName="pipelinesId" (change)="onPipelinesIdChange()">
           <option hidden value="">Pipeline</option>
           <option *ngFor="let pipelineOption of pipelines" [value]="pipelineOption.id">{{ pipelineOption.name }}</option>
         </select>
@@ -61,7 +61,7 @@
       <label for="formStageTypeInput" class="col-sm-2 col-form-label text-nowrap">Stage</label>
       <div class="col-sm-10 d-flex align-items-center">
         <select class="form-select" formControlName="stagesId">
-          <option hidden value="">Stage</option>
+          <!-- <option hidden value="">Stage</option> -->
           <option *ngFor="let stage of stages" [value]="stage.id">{{ stage.name }}</option>
         </select>
       </div>

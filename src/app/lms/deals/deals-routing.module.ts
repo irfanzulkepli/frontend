@@ -9,6 +9,7 @@ const routes: Routes = [
     { path: 'all-deals', component: AllDealsComponent, },
     { path: 'pipelines', component: PipelinesComponent, },
     { path: 'pipeline-view', component: PipelineViewComponent, },
+    { path: 'pipeline-view/:id', component: PipelineViewComponent, },
     { path: 'lost-reasons', component: LostReasonsComponent, },
 ];
 

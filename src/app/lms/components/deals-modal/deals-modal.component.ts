@@ -53,7 +53,6 @@ export class DealsModalComponent implements OnInit {
 
   ngOnInit() {
     this.getPipelinesList();
-    this.getStagesList();
     this.getPersonList();
     this.getUsersList();
 
@@ -84,10 +83,19 @@ export class DealsModalComponent implements OnInit {
           expiredAt: n.expiredAt ? n.expiredAt : '',
           personId: n.person.id ? n.person.id : ''
         });
+
+        this.getStagesList();
       },
       error: (e) => { },
       complete: () => { }
     })
+  }
+
+  onPipelinesIdChange() {
+    this.dealForm.patchValue({
+      stagesId: ''
+    });
+    this.getStagesList();
   }
 
   onCancelClick() {
@@ -95,6 +103,30 @@ export class DealsModalComponent implements OnInit {
   }
 
   onSaveClick() {
+    if (this.dealForm.value.id) {
+      this.updateDeals();
+    } else {
+      this.addDeals();
+    }
+  }
+
+  addDeals() {
+    this.dealsService.addDeals(this.dealForm.value).subscribe({
+      next: (n) => {
+        this.activeModal.close(true);
+      },
+      error: (e) => {
+        this.activeModal.close(false);
+      },
+      complete: () => { }
+    })
+  }
+
+  updateDeals() {
+    if (this.dealForm.invalid) {
+      return;
+    }
+
     this.dealsService.updateDeals(this.dealForm.value).subscribe({
       next: (n) => {
         this.activeModal.close(true);
@@ -122,7 +154,8 @@ export class DealsModalComponent implements OnInit {
   }
 
   getStagesList() {
-    this.lmsService.getStagesList().subscribe({
+    this.stages = [];
+    this.lmsService.getStagesListByPipelinesId(this.dealForm.value.pipelinesId).subscribe({
       next: (n) => {
         this.stages = n;
       },

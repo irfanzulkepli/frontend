@@ -16,6 +16,10 @@ export class LostReasonsService {
     return this.httpClient.get(environment.baseUrl + '/lost-reasons/page');
   }
 
+  getLostReasonsList(): Observable<any> {
+    return this.httpClient.get(environment.baseUrl + '/lost-reasons/list');
+  }
+
   addLostReasons(body: any): Observable<any> {
     return this.httpClient.post(environment.baseUrl + '/lost-reasons', body);
   }

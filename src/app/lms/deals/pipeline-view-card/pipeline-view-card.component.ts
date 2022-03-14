@@ -1,21 +1,19 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSelect } from '@angular/material/select';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ReplaySubject, Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
+import { ActivityModalComponent } from '../../components/activity-modal/activity-modal.component';
+import { DealsModalComponent } from '../../components/deals-modal/deals-modal.component';
+import { DeleteModal2Component } from '../../components/delete-modal2/delete-modal2.component';
 import { PERSON, Person } from '../../data/person-data';
 import { PIPELINES } from '../../data/pipelines.data';
-import { USER } from '../../data/user-data';
 import { TAGS } from '../../data/tags-data';
-import { ALLDEALS } from '../../data/all-deals.data';
+import { USER } from '../../data/user-data';
+import { DealsService } from '../deals.service';
 import { ProfileModalComponent } from '../profile-modal/profile-modal.component';
-import { MatChipInputEvent } from '@angular/material/chips';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { LOSTREASONS } from '../../data/lost-reasons';
-import { DealsModalComponent } from '../../components/deals-modal/deals-modal.component';
-import { DeleteModalComponent } from '../../components/delete-modal/delete-modal.component';
-import { ActivityModalComponent } from '../../components/activity-modal/activity-modal.component';
 
 @Component({
   selector: 'app-pipeline-view-card',
@@ -27,7 +25,7 @@ export class PipelineViewCardComponent implements OnInit {
   // public pipelineView = PIPELINEVIEW;
   public pipeline = PIPELINES;
   public userData = USER;
-  public lostReasons = LOSTREASONS;
+  // public lostReasons = LOSTREASONS;
   public leadTypes: string[] = ["Person", "Organization"];
   public stageTypes: any[] = [
     { id: 0, name: "Lead generation" },
@@ -58,11 +56,24 @@ export class PipelineViewCardComponent implements OnInit {
 
   @ViewChild('singleSelect') singleSelect: MatSelect;
   @Input() cardData;
+  @Output() refreshAllDeals = new EventEmitter<string>();
 
   /** Subject that emits when the component has been destroyed. */
   protected _onDestroy = new Subject<void>();
 
-  constructor(private modalService: NgbModal) { }
+
+  @Input() lostReasons;
+
+  dealLostForm = new FormGroup({
+    id: new FormControl('', Validators.required),
+    lostReasonsId: new FormControl('', Validators.required),
+    comment: new FormControl('', Validators.required),
+  });
+
+  constructor(
+    private modalService: NgbModal,
+    private dealsService: DealsService
+  ) { }
   ngOnInit() {
     // load the initial person list
     this.filteredPerson.next(this.person.slice());
@@ -86,7 +97,7 @@ export class PipelineViewCardComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.setInitialValue();
+    // this.setInitialValue();
   }
 
   ngOnDestroy() {
@@ -200,24 +211,78 @@ export class PipelineViewCardComponent implements OnInit {
     this.modalService.open(content);
   }
 
+  openLostModal(content: any) {
+    this.modalService.open(content);
+    this.dealLostForm.patchValue({
+      id: this.cardData.id,
+      lostReasonsId: this.cardData.lostReasons ? this.cardData.lostReasons.id : '',
+      comment: this.cardData.comment ? this.cardData.comment : ''
+    })
+  }
+
   openEditModal(cardData) {
     const modalRef = this.modalService.open(DealsModalComponent);
     modalRef.componentInstance.dealDatas = cardData;
 
-    modalRef.result.then(data => console.log('data: ', data));
+    modalRef.result.then(result => {
+      if (result === true) {
+        this.refreshData();
+      }
+    });
   }
 
   openDeleteModal() {
-    const modalRef = this.modalService.open(DeleteModalComponent);
+    const modalRef = this.modalService.open(DeleteModal2Component);
 
-    modalRef.result.then(result => console.log(result));
+    modalRef.result.then(result => {
+      if (result === true) {
+        this.deleteDeals();
+      }
+    });
+  }
+
+  updateDealsToLost() {
+    this.dealsService.updateDealsToLost(this.dealLostForm.value).subscribe({
+      next: (n) => {
+        this.refreshData();
+      },
+      error: (e) => { },
+      complete: () => { }
+    })
+  }
+
+  updateDealsToWon(content: any) {
+    this.dealsService.updateDealsToWon(this.cardData.id).subscribe({
+      next: (n) => {
+        this.modalService.open(content, { centered: true });
+      },
+      error: (e) => { },
+      complete: () => { }
+    })
+  }
+
+  deleteDeals() {
+    this.dealsService.deleteDealsById(this.cardData.id).subscribe({
+      next: (n) => {
+        this.refreshData();
+      },
+      error: (e) => { },
+      complete: () => { }
+    })
   }
 
   /**
    * Open center modal
    * @param centerDataModal center modal data
    */
-  openCenteredModal(content: any) {
-    this.modalService.open(content, { centered: true });
+  openWonModal(content: any) {
+    // this.modalService.open(content, { centered: true });
+
+    this.updateDealsToWon(content);
+  }
+
+  refreshData() {
+    this.modalService.dismissAll();
+    this.refreshAllDeals.emit();
   }
 }

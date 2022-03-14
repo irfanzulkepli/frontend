@@ -1,23 +1,21 @@
 /* tslint:disable:no-unused-variable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
+import { DealsModalComponent } from './deals-modal.component';
 
-import { AddDealsModalComponent } from './add-deals-modal.component';
 
-describe('AddDealsModalComponent', () => {
-  let component: AddDealsModalComponent;
-  let fixture: ComponentFixture<AddDealsModalComponent>;
+describe('DealsModalComponent', () => {
+  let component: DealsModalComponent;
+  let fixture: ComponentFixture<DealsModalComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddDealsModalComponent ]
+      declarations: [ DealsModalComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddDealsModalComponent);
+    fixture = TestBed.createComponent(DealsModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
