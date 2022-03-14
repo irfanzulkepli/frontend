@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { SETTINGS } from '../data/settings.data';
 import { GENERALSETTINGS } from '../data/general-settings';
 import { BROADCAST } from '../data/broadcast.data';
@@ -31,7 +31,7 @@ export class SettingsComponent implements OnInit {
 
   events = [];
   searchTerm: string;
-  @ViewChild('updateContent') private updateContent;
+  @ViewChild('updateContent') private updateContent: ElementRef;
 
   contentForm: FormGroup = this.fb.group({content: []})
   notificationCtrl = new FormControl();
@@ -49,6 +49,8 @@ export class SettingsComponent implements OnInit {
   users: Array<any> = [];
   allUsers: Array<any> = [];
   filteredUsers: Observable<Array<any>>;
+
+  notificationDetails;
   
   constructor( 
     private modalService: NgbModal,
@@ -90,11 +92,15 @@ export class SettingsComponent implements OnInit {
   getNotificationChannel(notification) {
     if (notification.templates.length > 1) {
       return this.notificatonChannel;
-    } else return ["","Mail"];
+    } else return ["Mail"];
   }
 
   addName() {
-    return
+    this.updateContent.nativeElement.focus();
+    let startPos = this.updateContent.nativeElement.selectionStart;
+    let value = this.updateContent.nativeElement.value;
+    this.updateContent.nativeElement.value= 
+    value.substring(0, startPos) +' I am inserted ' + value.substring(startPos, value.length)
   }
 
   addBrand_name() {
@@ -106,6 +112,11 @@ export class SettingsComponent implements OnInit {
   }
 
   openModal(content: any) {
+    this.modalService.open(content, { size: 'xl' });
+  }
+
+  openUpdateModal(content: any, notificationDetails) {
+    this.notificationDetails = notificationDetails
     this.modalService.open(content, { size: 'xl' });
   }
 }
