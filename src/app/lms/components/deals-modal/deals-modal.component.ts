@@ -155,7 +155,7 @@ export class DealsModalComponent implements OnInit {
 
   getStagesList() {
     this.stages = [];
-    this.lmsService.getStagesListByPipelinesId(this.dealForm.value.pipelinesId).subscribe({
+    this.lmsService.getStagesListByPipelineId(this.dealForm.value.pipelinesId).subscribe({
       next: (n) => {
         this.stages = n;
       },

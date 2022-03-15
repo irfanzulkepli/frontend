@@ -64,20 +64,21 @@
     <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
   </div>
   <div class="modal-body">
-    <div class="col-form-label">
-      <mat-select [formControl]="personControl" placeholder="+ Add" multiple>
-        <mat-select-trigger>
-          <mat-chip-list>
-            <mat-chip *ngFor="let selectedPerson of personControl.value" [removable]="true"
-              (removed)="onPersonRemoved(selectedPerson)">
-              {{ selectedPerson.name }}
-              <mat-icon matChipRemove>cancel</mat-icon>
-            </mat-chip>
-          </mat-chip-list>
-        </mat-select-trigger>
-        <mat-option *ngFor="let selectedPerson of person" [value]="selectedPerson">{{selectedPerson.name}}</mat-option>
-      </mat-select>
-    </div>
+    <form [formGroup]="dealTagForm">
+      <div class="col-form-label">
+        <mat-select formControlName="tags" (ngModelChange)="onTagsChange()" placeholder="+ Add" multiple>
+          <mat-select-trigger>
+            <mat-chip-list>
+              <mat-chip *ngFor="let tag of filteredTags; let i = index" [removable]="true" (removed)="onTagsRemove(i)">
+                {{ tag.name }}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+            </mat-chip-list>
+          </mat-select-trigger>
+          <mat-option *ngFor="let tag of tags" value="{{tag.id}}">{{tag.name}}</mat-option>
+        </mat-select>
+      </div>
+    </form>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>

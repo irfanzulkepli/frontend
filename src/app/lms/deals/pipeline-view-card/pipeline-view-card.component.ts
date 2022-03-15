@@ -1,16 +1,13 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSelect } from '@angular/material/select';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ReplaySubject, Subject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { ActivityModalComponent } from '../../components/activity-modal/activity-modal.component';
 import { DealsModalComponent } from '../../components/deals-modal/deals-modal.component';
 import { DeleteModal2Component } from '../../components/delete-modal2/delete-modal2.component';
-import { PERSON, Person } from '../../data/person-data';
 import { PIPELINES } from '../../data/pipelines.data';
-import { TAGS } from '../../data/tags-data';
 import { USER } from '../../data/user-data';
 import { DealsService } from '../deals.service';
 import { ProfileModalComponent } from '../profile-modal/profile-modal.component';
@@ -44,15 +41,15 @@ export class PipelineViewCardComponent implements OnInit {
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   tempTags: string[] = [];
 
-  public person: Person[] = PERSON;
-  public personCtrl: FormControl = new FormControl();
-  public personFilterCtrl: FormControl = new FormControl();
-  public filteredPerson: ReplaySubject<Person[]> = new ReplaySubject<Person[]>(1);
+  // public person: Person[] = PERSON;
+  // public personCtrl: FormControl = new FormControl();
+  // public personFilterCtrl: FormControl = new FormControl();
+  // public filteredPerson: ReplaySubject<Person[]> = new ReplaySubject<Person[]>(1);
 
-  protected tag: any[] = TAGS;
-  public tagsCtrl: FormControl = new FormControl();
-  public tagsFilterCtrl: FormControl = new FormControl();
-  public filteredTags: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+  // protected tag: any[] = TAGS;
+  // public tagsCtrl: FormControl = new FormControl();
+  // public tagsFilterCtrl: FormControl = new FormControl();
+  // public filteredTags: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
   @ViewChild('singleSelect') singleSelect: MatSelect;
   @Input() cardData;
@@ -63,37 +60,46 @@ export class PipelineViewCardComponent implements OnInit {
 
 
   @Input() lostReasons;
+  @Input() tags;
 
   dealLostForm = new FormGroup({
     id: new FormControl('', Validators.required),
     lostReasonsId: new FormControl('', Validators.required),
-    comment: new FormControl('', Validators.required),
+    comment: new FormControl('', Validators.required)
+  });
+
+  filteredTags: any[] = [];
+  dealTagForm = new FormGroup({
+    id: new FormControl('', Validators.required),
+    tags: new FormControl([], Validators.required)
   });
 
   constructor(
     private modalService: NgbModal,
     private dealsService: DealsService
   ) { }
+
   ngOnInit() {
+
     // load the initial person list
-    this.filteredPerson.next(this.person.slice());
+    // this.filteredPerson.next(this.person.slice());
 
     // listen for search field value changes
-    this.personFilterCtrl.valueChanges
-      .pipe(takeUntil(this._onDestroy))
-      .subscribe(() => {
-        this.filterPerson();
-      });
+    // this.personFilterCtrl.valueChanges
+    //   .pipe(takeUntil(this._onDestroy))
+    //   .subscribe(() => {
+    //     this.filterPerson();
+    //   });
 
     // load the initial tag list
-    this.filteredTags.next(this.tag.slice());
+    // this.filteredTags.next(this.tag.slice());
 
     // listen for search field value changes
-    this.tagsFilterCtrl.valueChanges
-      .pipe(takeUntil(this._onDestroy))
-      .subscribe(() => {
-        this.filterTags();
-      });
+    // this.tagsFilterCtrl.valueChanges
+    //   .pipe(takeUntil(this._onDestroy))
+    //   .subscribe(() => {
+    //     this.filterTags();
+    //   });
   }
 
   ngAfterViewInit() {
@@ -108,56 +114,54 @@ export class PipelineViewCardComponent implements OnInit {
   /**
    * Sets the initial value after the filteredPerson are loaded initially
    */
-  protected setInitialValue() {
-    this.filteredPerson
-      .pipe(take(1), takeUntil(this._onDestroy))
-      .subscribe(() => {
-        // setting the compareWith property to a comparison function
-        // triggers initializing the selection according to the initial value of
-        // the form control (i.e. _initializeSelection())
-        // this needs to be done after the filteredBanks are loaded initially
-        // and after the mat-option elements are available
-        this.singleSelect.compareWith = (a: Person, b: Person) => a && b && a.id === b.id;
-      });
-  }
+  // protected setInitialValue() {
+  //   this.filteredPerson
+  //     .pipe(take(1), takeUntil(this._onDestroy))
+  //     .subscribe(() => {
+  //       // setting the compareWith property to a comparison function
+  //       // triggers initializing the selection according to the initial value of
+  //       // the form control (i.e. _initializeSelection())
+  //       // this needs to be done after the filteredBanks are loaded initially
+  //       // and after the mat-option elements are available
+  //       this.singleSelect.compareWith = (a: Person, b: Person) => a && b && a.id === b.id;
+  //     });
+  // }
 
-  protected filterPerson() {
-    if (!this.person) {
-      return;
-    }
-    // get the search keyword
-    let search = this.personFilterCtrl.value;
-    if (!search) {
-      this.filteredPerson.next(this.person.slice());
-      return;
-    } else {
-      search = search.toLowerCase();
-    }
-    // filter the person
-    this.filteredPerson.next(
-      this.person.filter(person => person.name.toLowerCase().indexOf(search) > -1)
-    );
-  }
+  // protected filterPerson() {
+  //   if (!this.person) {
+  //     return;
+  //   }
+  //   // get the search keyword
+  //   let search = this.personFilterCtrl.value;
+  //   if (!search) {
+  //     this.filteredPerson.next(this.person.slice());
+  //     return;
+  //   } else {
+  //     search = search.toLowerCase();
+  //   }
+  //   // filter the person
+  //   this.filteredPerson.next(
+  //     this.person.filter(person => person.name.toLowerCase().indexOf(search) > -1)
+  //   );
+  // }
 
-  protected filterTags() {
-    if (!this.tag) {
-      return;
-    }
-    // get the search keyword
-    let search = this.tagsFilterCtrl.value;
-    if (!search) {
-      this.filteredTags.next(this.tag.slice());
-      return;
-    } else {
-      search = search.toLowerCase();
-    }
-    // filter the tag
-    this.filteredTags.next(
-      this.tag.filter(tag => tag.name.toLowerCase().indexOf(search) > -1)
-    );
-  }
-
-  personControl = new FormControl([]);
+  // protected filterTags() {
+  //   if (!this.tag) {
+  //     return;
+  //   }
+  //   // get the search keyword
+  //   let search = this.tagsFilterCtrl.value;
+  //   if (!search) {
+  //     this.filteredTags.next(this.tag.slice());
+  //     return;
+  //   } else {
+  //     search = search.toLowerCase();
+  //   }
+  //   // filter the tag
+  //   this.filteredTags.next(
+  //     this.tag.filter(tag => tag.name.toLowerCase().indexOf(search) > -1)
+  //   );
+  // }
 
   getInitials(name: string) {
     if (name) {
@@ -177,17 +181,42 @@ export class PipelineViewCardComponent implements OnInit {
     }
   }
 
-  onPersonRemoved(person: string) {
-    const personArray = this.personControl.value as string[];
-    this.removeFirst(personArray, person);
-    this.personControl.setValue(personArray); // To trigger change detection
+  // onPersonRemoved(person: string) {
+  //   const personArray = this.dealTagForm.value.tags.value as string[];
+  //   this.removeFirst(personArray, person);
+  //   this.dealTagForm.patchValue({
+  //     tags: personArray
+  //   });
+  //   // To trigger change detection
+  // }
+
+  // private removeFirst<T>(array: T[], toRemove: T): void {
+  //   const index = array.indexOf(toRemove);
+  //   if (index !== -1) {
+  //     array.splice(index, 1);
+  //   }
+  // }
+
+  onTagsChange() {
+    let formTags: any[] = this.dealTagForm.value.tags;
+
+    this.filteredTags = [];
+    formTags.forEach(formTag => {
+      this.tags.forEach(tag => {
+        if (tag.id == formTag) {
+          this.filteredTags.push(tag);
+        }
+      });
+    });
   }
 
-  private removeFirst<T>(array: T[], toRemove: T): void {
-    const index = array.indexOf(toRemove);
-    if (index !== -1) {
-      array.splice(index, 1);
-    }
+  onTagsRemove(index: number) {
+    let formTags: any[] = this.dealTagForm.value.tags;
+    formTags.splice(index, 1);
+    this.filteredTags.splice(index, 1);
+    this.dealTagForm.patchValue({
+      tags: formTags
+    })
   }
 
   openProfile() {

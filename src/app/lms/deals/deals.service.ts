@@ -16,8 +16,8 @@ export class DealsService {
     return this.httpClient.get(environment.baseUrl + '/deals/page', { params: pageableRequest });
   }
 
-  getDealsListPipelineView(id: number): Observable<any> {
-    return this.httpClient.get(environment.baseUrl + '/deals/list/pipeline-view/' + id);
+  getDealsListByPipelineId(id: string): Observable<any> {
+    return this.httpClient.get(environment.baseUrl + '/deals/list/pipeline/' + id);
   }
 
   getDealsById(id: number): Observable<any> {

@@ -1,17 +1,26 @@
 <div class="container-fluid">
+  <div class="row">
+    <mat-form-field appearance="outline" class="col-sm-4 col-lg-4 mb-3">
+      <mat-select [(ngModel)]="pipelineViewId" (ngModelChange)=" getPipelineViewData()">
+        <mat-option *ngFor="let data of pipeline" value="{{data.id}}">
+          {{data.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 
   <div class="row scrollable-row" cdkDropListGroup>
     <div class="col-12 d-flex">
-      <div class="card-column me-3" *ngFor="let stageType of stageTypes; let i = index">
+      <div class="card-column me-3" *ngFor="let stage of stages; let i = index">
         <div class="card">
           <!-- header -->
           <div class="card-header bg-white">
             <div class="d-flex flex-column">
-              <h4 class="card-title d-flex p-2 text-nowrap" style="margin: 0;">{{ stageType.name }}</h4>
+              <h4 class="card-title d-flex p-2 text-nowrap" style="margin: 0;">{{ stage.name }}</h4>
               <div class="d-flex flex-wrap align-items-center text-muted ">
                 <span class="p-2">$ {{ dealsValueByStageId[i] | number : '1.2-2' }}</span>
                 <span class="p-2">{{ dealsByStageId[i] ? dealsByStageId[i].length : 0 }} Deal</span>
-                <span class="p-2">{{ stageType.probability }}%</span>
+                <span class="p-2">{{ stage.probability }}%</span>
               </div>
             </div>
           </div>
@@ -20,7 +29,8 @@
             (cdkDropListDropped)="drop($event)" style="background-color: rgb(240, 240, 240);">
             <div class="col" *ngFor="let deal of dealsByStageId[i]" cdkDrag>
               <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
-              <app-pipeline-view-card [cardData]="deal" [lostReasons]="lostReasons" (refreshAllDeals)="getDealsListPipelineView()"></app-pipeline-view-card>
+              <app-pipeline-view-card [cardData]="deal" [lostReasons]="lostReasons" [tags]="tags"
+                (refreshAllDeals)=" getPipelineViewData()"></app-pipeline-view-card>
             </div>
           </div>
 

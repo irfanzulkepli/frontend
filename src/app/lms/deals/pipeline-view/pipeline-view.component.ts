@@ -32,15 +32,15 @@ export class PipelineViewComponent implements OnInit, OnDestroy {
   //   { id: 6, name: "Post-sale" }
   // ];
 
-  public pipelineViewId = 0;
+  public pipelineViewId: string = '';
   public dealsByStageId = [];
   public dealsValueByStageId = [];
 
   public pipelineView;
   public pipeline;
   public stages;
-  public stageTypes;
   public lostReasons;
+  public tags;
   /** Subject that emits when the component has been destroyed. */
   protected _onDestroy = new Subject<void>();
 
@@ -55,15 +55,15 @@ export class PipelineViewComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    const id = this.activatedRoute.snapshot.paramMap.get('id');
-    console.log(id);
-    if (id) {
-      this.pipelineViewId = parseInt(id);
+    this.pipelineViewId = this.activatedRoute.snapshot.paramMap.get('id');
+    if (!this.pipelineViewId) {
+      this.pipelineViewId = '';
     }
 
     this.getLostReasonsList();
-    this.getStagesList();
-    this.getDealsListPipelineView();
+    this.getPipelinesList();
+    this.getPipelineViewData();
+    this.getTagsList();
   }
 
   ngOnDestroy() {
@@ -93,17 +93,15 @@ export class PipelineViewComponent implements OnInit, OnDestroy {
     const modalRef = this.modalService.open(DealsModalComponent);
   }
 
-  getStagesList() {
-    this.lmsService.getStagesListByPipelinesId(this.pipelineViewId).subscribe({
-      next: (n) => {
-        this.stageTypes = n;
-        this.stages = n;
+  getPipelineViewData() {
+    this.getStagesListByPipelineId();
+    this.getDealsListByPipelineId();
+  }
 
-        // this.stages.map(stage => {
-        //   if (stage.id < 7) {
-        //     this.dealsProbabilityByStageId[stage.id - 1] = stage.probability;
-        //   }
-        // })
+  getStagesListByPipelineId() {
+    this.lmsService.getStagesListByPipelineId(this.pipelineViewId).subscribe({
+      next: (n) => {
+        this.stages = n;
       },
       error: (e) => { },
       complete: () => { }
@@ -114,33 +112,35 @@ export class PipelineViewComponent implements OnInit, OnDestroy {
     this.pipelinesService.getPipelinesList().subscribe({
       next: (n) => {
         this.pipeline = n;
+        if (!this.pipelineViewId && this.pipeline.length > 0) {
+          this.pipelineViewId = this.pipeline[0].id + '';
+        }
       },
       error: (e) => { },
       complete: () => { }
     })
   }
 
-  getDealsListPipelineView() {
+  getDealsListByPipelineId() {
     this.dealsByStageId = [];
     this.dealsValueByStageId = [];
-    this.dealsService.getDealsListPipelineView(this.pipelineViewId).subscribe({
+    this.dealsService.getDealsListByPipelineId(this.pipelineViewId).subscribe({
       next: (n) => {
         this.pipelineView = n;
 
+        this.stages.forEach((element: any) => {
+          this.dealsByStageId.push([]);
+          this.dealsValueByStageId.push(0);
+        });
+
         this.pipelineView.map(deal => {
-          let foundMatchingId: boolean = false;
-          this.dealsByStageId.forEach((element: any, i: number) => {
-            if (deal.stages.id == element[0].stages.id) {
+          this.stages.forEach((element: any, i: number) => {
+            if (deal.stages.id == element.id) {
               this.dealsByStageId[i].push(deal);
               this.dealsValueByStageId[i] += deal.value;
-              foundMatchingId = true;
             }
           });
-          if (!foundMatchingId) {
-            this.dealsByStageId.push([deal]);
-            this.dealsValueByStageId.push(deal.value);
-          }
-        })
+        });
       },
       error: (e) => { },
       complete: () => { }
@@ -151,6 +151,16 @@ export class PipelineViewComponent implements OnInit, OnDestroy {
     this.lostReasonsService.getLostReasonsList().subscribe({
       next: (n) => {
         this.lostReasons = n;
+      },
+      error: (e) => { },
+      complete: () => { }
+    })
+  }
+
+  getTagsList() {
+    this.lmsService.getTagsList().subscribe({
+      next: (n) => {
+        this.tags = n;
       },
       error: (e) => { },
       complete: () => { }

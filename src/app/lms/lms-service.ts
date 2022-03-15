@@ -49,7 +49,7 @@ export class LMSService {
         return ORGANIZATION;
     }
 
-    getStagesListByPipelinesId(id: number): Observable<any> {
+    getStagesListByPipelineId(id: string): Observable<any> {
         return this.httpClient.get(environment.baseUrl + '/stages/list/pipelines/' + id);
     }
 
@@ -59,6 +59,10 @@ export class LMSService {
 
     getPersonList(): Observable<any> {
         return this.httpClient.get(environment.baseUrl + '/person/list');
+    }
+
+    getTagsList(): Observable<any> {
+        return this.httpClient.get(environment.baseUrl + '/tags/list');
     }
 }
 
