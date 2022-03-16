@@ -1,6 +1,6 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSelect } from '@angular/material/select';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
@@ -72,7 +72,7 @@ export class PipelineViewCardComponent implements OnInit {
   filteredTags: any[] = [];
   dealTagForm = new FormGroup({
     id: new FormControl('', Validators.required),
-    tags: new FormControl([], Validators.required)
+    tagIds: new FormControl([], Validators.required)
   });
 
   constructor(
@@ -164,9 +164,9 @@ export class PipelineViewCardComponent implements OnInit {
   //   );
   // }
 
-  getInitials(name: string) {
-    if (name) {
-      const fullName = name.split(' ');
+  getInitials(firstName: string) {
+    if (firstName) {
+      const fullName = firstName.split(' ');
 
       let initials;
       if (fullName.length > 1) {
@@ -199,12 +199,12 @@ export class PipelineViewCardComponent implements OnInit {
   // }
 
   onTagsChange() {
-    let formTags: any[] = this.dealTagForm.value.tags;
+    let formTagIds: any[] = this.dealTagForm.value.tagIds;
 
     this.filteredTags = [];
-    formTags.forEach(formTag => {
+    formTagIds.forEach(formTagId => {
       this.tags.forEach(tag => {
-        if (tag.id == formTag) {
+        if (tag.id == formTagId) {
           this.filteredTags.push(tag);
         }
       });
@@ -212,11 +212,11 @@ export class PipelineViewCardComponent implements OnInit {
   }
 
   onTagsRemove(index: number) {
-    let formTags: any[] = this.dealTagForm.value.tags;
-    formTags.splice(index, 1);
+    let formTagIds: any[] = this.dealTagForm.value.tagIds;
+    formTagIds.splice(index, 1);
     this.filteredTags.splice(index, 1);
     this.dealTagForm.patchValue({
-      tags: formTags
+      tagIds: formTagIds
     })
   }
 
@@ -237,8 +237,20 @@ export class PipelineViewCardComponent implements OnInit {
    * Open modal
    * @param content modal content
    */
-  openModal(content: any) {
+  openTagModal(content: any) {
     this.modalService.open(content);
+
+    let tagIds: string[] = [];
+    this.cardData.tags.forEach(element => {
+      tagIds.push(element.id + '')
+    });
+
+    this.dealTagForm.patchValue({
+      id: this.cardData.id,
+      tagIds: tagIds
+    });
+
+    this.onTagsChange();
   }
 
   openLostModal(content: any) {
@@ -285,6 +297,16 @@ export class PipelineViewCardComponent implements OnInit {
     this.dealsService.updateDealsToWon(this.cardData.id).subscribe({
       next: (n) => {
         this.modalService.open(content, { centered: true });
+      },
+      error: (e) => { },
+      complete: () => { }
+    })
+  }
+
+  updateDealsTag() {
+    this.dealsService.updateDealsTag(this.dealTagForm.value).subscribe({
+      next: (n) => {
+        this.refreshData();
       },
       error: (e) => { },
       complete: () => { }

@@ -8,6 +8,7 @@ import { LMSService } from '../../lms-service';
 import { DealsService } from '../deals.service';
 import { LostReasonsService } from '../lost-reasons.service';
 import { PipelinesService } from '../pipelines.service';
+import { StagesService } from '../stages.service';
 
 @Component({
   selector: 'app-pipeline-view',
@@ -51,6 +52,7 @@ export class PipelineViewComponent implements OnInit, OnDestroy {
     private dealsService: DealsService,
     private lostReasonsService: LostReasonsService,
     private activatedRoute: ActivatedRoute,
+    private stagesService: StagesService,
     private router: Router
   ) { }
 
@@ -78,7 +80,11 @@ export class PipelineViewComponent implements OnInit, OnDestroy {
   }
 
   drop(event: CdkDragDrop<string[]>) {
+
+    console.log(event);
+
     if (event.previousContainer === event.container) {
+      console.log('Transfering item to existing container')
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
       console.log('Transfering item to new container')
@@ -97,14 +103,41 @@ export class PipelineViewComponent implements OnInit, OnDestroy {
   }
 
   getPipelineViewData() {
+    this.dealsByStageId = [];
+    this.dealsValueByStageId = [];
+
     this.getStagesListByPipelineId();
     this.getDealsListByPipelineId();
   }
 
+  setPipelineViewData() {
+    if (!this.stages || !this.pipelineView) {
+      return;
+    }
+
+    this.dealsByStageId = [];
+    this.dealsValueByStageId = [];
+
+    this.stages.forEach((element: any) => {
+      this.dealsByStageId.push([]);
+      this.dealsValueByStageId.push(0);
+    });
+
+    this.pipelineView.forEach(deal => {
+      this.stages.forEach((element: any, i: number) => {
+        if (deal.stages.id == element.id) {
+          this.dealsByStageId[i].push(deal);
+          this.dealsValueByStageId[i] += deal.value;
+        }
+      });
+    });
+  }
+
   getStagesListByPipelineId() {
-    this.lmsService.getStagesListByPipelineId(this.pipelineViewId).subscribe({
+    this.stagesService.getStagesListByPipelineId(this.pipelineViewId).subscribe({
       next: (n) => {
         this.stages = n;
+        this.setPipelineViewData();
       },
       error: (e) => { },
       complete: () => { }
@@ -125,25 +158,10 @@ export class PipelineViewComponent implements OnInit, OnDestroy {
   }
 
   getDealsListByPipelineId() {
-    this.dealsByStageId = [];
-    this.dealsValueByStageId = [];
     this.dealsService.getDealsListByPipelineId(this.pipelineViewId).subscribe({
       next: (n) => {
         this.pipelineView = n;
-
-        this.stages.forEach((element: any) => {
-          this.dealsByStageId.push([]);
-          this.dealsValueByStageId.push(0);
-        });
-
-        this.pipelineView.map(deal => {
-          this.stages.forEach((element: any, i: number) => {
-            if (deal.stages.id == element.id) {
-              this.dealsByStageId[i].push(deal);
-              this.dealsValueByStageId[i] += deal.value;
-            }
-          });
-        });
+        this.setPipelineViewData();
       },
       error: (e) => { },
       complete: () => { }

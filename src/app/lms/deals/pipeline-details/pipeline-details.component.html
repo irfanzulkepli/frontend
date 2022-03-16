@@ -1,0 +1,113 @@
+<div class="container-fluid">
+
+  <div class="row mb-3">
+    <h4 class="col-10">{{action}} Pipeline</h4>
+
+    <div class="col-2 d-flex flex-row-reverse">
+      <button type="button" class="btn btn-light" (click)="goToPipelinePage()">Cancel</button>
+      <span class="m-1"></span>
+      <button type="button" class="btn btn-primary" (click)="savePipelines()">Save</button>
+    </div>
+  </div>
+
+  <form [formGroup]="pipelineForm">
+
+    <div class="form-group row mb-3">
+      <label class="col-sm-2 col-form-label">Name</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" placeholder="Enter pipeline name" formControlName="name">
+      </div>
+    </div>
+
+    <div class="row scrollable-row" cdkDropListGroup formArrayName="stages">
+
+      <div style="width: 250px;" cdkDropList (cdkDropListDropped)="drop($event)"
+        *ngFor="let stageForm of getStagesControl(); let i = index">
+        <div cdkDragLockAxis="x" cdkDrag class="card p-3 m-0">
+
+          <form [formGroup]="stageForm">
+            <div *cdkDragPlaceholder></div>
+
+
+            <div class="form-group row mb-3">
+              <label class="col-sm-12 col-form-label">Name</label>
+              <div class="col-sm-12">
+                <input type="text" class="form-control" placeholder="Enter name" formControlName="name">
+              </div>
+            </div>
+
+            <div class="form-group row mb-3">
+              <label class="col-sm-12 col-form-label">Probability</label>
+              <div class="col-sm-12">
+                <input type="number" class="form-control" placeholder="Enter probability" formControlName="probability">
+              </div>
+            </div>
+
+            <button type="button" class="btn btn-danger w-100"
+              (click)="onClickDelete(deleteContent, stageForm.value.id)">
+              <i class="bx bx-trash"></i>
+              <span class="m-1"></span>Delete
+            </button>
+
+          </form>
+        </div>
+      </div>
+
+      <div style="width: 250px;" cdkDropList *ngIf="getStagesControl().length > 0">
+        <div class="card p-3 h-100 d-flex justify-content-center">
+          <div class="">
+            <h5 class="text-center">Add new stage</h5>
+            <p class="text-center">Pipeline stage is helpful to manage your sales process</p>
+            <div class="d-flex justify-content-center">
+              <button type="button" class="btn btn-primary" (click)="addStageToPipelineForm()">Add Stage</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </form>
+</div>
+
+
+<!-- Manage Tag Modal -->
+<ng-template #deleteContent let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title mt-0">Delete Stage</h3>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
+  </div>
+  <div class="modal-body">
+    <h5 class="text-danger">Opps!</h5>
+    <h5 class="">What about the deals of this stage?</h5>
+
+    <form [formGroup]="deleteStageForm">
+
+      <div class="form-check">
+        <input class="form-check-input" type="radio" formControlName="moveAllStages" value="true">
+        <label class="form-check-label">
+          Want to move these deals to another stage?
+        </label>
+      </div>
+
+      <div class="form-group row my-3" *ngIf="deleteStageForm.value.moveAllStages === 'true'">
+        <div class="col-sm-12 d-flex align-items-center">
+          <select class="form-select" formControlName="newStagesId">
+            <option *ngFor="let stage of filteredStages" value="{{stage.id}}">{{ stage.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-check">
+        <input class="form-check-input" type="radio" formControlName="moveAllStages" value="false">
+        <label class="form-check-label">
+          Or delete anyway
+        </label>
+      </div>
+
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="deletePipelines()">Delete</button>
+  </div>
+</ng-template>

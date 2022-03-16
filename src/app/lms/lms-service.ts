@@ -49,10 +49,6 @@ export class LMSService {
         return ORGANIZATION;
     }
 
-    getStagesListByPipelineId(id: string): Observable<any> {
-        return this.httpClient.get(environment.baseUrl + '/stages/list/pipelines/' + id);
-    }
-
     getUsersList(): Observable<any> {
         return this.httpClient.get(environment.baseUrl + '/users/list');
     }

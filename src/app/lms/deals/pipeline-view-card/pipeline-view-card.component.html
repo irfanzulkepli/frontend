@@ -19,7 +19,7 @@
           </button>
           <div class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupVerticalDrop1" ngbDropdownMenu>
             <a class="dropdown-item" (click)="activityModal()">Add activity</a>
-            <a class="dropdown-item" (click)="openModal(tagContent)">Manage Tag</a>
+            <a class="dropdown-item" (click)="openTagModal(tagContent)">Manage Tag</a>
             <a class="dropdown-item" (click)="openWonModal(wonContent)">Won the deal</a>
             <a class="dropdown-item" (click)="openLostModal(lostContent)">Make it lost</a>
             <a class="dropdown-item">Mark</a>
@@ -33,22 +33,35 @@
 
   <!-- body -->
   <div class="card-body">
-    <div *ngIf="cardData.person.length > 0; else nolead">
+    <div *ngIf="cardData.person; else nolead">
+      <p class="text-muted font-size-90" style="margin: 0;">
+        {{ cardData.person.name }}
+      </p>
+    </div>
+    <!-- <div *ngIf="cardData.person.length > 0; else nolead">
       <div class="d-flex-inline" *ngFor="let person of cardData.person">
         <p class="text-muted font-size-90" style="margin: 0;">
           {{ person.name }}
         </p>
       </div>
-    </div>
+    </div> -->
     <ng-template #nolead>No lead added yet</ng-template>
     <div class="d-flex justify-content-between align-items-center">
       <div class="d-flex align-items-center">
         <span class="badge bg-dark text-white rounded-circle d-flex align-items-center justify-content-center"
-          style="width: 16px;height: 16px;">{{ getInitials(fullName) }}</span>
-        <p class="p-2 ml-2 mb-0">{{ fullName }}</p>
+          style="width: 16px;height: 16px;">{{ getInitials(cardData.owner.firstName + ' ' + cardData.owner.lastName) }}</span>
+        <p class="p-2 ml-2 mb-0">{{ cardData.owner.firstName }} {{ cardData.owner.lastName }}</p>
       </div>
       <p class="text-nowrap mb-0">$ {{ cardData.value | number : '1.2-2' }}</p>
     </div>
+  </div>
+
+  <div class="card-footer bg-transparent border-top" *ngIf="cardData.tags.length > 0">
+    <mat-chip-list>
+      <mat-chip *ngFor="let tag of cardData.tags; let i = index" [ngStyle]="{'background-color': tag.colorCode}">
+        {{ tag.name }}
+      </mat-chip>
+    </mat-chip-list>
   </div>
 
   <!-- Footer -->
@@ -66,10 +79,11 @@
   <div class="modal-body">
     <form [formGroup]="dealTagForm">
       <div class="col-form-label">
-        <mat-select formControlName="tags" (ngModelChange)="onTagsChange()" placeholder="+ Add" multiple>
+        <mat-select formControlName="tagIds" (ngModelChange)="onTagsChange()" placeholder="+ Add" multiple>
           <mat-select-trigger>
             <mat-chip-list>
-              <mat-chip *ngFor="let tag of filteredTags; let i = index" [removable]="true" (removed)="onTagsRemove(i)">
+              <mat-chip *ngFor="let tag of filteredTags; let i = index" [removable]="true" (removed)="onTagsRemove(i)"
+                [ngStyle]="{'background-color': tag.colorCode}">
                 {{ tag.name }}
                 <mat-icon matChipRemove>cancel</mat-icon>
               </mat-chip>
@@ -82,6 +96,7 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+    <button type="button" class="btn btn-primary" (click)="updateDealsTag()">Save</button>
   </div>
 </ng-template>
 

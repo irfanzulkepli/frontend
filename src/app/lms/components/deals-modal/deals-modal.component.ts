@@ -6,6 +6,7 @@ import { map, startWith } from 'rxjs/operators';
 import { Person } from '../../data/person-data';
 import { DealsService } from '../../deals/deals.service';
 import { PipelinesService } from '../../deals/pipelines.service';
+import { StagesService } from '../../deals/stages.service';
 import { LMSService } from '../../lms-service';
 
 @Component({
@@ -49,6 +50,7 @@ export class DealsModalComponent implements OnInit {
     public activeModal: NgbActiveModal,
     private dealsService: DealsService,
     private pipelinesService: PipelinesService,
+    private stagesService: StagesService,
     private lmsService: LMSService
   ) { }
 
@@ -86,7 +88,7 @@ export class DealsModalComponent implements OnInit {
           personId: n.person.id ? n.person.id : ''
         });
 
-        this.getStagesList();
+        this.getStagesListByPipelineId();
       },
       error: (e) => { },
       complete: () => { }
@@ -97,7 +99,7 @@ export class DealsModalComponent implements OnInit {
     this.dealForm.patchValue({
       stagesId: ''
     });
-    this.getStagesList();
+    this.getStagesListByPipelineId();
   }
 
   onCancelClick() {
@@ -156,9 +158,9 @@ export class DealsModalComponent implements OnInit {
     })
   }
 
-  getStagesList() {
+  getStagesListByPipelineId() {
     this.stages = [];
-    this.lmsService.getStagesListByPipelineId(this.dealForm.value.pipelinesId).subscribe({
+    this.stagesService.getStagesListByPipelineId(this.dealForm.value.pipelinesId).subscribe({
       next: (n) => {
         this.stages = n;
       },

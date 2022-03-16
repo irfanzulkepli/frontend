@@ -20,6 +20,14 @@ export class PipelinesService {
     return this.httpClient.get(environment.baseUrl + '/pipelines/page');
   }
 
+  createPipelines(body: any): Observable<any> {
+    return this.httpClient.post(environment.baseUrl + '/pipelines', body);
+  }
+
+  updatePipelines(body: any): Observable<any> {
+    return this.httpClient.put(environment.baseUrl + '/pipelines/' + body.id, body);
+  }
+
   deletePipelines(id: number): Observable<any> {
     return this.httpClient.delete(environment.baseUrl + '/pipelines/' + id);
   }

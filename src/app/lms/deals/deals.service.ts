@@ -52,12 +52,20 @@ export class DealsService {
     return this.httpClient.put(environment.baseUrl + '/deals/' + id + '/description', body);
   }
 
+  updateAllDealsToNewStage(oldId: number, newId: number): Observable<any> {
+    return this.httpClient.put(environment.baseUrl + '/deals/stage/' + oldId + '/' + newId, {});
+  }
+
   updateDealsToLost(body: any): Observable<any> {
     return this.httpClient.put(environment.baseUrl + '/deals/lost/' + body.id, body);
   }
 
   updateDealsToWon(id: number): Observable<any> {
     return this.httpClient.put(environment.baseUrl + '/deals/won/' + id, {});
+  }
+
+  updateDealsTag(body: any): Observable<any> {
+    return this.httpClient.put(environment.baseUrl + '/deals/tag/' + body.id, body);
   }
 
   deleteDealsById(id: number): Observable<any> {

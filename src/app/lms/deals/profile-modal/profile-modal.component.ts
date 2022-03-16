@@ -10,6 +10,7 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { People } from '../../leads/lead-profile/lead-profile.component';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { DealsService } from '../deals.service';
+import { StagesService } from '../stages.service';
 
 @Component({
   selector: 'app-profile-modal',
@@ -71,6 +72,7 @@ export class ProfileModalComponent implements OnInit {
     private datepipe: DatePipe,
     private fb: FormBuilder,
     private lmsService: LMSService,
+    private stagesService: StagesService,
     private dealsService: DealsService
     ) { }
 
@@ -232,7 +234,7 @@ export class ProfileModalComponent implements OnInit {
 
   getStagesList() {
     this.stages = [];
-    this.lmsService.getStagesListByPipelineId(this.inputData.pipelines.id).subscribe({
+    this.stagesService.getStagesListByPipelineId(this.inputData.pipelines.id).subscribe({
       next: (n) => {
         this.stages = n;
       },

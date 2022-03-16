@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DeleteModal2Component } from '../../components/delete-modal2/delete-modal2.component';
 import { ColumnsInfo } from '../../lms-service';
@@ -65,7 +66,8 @@ export class PipelinesComponent implements OnInit {
 
   constructor(
     private modalService: NgbModal,
-    private pipelinesService: PipelinesService
+    private pipelinesService: PipelinesService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -99,8 +101,7 @@ export class PipelinesComponent implements OnInit {
   }
 
   editPipelines(data: any) {
-    console.log(data);
-    console.log("edit");
+    this.goToEditPipeline(data.id);
   }
 
   deletePipelines(data: any) {
@@ -111,6 +112,14 @@ export class PipelinesComponent implements OnInit {
       error: (e) => { },
       complete: () => { }
     })
+  }
+
+  goToCreatePipeline() {
+    this.router.navigateByUrl('/lms/deals/pipelines/create');
+  }
+
+  goToEditPipeline(id: number) {
+    this.router.navigateByUrl('/lms/deals/pipelines/edit/' + id);
   }
 
 }
