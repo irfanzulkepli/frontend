@@ -1,10 +1,10 @@
 <div class="modal-header d-flex align-items-center justify-content-between">
   <div class="d-flex align-items-center">
     <div class="avatar-sm ml-2">
-      <span class="avatar-title rounded-circle bg-success font-size-16">{{  getInitials(inputData.owner.fullName) }}</span>
+      <span class="avatar-title rounded-circle bg-success font-size-16">{{  getInitials(fullName) }}</span>
     </div>
     <div class="media-body p-2">
-      <p style="margin: 0;font-size: large;">{{ inputData.owner.fullName }}</p>
+      <p style="margin: 0;font-size: large;">{{ fullName }}</p>
       <p class="text-muted" style="margin: 0;">
         Deal Owner - {{ inputData.createdAt | date:'dd-MM-yyyy' }} - Age - {{ getTimeLapsed() }}
       </p>
@@ -25,18 +25,35 @@
       </div>
 
       <div class="card border-0 mb-3">
-        <div class="card-header d-flex align-items-center justify-content-between">
-          <h5>Description</h5>
-          <button type="button" class="btn">
-            <i class="mdi mdi-square-edit-outline font-size-24"></i>
-          </button>
+        <div class="card-title d-flex justify-content-between align-items-center">
+          <span>
+            {{ isEditDescription ? 'Description' : 'Description' }}
+          </span>
+          <div class="page-title-right" *ngIf="!isEditDescription">
+            <i class="mdi mdi-square-edit-outline font-size-24 cursor-pointer"
+              (click)="isEditDescription = !isEditDescription"></i>
+          </div>
+          <div class="page-title-right" *ngIf="isEditDescription">
+            <i class="mdi mdi-close-box-outline font-size-24 cursor-pointer"
+              (click)="isEditDescription = !isEditDescription"></i>
+            <i class="mdi mdi-checkbox-marked-outline font-size-24 cursor-pointer"
+              (click)="updateDescription()"></i>
+          </div>
         </div>
         <div class="card-body comment-card">
-          <div class="d-flex align-items-center justify-content-between mb-4">
-            <div class="d-flex align-items-center">
-              <p class="mb-0" placeholder="No description added yet">{{ inputData.description }}</p>
-            </div>
+          <div class="table-responsive" *ngIf="!isEditDescription">
+            <p *ngIf="inputData.description" class="mb-0" placeholder="No description added yet">{{ description }}</p>
+            <p *ngIf="!inputData.description" class="mb-0" placeholder="No description added yet">No description added yet</p>
           </div>
+          <div class="table-responsive" *ngIf="isEditDescription">
+            <form [formGroup]="profileForm">
+              <textarea class="form-control"  rows="3" formControlName="description">{{ description }}</textarea>
+            </form>
+          </div>
+        </div>
+        <ckeditor class="mt-3" [editor]="Editor" data="<p></p>"></ckeditor>
+        <div class="d-flex justify-content-end mt-2">
+          <button class="btn btn-primary">Comment</button>
         </div>
       </div>
     </div>
@@ -55,18 +72,18 @@
             <i class="mdi mdi-close-box-outline font-size-24 cursor-pointer"
               (click)="isEditStage = !isEditStage"></i>
             <i class="mdi mdi-checkbox-marked-outline font-size-24 cursor-pointer"
-              (click)="isEditStage = !isEditStage"></i>
+              (click)="updateStage()"></i>
           </div>
         </div>
         <div class="table-responsive" *ngIf="!isEditStage">
           <p class="mb-0 font-size-90 text-muted">
-            <i class="bx bxl-trello text-primary"></i> {{ getStage(inputData.stageId) }}</p>
+            <i class="bx bxl-trello text-primary"></i> {{ stage }}</p>
         </div>
         <div class="table-responsive" *ngIf="isEditStage">
-          <form [formGroup]="stageForm">
+          <form [formGroup]="profileForm">
             <select class="form-select" formControlName="stage">
-              <option *ngFor="let stage of stageTypes" [value]="stage">
-                {{ stage }}
+              <option *ngFor="let stage of stages" [value]="stage.name">
+                {{ stage.name }}
               </option>
             </select>
           </form>
@@ -86,15 +103,15 @@
             <i class="mdi mdi-close-box-outline font-size-24 cursor-pointer"
               (click)="isEditDealValue = !isEditDealValue"></i>
             <i class="mdi mdi-checkbox-marked-outline font-size-24 cursor-pointer"
-              (click)="isEditDealValue = !isEditDealValue"></i>
+              (click)="updateDealValue()"></i>
           </div>
         </div>
         <div class="table-responsive" *ngIf="!isEditDealValue">
           <p class="mb-0 font-size-90 text-muted">
-            <i class="bx bx-dollar text-primary"></i> {{ inputData.value | number : '1.2-2' }}</p>
+            <i class="bx bx-dollar text-primary"></i> {{ dealValue | number : '1.2-2' }}</p>
         </div>
         <div class="table-responsive" *ngIf="isEditDealValue">
-          <form [formGroup]="dealValueForm">
+          <form [formGroup]="profileForm">
             <input placeholder="Enter deal value" class="form-control" type="number" formControlName="dealValue" />
           </form>
         </div>
@@ -113,11 +130,16 @@
             <i class="mdi mdi-close-box-outline font-size-24 cursor-pointer"
               (click)="isEditLeadType = !isEditLeadType"></i>
             <i class="mdi mdi-checkbox-marked-outline font-size-24 cursor-pointer"
-              (click)="isEditLeadType = !isEditLeadType"></i>
+              (click)="updateLeadType()"></i>
           </div>
         </div>
         <div class="table-responsive" *ngIf="!isEditLeadType">
-          <div class="media align-items-center me-2">
+          <div class="media align-items-center me-2" *ngIf="personName">
+            <div class="me-1 rounded-circle avatar-xs bg-black text-white d-flex align-items-center justify-content-center"
+            alt="user-pic">{{getInitials(personName)}}</div>
+            <div class="media-body text-muted">{{personName}}</div>
+          </div>
+          <div class="media align-items-center me-2" *ngIf="!personName">
             <div class="me-1 rounded-circle avatar-xs bg-black text-white d-flex align-items-center justify-content-center"
             alt="user-pic">N/A</div>
             <div class="media-body text-muted">No lead found</div>
@@ -126,7 +148,7 @@
         <div class="table-responsive" *ngIf="isEditLeadType">
           <div class="d-flex justify-content-between align-items-center">
             <label>Lead</label>
-            <form [formGroup]="leadTypePersonForm" class="col-sm-8">
+            <form [formGroup]="profileForm" class="col-sm-8">
               <select class="form-select" formControlName="person">
                 <option *ngFor="let person of personData" [value]="person.name">
                   {{ person.name }}
@@ -192,18 +214,18 @@
             <i class="mdi mdi-close-box-outline font-size-24 cursor-pointer"
               (click)="isEditExpectedClosingDate = !isEditExpectedClosingDate"></i>
             <i class="mdi mdi-checkbox-marked-outline font-size-24 cursor-pointer"
-              (click)="isEditExpectedClosingDate = !isEditExpectedClosingDate"></i>
+              (click)="updateExpectedClosingDate()"></i>
           </div>
         </div>
         <div class="table-responsive" *ngIf="!isEditExpectedClosingDate">
           <div class="mb-0 font-size-90 text-muted">
             <i class="bx bx-calendar-alt text-primary"></i>
-            Not added yet
+            {{expectedClosingDate}}
           </div>
         </div>
         <div class="table-responsive" *ngIf="isEditExpectedClosingDate">
-          <form [formGroup]="expectedClosingDateForm">
-            <input class="form-control" type="date" formControlName="date"/>
+          <form [formGroup]="profileForm">
+            <input class="form-control" type="date" formControlName="expiredDate"/>
           </form>
         </div>
       </div>
@@ -211,7 +233,8 @@
       <div class="border-bottom mb-4 pb-4">
         <div class="card-title d-flex justify-content-between align-items-center">
           <span>
-            {{ isEditFollower ? 'Edit Followers' : 'Followers (0)' }}
+            <!-- {{ isEditFollower ? 'Edit Followers' : 'Followers ('allFollowers.length()')' }} -->
+            {{ isEditFollower ? 'Edit Followers' : 'Followers ('+followers.length+')'  }}
           </span>
           <div class="page-title-right" *ngIf="!isEditFollower">
             <i class="mdi mdi-square-edit-outline font-size-24 cursor-pointer"
@@ -221,15 +244,24 @@
             <i class="mdi mdi-close-box-outline font-size-24 cursor-pointer"
               (click)="isEditFollower = !isEditFollower"></i>
             <i class="mdi mdi-checkbox-marked-outline font-size-24 cursor-pointer"
-              (click)="isEditFollower = !isEditFollower"></i>
+              (click)="updateFollower()"></i>
           </div>
         </div>
         <div class="table-responsive">
           <div  *ngIf="!isEditFollower">
-            <p>No person linked yet</p>
-            <a class="cursor-pointer" (click)="isEditFollower = !isEditFollower">
-              Link as person
-            </a>
+            <div *ngIf="followers.length == 0">
+              <p>No person linked yet</p>
+              <a class="cursor-pointer" (click)="isEditFollower = !isEditFollower">
+                Link as person
+              </a>
+            </div>
+            <!-- <div *ngIf="followers.length > 0">
+              <div *ngFor="let follower of followers.value">
+                <div class="me-1 rounded-circle avatar-xs bg-black text-white d-flex align-items-center justify-content-center"
+                alt="user-pic">{{getInitials(follower.name)}}</div>
+                <div class="media-body text-muted">{{follower.name}}</div>
+              </div>
+            </div> -->
           </div>
           <form [formGroup]="followerForms" *ngIf="isEditFollower">
             <table class="table table-nowrap mb-0">

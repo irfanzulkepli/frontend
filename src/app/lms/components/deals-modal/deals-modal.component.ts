@@ -19,6 +19,7 @@ export class DealsModalComponent implements OnInit {
 
   @Input() dealDatas;
   @Output() dealDetails = new EventEmitter();
+  @Output() refreshDealsListPipelineView = new EventEmitter();
 
   public pipelines;
   public users;
@@ -70,6 +71,7 @@ export class DealsModalComponent implements OnInit {
     this.dealsService.getDealsById(this.dealDatas.id).subscribe({
       next: (n) => {
         const leadTypeIndicator = n.contextableType.split('\\').includes('Person');
+        console.log(n.stages.id)
 
         this.dealForm.patchValue({
           id: n.id ? n.id : '',
@@ -114,6 +116,7 @@ export class DealsModalComponent implements OnInit {
     this.dealsService.addDeals(this.dealForm.value).subscribe({
       next: (n) => {
         this.activeModal.close(true);
+        this.refreshDealsListPipelineView.emit();
       },
       error: (e) => {
         this.activeModal.close(false);

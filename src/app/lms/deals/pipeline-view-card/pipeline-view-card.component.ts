@@ -20,6 +20,7 @@ import { ProfileModalComponent } from '../profile-modal/profile-modal.component'
 export class PipelineViewCardComponent implements OnInit {
 
   // public pipelineView = PIPELINEVIEW;
+  fullName: string;
   public pipeline = PIPELINES;
   public userData = USER;
   // public lostReasons = LOSTREASONS;
@@ -177,7 +178,7 @@ export class PipelineViewCardComponent implements OnInit {
       return initials.toUpperCase();
     }
     else {
-      return 'AZ';
+      return 'N/A';
     }
   }
 

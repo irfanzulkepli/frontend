@@ -8,6 +8,8 @@ import { LMSService } from '../../lms-service';
 import { map, startWith } from 'rxjs/operators';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { People } from '../../leads/lead-profile/lead-profile.component';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { DealsService } from '../deals.service';
 
 @Component({
   selector: 'app-profile-modal',
@@ -18,7 +20,13 @@ export class ProfileModalComponent implements OnInit {
 
   @Input() inputData;
   public personData = PERSON;
-  stageTypes: string[] = ["Lead generation", "Lead nurturing", "Marketing qualified lead", "Sales accepted lead", "Sales qualified lead", "Closed deals", "Post-sale"];
+  public stages;
+  fullName: string;
+  stage: any;
+  dealValue: number;
+  personName: any;
+  expectedClosingDate: string;
+  description: string;
   personControl = new FormControl([]);
 
   isEditStage: boolean = false;
@@ -26,13 +34,23 @@ export class ProfileModalComponent implements OnInit {
   isEditLeadType: boolean = false;
   isEditExpectedClosingDate: boolean = false;
   isEditFollower: boolean = false;
+  isEditDescription: boolean = false;
 
-  stageForm: FormGroup;
-  dealValueForm: FormGroup;
-  leadTypePersonForm: FormGroup;
-  expectedClosingDateForm: FormGroup;
+
   followerForms: FormGroup;
-
+  profileForm: FormGroup = this.fb.group({
+    stage: ['', Validators.required],
+    stageId: ['', Validators.required],
+    dealValue: ['', Validators.required],
+    personName: ['', Validators.required],
+    personId: ['', Validators.required],
+    expiredDate: ['', Validators.required],
+    followers: ['', Validators.required],
+    proposal: ['', Validators.required],
+    tags: ['', Validators.required],
+    description: ['', Validators.required],
+    comment: ['', Validators.required]
+  })
 
   tagCtrl = new FormControl();
   tagChipCtrl = new FormControl([]);
@@ -44,6 +62,8 @@ export class ProfileModalComponent implements OnInit {
   allFollowers: Array<People>;
   filteredFollowers = [];
 
+  public Editor = ClassicEditor;
+
   @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
 
   constructor(
@@ -51,10 +71,12 @@ export class ProfileModalComponent implements OnInit {
     private datepipe: DatePipe,
     private fb: FormBuilder,
     private lmsService: LMSService,
+    private dealsService: DealsService
     ) { }
 
   ngOnInit() {
     this.initForm();
+    this.initValues()
     this.allTag = this.lmsService.getTags();
     this.allFollowers =  this.lmsService.getPersons();
 
@@ -65,22 +87,30 @@ export class ProfileModalComponent implements OnInit {
   }
 
   initForm() {
-    console.log(this.inputData)
-    this.stageForm = this.fb.group({
-      stage: [this.stageTypes[this.inputData.stageId], Validators.required]
-    });
-    this.dealValueForm = this.fb.group({
-      dealValue: [this.inputData.value, Validators.required]
-    });
-    this.leadTypePersonForm = this.fb.group({
-      person: ['', Validators.required]
-    });
-    this.expectedClosingDateForm = this.fb.group({
-      date: ['', Validators.required]
-    });
+    this.profileForm.patchValue({
+      stage: this.inputData.stages.name,
+      stageId: this.inputData.stages.id,
+      dealValue: this.inputData.value,
+      personName: this.inputData.person.name,
+      personId: this.inputData.person.id,
+      expiredDate: this.inputData.expiredAt,
+      description: this.inputData.description,
+    })
+
+    this.getStagesList()
+
     this.followerForms = this.fb.group({
       followers: this.fb.array([])
     });
+  }
+
+  initValues() {
+    this.fullName = this.inputData.owner.firstName + " " + this.inputData.owner.lastName;
+    this.stage = this.inputData.stages.name;
+    this.dealValue = this.inputData.value;
+    this.personName = this.inputData.person.name;
+    this.expectedClosingDate = this.inputData.expiredAt;
+    this.description = this.inputData.description;
   }
 
   onPersonRemoved(person: string) {
@@ -96,19 +126,19 @@ export class ProfileModalComponent implements OnInit {
     }
   }
 
-  getInitials(fullName: string) {
-    const splitName = fullName.split(' ');
-    let ownerInitials: string;
-    if (splitName.length > 1) {
-      ownerInitials = splitName[0].charAt(0) + splitName[1].charAt(0);
-    } else {
-      ownerInitials = splitName[0].charAt(0);
-    }
-    return ownerInitials.toUpperCase();
-  }
+  getInitials(name: string) {
+    if (name) {
+      const fullName = name.split(' ');
 
-  getStage(stageId: number) {
-    return this.stageTypes[stageId-1]
+      let initials;
+      if (fullName.length > 1) {
+        initials = fullName.shift().charAt(0) + fullName.pop().charAt(0);
+      }
+      else {
+        initials = fullName.shift().charAt(0);
+      }
+      return initials.toUpperCase();
+    }
   }
 
   getTimeLapsed() {
@@ -198,6 +228,57 @@ export class ProfileModalComponent implements OnInit {
 
   get followers() {
     return this.followerForms.controls.followers as FormArray;
+  }
+
+  getStagesList() {
+    this.stages = [];
+    this.lmsService.getStagesListByPipelineId(this.inputData.pipelines.id).subscribe({
+      next: (n) => {
+        this.stages = n;
+      },
+      error: (e) => { },
+      complete: () => { }
+    })
+  }
+
+  updateStage() {
+    this.isEditStage = !this.isEditStage;
+    console.log(this.profileForm.value.stage)
+    this.stage = this.profileForm.value.stage;
+    // this.dealsService.updateDealsStage(this.inputData.id,this.profileForm.value.stage.id)
+  }
+
+  updateDealValue() {
+    this.isEditDealValue = !this.isEditDealValue;
+    this.dealValue = this.profileForm.value.dealValue;
+    console.log(this.inputData.id, this.profileForm.value.dealValue)
+    this.dealsService.updateDealsValue(this.inputData.id,this.profileForm.value.dealValue).subscribe({
+      next: (n) => { },
+      error: (e) => { },
+      complete: () => { }
+    })
+  }
+
+  updateLeadType() {
+    this.isEditLeadType = !this.isEditLeadType;
+    this.personName = this.profileForm.value.person.name;
+    // this.dealsService.updateDealsLeadTypePerson(this.inputData.id,this.profileForm.value.person.id)
+  }
+
+  updateExpectedClosingDate() {
+    this.isEditExpectedClosingDate = !this.isEditExpectedClosingDate;
+    this.expectedClosingDate = this.profileForm.value.expiredDate;
+    // this.dealsService.updateDealsExpectedClosingDate(this.inputData.id,this.profileForm.value.expiredDate)
+  }
+
+  updateFollower() {
+    this.isEditFollower = !this.isEditFollower;
+  }
+
+  updateDescription() {
+    this.isEditDescription = !this.isEditDescription;
+    this.description = this.profileForm.value.description;
+    // this.dealsService.updateDealsDescription(this.inputData.id,this.profileForm.value.description)
   }
 
 }
