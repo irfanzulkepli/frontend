@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { UpdateFollowerRequest } from '../leads/interfaces/update-follower-request.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -24,8 +25,16 @@ export class DealsService {
     return this.httpClient.get(environment.baseUrl + '/deals/' + id);
   }
 
+  getFollowersById(id: number, pageableRequest, profileType: string) {
+    return this.httpClient.get(`${environment.baseUrl}/${profileType}/${id}/followers/page`, { params: pageableRequest });
+  }
+
   addDeals(body: any): Observable<any> {
     return this.httpClient.post(environment.baseUrl + '/deals', body);
+  }
+
+  updateFollowers(requestBody: UpdateFollowerRequest, id: number, profileType: string) {
+    return this.httpClient.put(`${environment.baseUrl}/${profileType}/${id}/followers`, requestBody);
   }
 
   updateDeals(body: any): Observable<any> {
