@@ -1,10 +1,19 @@
-<div class="container-fluid">
+<ng-container *ngIf="isLoadingDetails">
+  <div class="row mt-4">
+    <div class="col-12 d-flex justify-content-center">
+      <div class="spinner-border text-primary m-1" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<div class="container-fluid" *ngIf="!isLoadingDetails">
   <div class="row">
     <div class="col-12">
-      {{ profileType }}
       <div class="page-title-box d-flex align-items-center justify-content-between">
         <h4 class="mb-0 font-size-18"> {{ leadProfileData.name }} |
-          <span class="font-size-12 cursor-pointer link" (click)="onBack()">Back</span>
+          <span class="font-size-12 cursor-pointer link" (click)="onBack(profileType)">Back</span>
         </h4>
         <div class="page-title-right">
           <button type="button" class="btn btn-primary btn-rounded" (click)="openDealsModal(addDealModal)">
@@ -19,150 +28,164 @@
     <div class="col-12">
       <div class="card overflow-hidden">
         <div class="card-body pt-0">
-          <div class="row mt-4">
-            <div class="col-xl-2 d-flex align-items-center justify-content-center">
-              <div class="avatar-lg">
-                <img src="assets/images/users/avatar-1.jpg" alt="" class="img-thumbnail rounded-circle">
+
+          <ng-container *ngIf="isLoading">
+            <div class="row mt-4">
+              <div class="col-12 d-flex justify-content-center">
+                <div class="spinner-border text-primary m-1" role="status">
+                  <span class="sr-only">Loading...</span>
+                </div>
               </div>
             </div>
-            <div class="col-xl-3 d-flex align-items-center border-rgt d-lg">
-              <div class="row">
-                <div class="col-12">
-                  <span class="badge rounded-pill {{leadProfileData.contactType.class}}">
-                    {{ leadProfileData.contactType.name }}
-                  </span>
+          </ng-container>
+
+          <ng-container *ngIf="!isLoading">
+            <div class="row mt-4">
+              <div class="col-xl-2 d-flex align-items-center justify-content-center">
+                <div class="avatar-lg">
+                  <img src="assets/images/users/avatar-1.jpg" alt="" class="img-thumbnail rounded-circle">
                 </div>
-                <ng-container *ngIf="profileType == 'people'">
-                  <div class="col-12" *ngIf="leadProfileData.email.length > 0">
+              </div>
+              <div class="col-xl-3 d-flex align-items-center border-rgt d-lg">
+                <div class="row">
+                  <div class="col-12">
+                    <span class="badge rounded-pill {{leadProfileData.contactTypes.clazz}}">
+                      {{ leadProfileData.contactTypes.name }}
+                    </span>
+                  </div>
+                  <ng-container *ngIf="profileType == 'person'">
+                    <div class="col-12" *ngIf="leadProfileData.emails.length > 0">
+                      <div class="media d-flex align-items-center">
+                        <div class="me-1 font-size-24">
+                          <i class="mdi mdi-email-outline"></i>
+                        </div>
+                        <div class="media-body word-break">
+                          <span class="font-size-14">
+                            {{ leadProfileData.emails[0].value }}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12" *ngIf="leadProfileData.phones.length > 0">
+                      <div class="media d-flex align-items-center">
+                        <div class="me-1 font-size-24">
+                          <i class="bx bx-phone-call"></i>
+                        </div>
+                        <div class="media-body">
+                          <span class="font-size-14">{{ leadProfileData.phones[0].value }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+              <div class="col-xl-3 d-flex align-items-center justify-content-center d-lg-none">
+                <div class="row">
+                  <div class="col-12 d-flex justify-content-center">
+                    <span class="badge rounded-pill {{leadProfileData.contactTypes.clazz}}">
+                      {{ leadProfileData.contactTypes.name }}
+                    </span>
+                  </div>
+                  <ng-container *ngIf="profileType == 'person'">
+                    <div class="col-12 d-flex justify-content-center" *ngIf="leadProfileData.emails.length > 0">
+                      <div class="media d-flex align-items-center">
+                        <div class="me-1 font-size-24">
+                          <i class="mdi mdi-email-outline"></i>
+                        </div>
+                        <div class="media-body word-break">
+                          <span class="font-size-14">
+                            {{ leadProfileData.emails[0].value }}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12 d-flex justify-content-center" *ngIf="leadProfileData.phones.length > 0">
+                      <div class="media d-flex align-items-center">
+                        <div class="me-1 font-size-24">
+                          <i class="bx bx-phone-call"></i>
+                        </div>
+                        <div class="media-body">
+                          <span class="font-size-14">{{ leadProfileData.phones[0].value }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+              <div class="col-xl-3 d-flex align-items-center border-rgt">
+                <div class="row" style="padding-left: 20px;">
+                  <div class="col-12">
                     <div class="media d-flex align-items-center">
-                      <div class="me-1 font-size-24">
-                        <i class="mdi mdi-email-outline"></i>
+                      <div class="me-4 font-size-24">
+                        <i class="bx bx-user"></i>
                       </div>
                       <div class="media-body word-break">
                         <span class="font-size-14">
-                          {{ leadProfileData.email[0].value }}
+                          {{ profileType == 'person' ? 'Working on:' : 'Have:' }}
                         </span>
+                        <p *ngIf="profileType == 'person'">
+                          {{ leadProfileData.organizations.length > 0 ?
+                          leadProfileData.organizations.length + ' organization' : 'No
+                          organization
+                          linked yet' }}
+                        </p>
+                        <p *ngIf="profileType == 'organization'">
+                          {{ leadProfileData.persons.length > 0 ?
+                          leadProfileData.persons.length + ' Contact person' : 'No persons linked
+                          yet' }}
+                        </p>
                       </div>
                     </div>
                   </div>
-                  <div class="col-12" *ngIf="leadProfileData.phone.length > 0">
+                  <div class="col-12">
                     <div class="media d-flex align-items-center">
-                      <div class="me-1 font-size-24">
-                        <i class="bx bx-phone-call"></i>
+                      <div class="me-4 font-size-24">
+                        <i class="bx bx-phone"></i>
                       </div>
                       <div class="media-body">
-                        <span class="font-size-14">{{ leadProfileData.phone[0].value }}</span>
+                        <span class="font-size-14">Deals:</span>
+                        <p style="margin-bottom: 0px;">
+                          Closed: {{ leadProfileData.openDealsCount }}, Open: {{
+                          leadProfileData.closedDealsCount }}
+                        </p>
                       </div>
                     </div>
                   </div>
-                </ng-container>
-              </div>
-            </div>
-            <div class="col-xl-3 d-flex align-items-center justify-content-center d-lg-none">
-              <div class="row">
-                <div class="col-12 d-flex justify-content-center">
-                  <span class="badge rounded-pill {{leadProfileData.contactType.class}}">
-                    {{ leadProfileData.contactType.name }}
-                  </span>
                 </div>
-                <ng-container *ngIf="profileType == 'people'">
-                  <div class="col-12 d-flex justify-content-center" *ngIf="leadProfileData.email.length > 0">
+              </div>
+              <div class="col-xl-4 d-flex align-items-center">
+                <div class="row" style="padding-left: 20px;">
+                  <div class="col-12">
                     <div class="media d-flex align-items-center">
-                      <div class="me-1 font-size-24">
-                        <i class="mdi mdi-email-outline"></i>
+                      <div class="me-4 font-size-24">
+                        <i class="bx bx-user"></i>
                       </div>
                       <div class="media-body word-break">
-                        <span class="font-size-14">
-                          {{ leadProfileData.email[0].value }}
-                        </span>
+                        <span class="font-size-14">Owner:</span>
+                        <p>
+                          {{ leadProfileData.owner.firstName }} {{ leadProfileData.owner.lastName }}
+                        </p>
                       </div>
                     </div>
                   </div>
-                  <div class="col-12 d-flex justify-content-center" *ngIf="leadProfileData.phone.length > 0">
+                  <div class="col-12">
                     <div class="media d-flex align-items-center">
-                      <div class="me-1 font-size-24">
-                        <i class="bx bx-phone-call"></i>
+                      <div class="me-4 font-size-24">
+                        <i class="bx bx-calendar"></i>
                       </div>
                       <div class="media-body">
-                        <span class="font-size-14">{{ leadProfileData.phone[0].value }}</span>
+                        <span class="font-size-14">Created:</span>
+                        <p style="margin-bottom: 0px;">
+                          {{ leadProfileData.createdAt | date: 'dd-MM-YYYY' }}
+                        </p>
                       </div>
                     </div>
                   </div>
-                </ng-container>
-              </div>
-            </div>
-            <div class="col-xl-3 d-flex align-items-center border-rgt">
-              <div class="row" style="padding-left: 20px;">
-                <div class="col-12">
-                  <div class="media d-flex align-items-center">
-                    <div class="me-4 font-size-24">
-                      <i class="bx bx-user"></i>
-                    </div>
-                    <div class="media-body word-break">
-                      <span class="font-size-14">
-                        {{ profileType == 'people' ? 'Working on:' : 'Have:' }}
-                      </span>
-                      <p *ngIf="profileType == 'people'">
-                        {{ leadProfileData.organizations.length > 0 ?
-                        leadProfileData.organizations.length + ' organization' : 'No
-                        organization
-                        linked yet' }}
-                      </p>
-                      <p *ngIf="profileType == 'organization'">
-                        {{ leadProfileData.persons.length > 0 ?
-                        leadProfileData.persons.length + ' Contact person' : 'No persons linked
-                        yet' }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="media d-flex align-items-center">
-                    <div class="me-4 font-size-24">
-                      <i class="bx bx-phone"></i>
-                    </div>
-                    <div class="media-body">
-                      <span class="font-size-14">Deals:</span>
-                      <p style="margin-bottom: 0px;">
-                        Closed: {{ leadProfileData.openDealsCount }}, Open: {{
-                        leadProfileData.closeDealsCount }}
-                      </p>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
-            <div class="col-xl-4 d-flex align-items-center">
-              <div class="row" style="padding-left: 20px;">
-                <div class="col-12">
-                  <div class="media d-flex align-items-center">
-                    <div class="me-4 font-size-24">
-                      <i class="bx bx-user"></i>
-                    </div>
-                    <div class="media-body word-break">
-                      <span class="font-size-14">Owner:</span>
-                      <p>
-                        {{ leadProfileData.owner.fullName }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="media d-flex align-items-center">
-                    <div class="me-4 font-size-24">
-                      <i class="bx bx-calendar"></i>
-                    </div>
-                    <div class="media-body">
-                      <span class="font-size-14">Created:</span>
-                      <p style="margin-bottom: 0px;">
-                        {{ leadProfileData.createdAt | date: 'dd-MM-YYYY' }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          </ng-container>
+
         </div>
       </div>
     </div>
@@ -170,658 +193,25 @@
 
   <div class="row">
     <div class="col-xl-4">
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title border-btm pb-4 d-flex justify-content-between align-items-center">
-            <span>
-              {{ isEditDetails ? 'Edit Details' : 'Details' }}
-            </span>
-            <div class="page-title-right" *ngIf="!isEditDetails">
-              <i class="mdi mdi-square-edit-outline font-size-24 cursor-pointer"
-                (click)="isEditDetails = !isEditDetails"></i>
-            </div>
-            <div class="page-title-right" *ngIf="isEditDetails">
-              <i class="mdi mdi-close-box-outline font-size-24 cursor-pointer"
-                (click)="isEditDetails = !isEditDetails"></i>
-              <i class="mdi mdi-checkbox-marked-outline font-size-24 cursor-pointer"
-                (click)="isEditDetails = !isEditDetails"></i>
-            </div>
-          </div>
-          <div class="table-responsive" *ngIf="!isEditDetails">
-            <table class="table mb-0">
-              <tbody>
-                <tr>
-                  <th scope="row">Name </th>
-                  <td>{{ leadProfileData.name }}</td>
-                </tr>
-                <tr>
-                  <th scope="row">Lead Group </th>
-                  <td>
-                    <span class="badge rounded-pill {{ leadProfileData.contactType.class }}">
-                      {{ leadProfileData.contactType.name }}
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">Owner </th>
-                  <td>
-                    <div class="media align-items-center me-2">
-                      <div
-                        class="me-1 rounded-circle avatar-xs bg-secondary d-flex align-items-center justify-content-center"
-                        alt="user-pic">
-                        YM
-                      </div>
-                      <div class="media-body">
-                        {{ leadProfileData.owner.fullName }}
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
 
-          <div class="table-responsive" *ngIf="isEditDetails">
-            <form [formGroup]="detailForm">
-              <table class="table table-nowrap mb-0">
-                <tbody>
-                  <tr>
-                    <th scope="row" class="d-flex align-items-center">Name </th>
-                    <td>
-                      <input placeholder="Enter title" class="form-control" type="text" formControlName="name" />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row" class="d-flex align-items-center">Lead Group </th>
-                    <td>
-                      <select class="form-select" formControlName="leadGroup">
-                        <option *ngFor="let leadtype of leadTypes" [value]="leadtype.id">
-                          {{ leadtype.name }}
-                        </option>
-                      </select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row" class="d-flex align-items-center">Owner</th>
-                    <td>
-                      <select class="form-select" formControlName="owner">
-                        <option *ngFor="let owner of allUser" [value]="owner.id">
-                          {{ owner.fullName }}
-                        </option>
-                      </select>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </form>
-          </div>
-        </div>
-      </div>
+      <app-details-card [leadProfileData]="leadProfileData" (onDetailsUpdate)="syncDetails()"
+        [profileType]="profileType"></app-details-card>
 
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title border-btm pb-4 d-flex justify-content-between align-items-center">
-            <span *ngIf="profileType == 'people'">
-              {{ isEditOrganization ? 'Edit Organization and job title' : 'Organization and job title' }}
-            </span>
-            <span *ngIf="profileType == 'organization'">
-              {{ isEditOrganization ? 'Edit people and job title' : 'People and job title' }}
-            </span>
-            <div class="page-title-right" *ngIf="!isEditOrganization">
-              <i class="mdi mdi-square-edit-outline font-size-24 cursor-pointer"
-                (click)="isEditOrganization = !isEditOrganization"></i>
-            </div>
-            <div class="page-title-right" *ngIf="isEditOrganization">
-              <i class="mdi mdi-close-box-outline font-size-24 cursor-pointer"
-                (click)="isEditOrganization = !isEditOrganization"></i>
-              <i class="mdi mdi-checkbox-marked-outline font-size-24 cursor-pointer"
-                (click)="isEditOrganization = !isEditOrganization"></i>
-            </div>
-          </div>
-          <div class="table-responsive">
-            <table class="table mb-0" *ngIf="!isEditOrganization">
-              <tbody>
-                <tr>
-                  <td *ngIf="profileType == 'people'">
-                    No Organization linked yet
-                  </td>
-                  <td *ngIf="profileType == 'organization'">
-                    No people linked yet
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <a *ngIf="profileType == 'people'" class="cursor-pointer"
-                      (click)="isEditOrganization = !isEditOrganization">
-                      + link an organization
-                    </a>
-                    <a *ngIf="profileType == 'organization'" class="cursor-pointer"
-                      (click)="isEditOrganization = !isEditOrganization">
-                      + link a person
-                    </a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <ng-container *ngIf="profileType == 'people'">
-              <form [formGroup]="organizationForms" *ngIf="isEditOrganization">
-                <table class="table mb-0">
-                  <tbody>
-                    <ng-container formArrayName="organizations">
-                      <ng-container *ngFor="let organizationForm of organizations.controls; let i = index">
-                        <ng-container [formGroupName]="i">
-                          <tr>
-                            <td *ngIf="profileType == 'people'">
-                              <select class="form-select" formControlName="organizationName">
-                                <option *ngFor="let leadType of leadTypes" [value]="leadType.id">
-                                  {{ leadType.name }}
-                                </option>
-                              </select>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="d-inline-flex w-100 page-title-right">
-                              <input class="form-control" placeholder="Type job title" formControlName="jobTitle" />
-                              <i class="bx bx-trash-alt font-size-24 d-flex align-items-center cursor-pointer"
-                                style="margin-left: 10px;" (click)="deleteOrganization(i)"></i>
-                            </td>
-                          </tr>
-                        </ng-container>
-                      </ng-container>
-                    </ng-container>
-                    <tr>
-                      <td>
-                        <a class="cursor-pointer" (click)="addOrganization()">
-                          + add more
-                        </a>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </form>
-            </ng-container>
-            <ng-container *ngIf="profileType == 'organization'">
-              <form [formGroup]="organizationPersonsForms" *ngIf="isEditOrganization">
-                <table class="table mb-0">
-                  <tbody>
-                    <ng-container formArrayName="organizationPersons">
-                      <ng-container *ngFor="let organizationForm of organizationPersons.controls; let i = index">
-                        <ng-container [formGroupName]="i">
-                          <tr>
-                            <td class="d-inline-flex w-100 page-title-right" *ngIf="profileType == 'organization'">
-                              <mat-select class="form-control" formControlName="organizationPersons"
-                                placeholder="Choose One">
-                                <mat-option>
-                                  <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="No result"
-                                    formControlName="organizationPersonName">
-                                  </ngx-mat-select-search>
-                                </mat-option>
+      <app-person-organization-card [leadProfileData]="leadProfileData" [profileType]="profileType"
+        (onPersonOrganizationUpdate)="syncDetails()"> </app-person-organization-card>
 
-                                <mat-option *ngFor="let person of filteredOrganizationPeoples[i] | async"
-                                  [value]="person.id">
-                                  {{person.name}}
-                                </mat-option>
-                              </mat-select>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="d-inline-flex w-100 page-title-right">
-                              <input class="form-control" placeholder="Type job title" formControlName="jobTitle" />
-                              <i class="bx bx-trash-alt font-size-24 d-flex align-items-center cursor-pointer"
-                                style="margin-left: 10px;" (click)="deleteOrganizationPersons(i)"></i>
-                            </td>
-                          </tr>
-                        </ng-container>
-                      </ng-container>
-                    </ng-container>
-                    <tr>
-                      <td>
-                        <a class="cursor-pointer" (click)="addOrganizationPersons()">
-                          + add more
-                        </a>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </form>
-            </ng-container>
-          </div>
-        </div>
-      </div>
+      <app-contact-card *ngIf="profileType == 'person'" [leadProfileData]="leadProfileData" [profileType]="profileType"
+        (onContactEmit)="syncDetails()"></app-contact-card>
 
-      <div class="card" *ngIf="profileType == 'people'">
-        <div class="card-body">
-          <div class="card-title border-btm pb-4 d-flex justify-content-between align-items-center">
-            <span>
-              {{ isEditContact ? 'Edit Contact' : 'Contact' }}
-            </span>
-            <div class="page-title-right" *ngIf="!isEditContact">
-              <i class="mdi mdi-square-edit-outline font-size-24 cursor-pointer"
-                (click)="isEditContact = !isEditContact"></i>
-            </div>
-            <div class="page-title-right" *ngIf="isEditContact">
-              <i class="mdi mdi-close-box-outline font-size-24 cursor-pointer"
-                (click)="isEditContact = !isEditContact"></i>
-              <i class="mdi mdi-checkbox-marked-outline font-size-24 cursor-pointer"
-                (click)="isEditContact = !isEditContact"></i>
-            </div>
-          </div>
-          <div class="table-responsive" *ngIf="!isEditContact">
-            <table class="table mb-0">
-              <tbody>
-                <tr>
-                  <td>
-                    Phone(s)
-                  </td>
-                </tr>
-                <tr class="d-flex justify-content-between" *ngFor="let phone of leadProfileData.phone">
-                  <td>
-                    {{ phone.value }}
-                  </td>
-                  <td>
-                    <span class="badge rounded-pill {{phone.type.class}}">{{ phone.type.name
-                      }}</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    Email(s)
-                  </td>
-                </tr>
-                <tr class="d-flex justify-content-between" *ngFor="let email of leadProfileData.email">
-                  <td>
-                    {{ email.value }}
-                  </td>
-                  <td>
-                    <span class="badge rounded-pill {{email.type ? email.type.class : ''}}">
-                      {{ email.type ? email.type.name : '' }}
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="table-responsive" style="overflow: unset;" *ngIf="isEditContact">
-            <table class="table table-nowrap mb-0">
-              <tbody>
-                <tr>
-                  <td>
-                    {{ phones.controls.length > 0 ? 'Phone(s)' : 'Phone' }}
-                  </td>
-                </tr>
-                <ng-container [formGroup]="phoneForms">
-                  <ng-container formArrayName="phones">
-                    <ng-container *ngFor="let phoneForm of phones.controls; let i = index">
-                      <ng-container [formGroupName]="i">
-                        <tr>
-                          <td>
-                            <input type="tel" class="form-control" ng2TelInput
-                              [ng2TelInputOptions]="{initialCountry: 'my'}" (countryChange)="onCountryChange($event)"
-                              formControlName="contactNumber" />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="d-inline-flex w-100 page-title-right">
-                            <select class="form-select" formControlName="contactType">
-                              <option value="" style="display: none;">Type</option>
-                              <option *ngFor="let type of contactType" [value]="type.id">
-                                {{ type.name }}
-                              </option>
-                            </select>
-                            <i class="bx bx-trash-alt font-size-24 d-flex align-items-center cursor-pointer"
-                              style="margin-left: 10px;" (click)="deletePhone(i)"></i>
-                          </td>
-                        </tr>
-                      </ng-container>
-                    </ng-container>
-                  </ng-container>
-                  <tr>
-                    <td>
-                      <a class="cursor-pointer" (click)="addPhone()">
-                        + add more
-                      </a>
-                    </td>
-                  </tr>
-                </ng-container>
-                <tr>
-                  <td>
-                    {{ emails.controls.length > 0 ? 'Email(s)' : 'Email' }}
-                  </td>
-                </tr>
-                <ng-container [formGroup]="emailForms">
-                  <ng-container formArrayName="emails">
-                    <ng-container *ngFor="let emailForm of emails.controls; let i = index">
-                      <ng-container [formGroupName]="i">
-                        <tr>
-                          <td>
-                            <input class="form-control" type="email" formControlName="email" />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="d-inline-flex w-100 page-title-right">
-                            <select class="form-select" formControlName="emailType">
-                              <option value="" style="display: none;">Type</option>
-                              <option *ngFor="let type of contactType" [value]="type.id">
-                                {{ type.name }}
-                              </option>
-                            </select>
-                            <i class="bx bx-trash-alt font-size-24 d-flex align-items-center cursor-pointer"
-                              style="margin-left: 10px;" (click)="deleteEmail(i)"></i>
-                          </td>
-                        </tr>
-                      </ng-container>
-                    </ng-container>
-                  </ng-container>
-                  <tr>
-                    <td>
-                      <a class="cursor-pointer" (click)="addEmail()">
-                        + add more
-                      </a>
-                    </td>
-                  </tr>
-                </ng-container>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+      <app-address-card [leadProfileData]="leadProfileData" [profileType]="profileType"></app-address-card>
 
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title border-btm pb-4 d-flex justify-content-between align-items-center">
-            <span>
-              {{ isEditAddress ? 'Edit Address Details' : 'Address Details' }}
-            </span>
-            <div class="page-title-right" *ngIf="!isEditAddress">
-              <i class="mdi mdi-square-edit-outline font-size-24 cursor-pointer"
-                (click)="isEditAddress = !isEditAddress"></i>
-            </div>
-            <div class="page-title-right" *ngIf="isEditAddress">
-              <i class="mdi mdi-close-box-outline font-size-24 cursor-pointer" (click)="onCancelAddress()"></i>
-              <i class="mdi mdi-checkbox-marked-outline font-size-24 cursor-pointer" (click)="onSaveAddress()"></i>
-            </div>
-          </div>
-          <div class="table-responsive">
-            <table class="table table-nowrap mb-0" *ngIf="!isEditAddress">
-              <tbody *ngIf="!hasAddressDetails">
-                <tr>
-                  <td>
-                    Not added yet
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <a class="cursor-pointer" (click)="isEditAddress = !isEditAddress">
-                      + Add address
-                    </a>
-                  </td>
-                </tr>
-              </tbody>
-              <tbody class="address-grid" *ngIf="hasAddressDetails">
-                <tr *ngIf="leadProfileData.country">
-                  <th scope="row">
-                    Country
-                  </th>
-                  <td>
-                    {{ leadProfileData.country.name }}
-                  </td>
-                </tr>
-                <tr *ngIf="leadProfileData.area">
-                  <th scope="row">
-                    Area
-                  </th>
-                  <td>
-                    {{ leadProfileData.area }}
-                  </td>
-                </tr>
-                <tr *ngIf="leadProfileData.city">
-                  <th scope="row">
-                    City
-                  </th>
-                  <td>
-                    {{ leadProfileData.city }}
-                  </td>
-                </tr>
-                <tr *ngIf="leadProfileData.state">
-                  <th scope="row">
-                    State
-                  </th>
-                  <td>
-                    {{ leadProfileData.state }}
-                  </td>
-                </tr>
-                <tr *ngIf="leadProfileData.zipCode">
-                  <th scope="row">
-                    Zip code
-                  </th>
-                  <td>
-                    {{ leadProfileData.zipCode }}
-                  </td>
-                </tr>
-                <tr *ngIf="leadProfileData.address">
-                  <th scope="row">
-                    Address
-                  </th>
-                  <td>
-                    {{ leadProfileData.address }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+      <app-deals-card></app-deals-card>
 
-            <form [formGroup]="addressForm" *ngIf="isEditAddress">
-              <table class="table table-nowrap mb-0">
-                <tbody>
-                  <tr>
-                    <th scope="row" class="d-flex align-items-center">Country </th>
-                    <td>
-                      <select class="form-select" formControlName="country">
-                        <option value="" style="display: none;">Country</option>
-                        <option *ngFor="let country of countries" [value]="country.id">
-                          {{ country.name }}
-                        </option>
-                      </select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row" class="d-flex align-items-center">Area</th>
-                    <td>
-                      <input placeholder="Enter area" class="form-control" type="text" formControlName="area" />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row" class="d-flex align-items-center">City</th>
-                    <td>
-                      <input placeholder="Enter city" class="form-control" type="text" formControlName="city" />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row" class="d-flex align-items-center">State</th>
-                    <td>
-                      <input placeholder="Enter state" class="form-control" type="text" formControlName="state" />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row" class="d-flex align-items-center">Zip code</th>
-                    <td>
-                      <input placeholder="Enter zip code" class="form-control" type="text" formControlName="zipcode" />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row" class="d-flex align-items-center">Address</th>
-                    <td>
-                      <textarea rows="2" placeholder="Add address details here" class="form-control" type="text"
-                        formControlName="address"></textarea>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </form>
-          </div>
-        </div>
-      </div>
+      <app-custom-fields-card></app-custom-fields-card>
 
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title border-btm pb-4 d-flex justify-content-between align-items-center">
-            <span>
-              Deals (0)
-            </span>
-            <div class="page-title-right">
-              <i class="mdi mdi-plus-box-outline font-size-24 cursor-pointer"
-                (click)="openDealsModal(addDealModal)"></i>
-            </div>
-          </div>
-          <div class="table-responsive">
-          </div>
-        </div>
-      </div>
+      <app-tags-card [leadProfileData]="leadProfileData" [profileType]="profileType"></app-tags-card>
 
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title border-btm pb-4 d-flex justify-content-between align-items-center">
-            <span>
-              {{ isEditCustomField ? 'Edit Custom Fields' : 'Custom Fields' }}
-            </span>
-            <div class="page-title-right" *ngIf="!isEditCustomField">
-              <i class="mdi mdi-square-edit-outline font-size-24 cursor-pointer"
-                (click)="isEditCustomField = !isEditCustomField"></i>
-            </div>
-            <div class="page-title-right" *ngIf="isEditCustomField">
-              <i class="mdi mdi-close-box-outline font-size-24 cursor-pointer"
-                (click)="isEditCustomField = !isEditCustomField"></i>
-              <i class="mdi mdi-checkbox-marked-outline font-size-24 cursor-pointer"
-                (click)="isEditCustomField = !isEditCustomField"></i>
-            </div>
-          </div>
-          <div class="table-responsive">
-            <table class="table mb-0" *ngIf="!isEditCustomField">
-              <tbody>
-                <tr>
-                  <td>
-                    No custom field added
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title border-btm pb-4">
-            Tags
-          </div>
-          <div class="table-responsive">
-            <table class="table table-nowrap mb-0">
-              <tbody>
-                <tr>
-                  <td>
-                    <mat-select placeholder="+ Add" multiple [formControl]="tagChipCtrl">
-                      <mat-select-trigger>
-                        <mat-chip-list>
-                          <mat-chip *ngFor="let tag of tagChipCtrl.value" [removable]="true"
-                            [style.background-color]="getTag(tag)?.colorCode" (removed)="removeTag(tag)">
-                            {{ getTag(tag)?.name }}
-                            <mat-icon matChipRemove>cancel</mat-icon>
-                          </mat-chip>
-                        </mat-chip-list>
-                      </mat-select-trigger>
-                      <mat-option>
-                        <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="No result"
-                          [formControl]="tagCtrl">
-                        </ngx-mat-select-search>
-                      </mat-option>
-                      <mat-option *ngFor="let tag of filteredTags | async" [value]="tag.id">
-                        <div class="tag-option">
-                          <div class="tag-dot" [style.background-color]="tag.colorCode">
-                          </div>
-                          <span>{{ tag.name }}</span>
-                        </div>
-                      </mat-option>
-                    </mat-select>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title border-btm pb-4 d-flex justify-content-between align-items-center">
-            <span>
-              {{ isEditFollower ? 'Edit Followers' : 'Followers (0)' }}
-            </span>
-            <div class="page-title-right" *ngIf="!isEditFollower">
-              <i class="mdi mdi-square-edit-outline font-size-24 cursor-pointer"
-                (click)="isEditFollower = !isEditFollower"></i>
-            </div>
-            <div class="page-title-right" *ngIf="isEditFollower">
-              <i class="mdi mdi-close-box-outline font-size-24 cursor-pointer"
-                (click)="isEditFollower = !isEditFollower"></i>
-              <i class="mdi mdi-checkbox-marked-outline font-size-24 cursor-pointer"
-                (click)="isEditFollower = !isEditFollower"></i>
-            </div>
-          </div>
-          <div class="table-responsive">
-            <table class="table table-nowrap mb-0" *ngIf="!isEditFollower">
-              <tbody>
-                <tr>
-                  <td>
-                    No person linked yet
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <a class="cursor-pointer" (click)="isEditFollower = !isEditFollower">
-                      Link as person
-                    </a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <form [formGroup]="followerForms" *ngIf="isEditFollower">
-              <table class="table table-nowrap mb-0">
-                <tbody>
-                  <ng-container formArrayName="followers">
-                    <ng-container *ngFor="let followerForm of followers.controls; let i = index">
-                      <ng-container [formGroupName]="i">
-                        <tr>
-                          <td class="d-inline-flex w-100 page-title-right">
-                            <mat-select class="form-control" formControlName="follower" placeholder="Choose One">
-                              <mat-option>
-                                <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="No result"
-                                  formControlName="followerCtrlName">
-                                </ngx-mat-select-search>
-                              </mat-option>
-
-                              <mat-option *ngFor="let follower of filteredFollowers[i] | async" [value]="follower.id">
-                                {{follower.name}}
-                              </mat-option>
-                            </mat-select>
-                            <i class="bx bx-trash-alt font-size-24 d-flex align-items-center cursor-pointer"
-                              style="margin-left: 10px;" (click)="deleteFollower(i)"></i>
-                          </td>
-                        </tr>
-                      </ng-container>
-                    </ng-container>
-                  </ng-container>
-                  <tr>
-                    <td>
-                      <a class="cursor-pointer" (click)="addFollower()">
-                        + add more
-                      </a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </form>
-          </div>
-        </div>
-      </div>
+      <app-followers-card [leadProfileData]="leadProfileData" [profileType]="profileType"></app-followers-card>
     </div>
 
     <div class="col-xl-8">
@@ -917,27 +307,27 @@
       <label for="example-text-input" class="col-md-2 col-form-label">Activity</label>
       <div class="col-md-10">
         <div style="display: block;" class="btn-group" role="group" aria-label="Basic radio toggle button group">
-          <input type="radio" class="btn-check" name="activity" id="call" autocomplete="off" checked value="call"
+          <input type="radio" class="btn-check" name="activity" id="call" autocomplete="off" checked value="1"
             formControlName="activity">
           <label class="btn btn-outline-secondary" for="call">Call</label>
 
-          <input type="radio" class="btn-check" name="activity" id="meeting" autocomplete="off" value="meeting"
+          <input type="radio" class="btn-check" name="activity" id="meeting" autocomplete="off" value="2"
             formControlName="activity">
           <label class="btn btn-outline-secondary" for="meeting">Meeting</label>
 
-          <input type="radio" class="btn-check" name="activity" id="email" autocomplete="off" value="email"
+          <input type="radio" class="btn-check" name="activity" id="email" autocomplete="off" value="3"
             formControlName="activity">
           <label class="btn btn-outline-secondary" for="email">Email</label>
 
-          <input type="radio" class="btn-check" name="activity" id="task" autocomplete="off" value="task"
+          <input type="radio" class="btn-check" name="activity" id="task" autocomplete="off" value="4"
             formControlName="activity">
           <label class="btn btn-outline-secondary" for="task">Task</label>
 
-          <input type="radio" class="btn-check" name="activity" id="deadline" autocomplete="off" value="deadline"
+          <input type="radio" class="btn-check" name="activity" id="deadline" autocomplete="off" value="5"
             formControlName="activity">
           <label class="btn btn-outline-secondary" for="deadline">Deadline</label>
 
-          <input type="radio" class="btn-check" name="activity" id="others" autocomplete="off" value="others"
+          <input type="radio" class="btn-check" name="activity" id="others" autocomplete="off" value="6"
             formControlName="activity">
           <label class="btn btn-outline-secondary" for="others">Others</label>
         </div>
@@ -946,8 +336,11 @@
     <div class="mb-3 row">
       <label for="example-text-input" class="col-md-2 col-form-label">Title</label>
       <div class="col-md-10">
-        <input placeholder="Enter title" class="form-control" type="text" value="Artisanal kale" id="example-text-input"
-          formControlName="title">
+        <input placeholder="Enter title" class="form-control" type="text" formControlName="title"
+          [ngClass]="{'is-invalid': submitClicked && activityForm.get('title').getError('required')}">
+        <div *ngIf="submitClicked && activityForm.get('title').getError('required')" class="invalid-feedback">
+          <span>Please provide a title.</span>
+        </div>
       </div>
     </div>
     <div class="mb-3 row">
@@ -962,13 +355,14 @@
       <div class="col-md-10">
         <div class="row">
           <div class="col-md-7">
-            <input class="form-control" type="date" formControlName="startDate">
+            <input class="form-control" type="date" formControlName="startDate" [min]="dateNow"
+              (input)="onStartDateChange($event)">
           </div>
           <div class="col-md-5">
             <input class="form-control" type="time" formControlName="startTime">
           </div>
           <div class="col-md-7 pt-2">
-            <input class="form-control" type="date" formControlName="endDate">
+            <input class="form-control" type="date" formControlName="endDate" [min]="minEndDate">
           </div>
           <div class="col-md-5 pt-2">
             <input class="form-control" type="time" formControlName="endTime">
@@ -1009,7 +403,7 @@
             <mat-chip-list>
               <mat-chip *ngFor="let collaborator of activityForm.controls.collaborators.value" [removable]="true"
                 (removed)="removeCollaborator(collaborator.id)">
-                {{ collaborator.fullName }}
+                {{ collaborator.firstName }} {{ collaborator.lastName }}
                 <mat-icon matChipRemove>cancel</mat-icon>
               </mat-chip>
             </mat-chip-list>
@@ -1020,7 +414,7 @@
             </ngx-mat-select-search>
           </mat-option>
           <mat-option *ngFor="let collaborator of filteredCollaborators | async" [value]="collaborator">
-            {{collaborator.fullName}}
+            {{collaborator.firstName}} {{collaborator.lastName}}
           </mat-option>
         </mat-select>
       </div>
@@ -1055,6 +449,16 @@
 </ng-template>
 
 <ng-template #Todo>
+  <ng-container *ngIf="isLoadingActivities">
+    <div class="row mt-4">
+      <div class="col-12 d-flex justify-content-center">
+        <div class="spinner-border text-primary m-1" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
   <ng-container *ngIf="tasksTodo.length > 0; else noTaskTodo">
     <ng-container *ngFor="let task of tasksTodo">
       <ng-container *ngTemplateOutlet="taskData; context: {data: task}"></ng-container>
@@ -1066,6 +470,16 @@
 </ng-template>
 
 <ng-template #Done>
+  <ng-container *ngIf="isLoadingActivities">
+    <div class="row mt-4">
+      <div class="col-12 d-flex justify-content-center">
+        <div class="spinner-border text-primary m-1" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
   <ng-container *ngIf="tasksDone.length > 0; else noTaskDone">
     <ng-container *ngFor="let task of tasksDone">
       <ng-container *ngTemplateOutlet="taskData; context: {data: task}"></ng-container>
@@ -1077,6 +491,16 @@
 </ng-template>
 
 <ng-template #Incomplete>
+  <ng-container *ngIf="isLoadingActivities">
+    <div class="row mt-4">
+      <div class="col-12 d-flex justify-content-center">
+        <div class="spinner-border text-primary m-1" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
   <ng-container *ngIf="tasksOpen.length > 0; else noTaskOpen">
     <ng-container *ngFor="let task of tasksOpen">
       <ng-container *ngTemplateOutlet="taskData; context: {data: task}"></ng-container>
@@ -1151,110 +575,119 @@
 </ng-template>
 
 <ng-template #taskData let-data="data">
-  <div class="card">
-    <div class="card-body">
-      <div class="row">
-        <div class="media col-12 d-flex align-items-center">
-          <div class="me-3 rounded-circle avatar-sm bg-primary d-flex align-items-center justify-content-center"
-            alt="user-pic">
-            <i class="{{getIcon(data)}} font-size-24" style="color: white;"></i>
-          </div>
-          <div class="media-body">
-            <h6 class="mt-0 mb-1">{{ data.title }}</h6>
-            <div class="font-size-12 text-muted">
-              <p class="mb-1">Today | 2:06 PM</p>
-            </div>
 
-          </div>
-          <div class="page-title-right" ngbDropdown>
-            <i class="bx bx-dots-vertical-rounded font-size-24 cursor-pointer" ngbDropdownToggle></i>
-            <div class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
-              <a class="dropdown-item">
-                <span>Delete</span>
-              </a>
-              <a class="dropdown-item">
-                <span>Mark as done</span>
-              </a>
-              <a class="dropdown-item">
-                <span>Edit</span>
-              </a>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 d-flex align-items-center mt-3" *ngIf="data.description">
-          <div class="bg-note p-2" style="width: 100%;">
-            {{ data.description }}
-          </div>
-        </div>
-        <div class="col-12 mt-3 d-inline-flex">
-          <div class="media align-items-center me-2">
-            <div class="me-1 rounded-circle avatar-xs bg-secondary d-flex align-items-center justify-content-center"
+  <ng-container *ngIf="!isLoadingActivities">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="media col-12 d-flex align-items-center">
+            <div class="me-3 rounded-circle avatar-sm bg-primary d-flex align-items-center justify-content-center"
               alt="user-pic">
-              {{ getInitial(data.createdBy.fullName) }}
+              <i class="{{getIcon(data)}} font-size-24" style="color: white;"></i>
             </div>
             <div class="media-body">
-              {{ data.createdBy.fullName }}
+              <h6 class="mt-0 mb-1">{{ data.title }}</h6>
+              <div class="font-size-12 text-muted">
+                <p class="mb-1 d-flex">
+                  <span class="done-circle" (click)="markAsDone(data.id)"
+                    *ngIf="data.status.name != 'status_done'"></span>
+                  Today | 2:06 PM
+                </p>
+              </div>
+
+            </div>
+            <div class="page-title-right" ngbDropdown *ngIf="data.status.name != 'status_done'">
+              <i class="bx bx-dots-vertical-rounded font-size-24 cursor-pointer" ngbDropdownToggle></i>
+              <div class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+                <a class="dropdown-item">
+                  <span>Edit</span>
+                </a>
+                <a class="dropdown-item" (click)="markAsDone(data.id)">
+                  <span>Mark as done</span>
+                </a>
+                <a class="dropdown-item" (click)="deleteActivity(data.id)">
+                  <span>Delete</span>
+                </a>
+              </div>
             </div>
           </div>
+          <div class="col-12 d-flex align-items-center mt-3" *ngIf="data.description">
+            <div class="bg-note p-2" style="width: 100%;">
+              {{ data.description }}
+            </div>
+          </div>
+          <div class="col-12 mt-3 d-inline-flex">
+            <div class="media align-items-center me-2">
+              <div class="me-1 rounded-circle avatar-xs bg-secondary d-flex align-items-center justify-content-center"
+                alt="user-pic">
+                {{ getInitials2(data.createdBy.firstName, data.createdBy.lastName) }}
+              </div>
+              <div class="media-body">
+                {{ data.createdBy.firstName }} {{ data.createdBy.lastName }}
+              </div>
+            </div>
+          </div>
+          <ng-container *ngIf="data.participants.length > 0">
+            <div class="col-12 mt-4 d-inline-flex">
+              <div>Participants:</div>
+            </div>
+            <div class="col-12 mt-2 d-inline-flex">
+              <div class="media align-items-center me-2" *ngFor="let participant of data.participants">
+                <div class="me-1 rounded-circle avatar-xs bg-secondary d-flex align-items-center justify-content-center"
+                  alt="user-pic">
+                  {{ getInitial(participant.name) }}
+                </div>
+                <div class="media-body">
+                  {{ participant.name }}
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="data.collaborators.length > 0">
+            <div class="col-12 mt-4 d-inline-flex">
+              <div>Collaborators:</div>
+            </div>
+            <div class="col-12 mt-2 d-inline-flex">
+              <div class="media align-items-center me-2" *ngFor="let collaborator of data.collaborators">
+                <div class="me-1 rounded-circle avatar-xs bg-secondary d-flex align-items-center justify-content-center"
+                  alt="user-pic">
+                  {{ getInitials2(collaborator.firstName, collaborator.lastName) }}
+                </div>
+                <div class="media-body">
+                  {{ collaborator.firstName }} {{ collaborator.lastName }}
+                </div>
+              </div>
+            </div>
+          </ng-container>
         </div>
-        <ng-container *ngIf="data.participants.length > 0">
-          <div class="col-12 mt-4 d-inline-flex">
-            <div>Participants:</div>
-          </div>
-          <div class="col-12 mt-2 d-inline-flex">
-            <div class="media align-items-center me-2" *ngFor="let participant of data.participants">
-              <div class="me-1 rounded-circle avatar-xs bg-secondary d-flex align-items-center justify-content-center"
-                alt="user-pic">
-                {{ getInitial(participant.name) }}
-              </div>
-              <div class="media-body">
-                {{ participant.name }}
-              </div>
-            </div>
-          </div>
-        </ng-container>
-        <ng-container *ngIf="data.collaborators.length > 0">
-          <div class="col-12 mt-4 d-inline-flex">
-            <div>Collaborators:</div>
-          </div>
-          <div class="col-12 mt-2 d-inline-flex">
-            <div class="media align-items-center me-2" *ngFor="let collborator of data.collaborators">
-              <div class="me-1 rounded-circle avatar-xs bg-secondary d-flex align-items-center justify-content-center"
-                alt="user-pic">
-                {{ getInitial(collborator.fullName) }}
-              </div>
-              <div class="media-body">
-                {{ collborator.fullName }}
-              </div>
-            </div>
-          </div>
-        </ng-container>
       </div>
     </div>
-  </div>
+  </ng-container>
 </ng-template>
 
 <ng-template #noData let-type="type">
-  <div class="card">
-    <div class="card-body">
-      <div class="row">
-        <div class="col-12 d-flex align-items-center justify-content-center">
-          <div>
-            <img class="no-data-img" src="assets/images/no_data.svg" />
+  <ng-container *ngIf="!isLoadingActivities">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-12 d-flex align-items-center justify-content-center">
+            <div>
+              <img class="no-data-img" src="assets/images/no_data.svg" />
+            </div>
           </div>
-        </div>
-        <div class="col-12 d-flex align-items-center justify-content-center">
-          <div style="text-align: center;">
-            Nothing to show here
-            <p style="margin-bottom: 0px;">
-              Please add something in {{type}}
-            </p>
-            <p>
-              Thank you
-            </p>
+          <div class="col-12 d-flex align-items-center justify-content-center">
+            <div style="text-align: center;">
+              Nothing to show here
+              <p style="margin-bottom: 0px;">
+                Please add something in {{type}}
+              </p>
+              <p>
+                Thank you
+              </p>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </ng-container>
 </ng-template>

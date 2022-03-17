@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CustomTableDatasource } from 'src/app/components/custom-table/custom-table.interface';
 import { DeleteModal2Component } from '../../components/delete-modal2/delete-modal2.component';
 import { ColumnsInfo } from '../../lms-service';
 import { PipelinesService } from '../pipelines.service';
@@ -18,7 +19,8 @@ export class PipelinesComponent implements OnInit {
       columnDef: 'name',
       type: 'link',
       isList: false,
-      showIcon: false
+      showIcon: false,
+      profileType: 'pipeline-view'
     },
     {
       displayName: 'Total deal value',
@@ -64,6 +66,8 @@ export class PipelinesComponent implements OnInit {
 
   public pipelines;
 
+  dataSource: CustomTableDatasource;
+
   constructor(
     private modalService: NgbModal,
     private pipelinesService: PipelinesService,
@@ -79,7 +83,7 @@ export class PipelinesComponent implements OnInit {
     this.modalService.dismissAll();
     this.pipelinesService.getPipelinesPage().subscribe({
       next: (n) => {
-        this.pipelines = n.payload;
+        this.dataSource = n;
       },
       error: (e) => { },
       complete: () => { }

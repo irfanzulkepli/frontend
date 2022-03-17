@@ -1,0 +1,110 @@
+<div class="card">
+  <div class="card-body">
+    <div class="card-title border-btm pb-4 d-flex justify-content-between align-items-center">
+      <span>
+        {{ isEditDetails ? 'Edit Details' : 'Details' }}
+      </span>
+      <div class="page-title-right" *ngIf="!isEditDetails">
+        <i class="mdi mdi-square-edit-outline font-size-24 cursor-pointer" (click)="isEditDetails = !isEditDetails"></i>
+      </div>
+      <div class="page-title-right" *ngIf="isEditDetails">
+        <i class="mdi mdi-close-box-outline font-size-24 cursor-pointer" (click)="onCancel()"></i>
+        <i class="mdi mdi-checkbox-marked-outline font-size-24 cursor-pointer" (click)="onSaveDetails()"></i>
+      </div>
+    </div>
+
+    <ng-container *ngIf="isLoading">
+      <div class="row mt-4">
+        <div class="col-12 d-flex justify-content-center">
+          <div class="spinner-border text-primary m-1" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!isLoading">
+      <div class="table-responsive" *ngIf="!isEditDetails">
+        <table class="table mb-0">
+          <tbody>
+            <tr>
+              <th scope="row">Name </th>
+              <td>{{ leadProfileData.name }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Lead Group </th>
+              <td>
+                <span class="badge rounded-pill {{ leadProfileData.contactTypes.clazz }}">
+                  {{ leadProfileData.contactTypes.name }}
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Owner </th>
+              <td>
+                <div class="media align-items-center me-2">
+                  <div
+                    class="me-1 rounded-circle avatar-xs bg-secondary d-flex align-items-center justify-content-center"
+                    alt="user-pic">
+                    {{ getInitials2(leadProfileData.owner.firstName, leadProfileData.owner.lastName) }}
+                  </div>
+                  <div class="media-body">
+                    {{ leadProfileData.owner.firstName }} {{ leadProfileData.owner.lastName }}
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-responsive" *ngIf="isEditDetails">
+        <form [formGroup]="detailForm">
+          <table class="table table-nowrap mb-0">
+            <tbody>
+              <tr>
+                <th scope="row" class="d-flex align-items-center">Name </th>
+                <td>
+                  <input placeholder="Enter title" class="form-control" type="text" formControlName="name"
+                    [ngClass]="{'is-invalid': submitClicked && detailForm.controls.name.getError('required')}" />
+                  <div *ngIf="detailForm.controls.name.getError('required')" class="invalid-feedback">
+                    <span *ngIf="detailForm.controls.name.getError('required')">Please provide a name.</span>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row" class="d-flex align-items-center">Lead Group </th>
+                <td>
+                  <select class="form-select" formControlName="leadGroup"
+                    [ngClass]="{'is-invalid': submitClicked && detailForm.controls.leadGroup.getError('required')}">
+                    <option *ngFor="let leadtype of leadTypes" [value]="leadtype.id">
+                      {{ leadtype.name }}
+                    </option>
+                  </select>
+                  <div *ngIf="detailForm.controls.leadGroup.getError('required')" class="invalid-feedback">
+                    <span *ngIf="detailForm.controls.leadGroup.getError('required')">Please select a lead group.</span>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row" class="d-flex align-items-center">Owner</th>
+                <td>
+                  <select class="form-select" formControlName="owner"
+                    [ngClass]="{'is-invalid': submitClicked && detailForm.controls.owner.getError('required')}">
+                    <option *ngFor="let owner of allUser" [value]="owner.id">
+                      {{ owner.firstName }} {{ owner.lastName }}
+                    </option>
+                  </select>
+                  <div *ngIf="detailForm.controls.owner.getError('required')" class="invalid-feedback">
+                    <span *ngIf="detailForm.controls.owner.getError('required')">Please select an owner.</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </form>
+      </div>
+    </ng-container>
+
+  </div>
+</div>

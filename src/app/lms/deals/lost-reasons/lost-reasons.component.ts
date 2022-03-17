@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CustomTableDatasource } from 'src/app/components/custom-table/custom-table.interface';
 import { DeleteModal2Component } from '../../components/delete-modal2/delete-modal2.component';
 import { ColumnsInfo } from '../../lms-service';
 import { LostReasonsService } from '../lost-reasons.service';
@@ -47,6 +48,7 @@ export class LostReasonsComponent implements OnInit {
 
   // public lostReasons = LOSTREASONS;
   public lostReasons: any[] = [];
+  dataSource: CustomTableDatasource;
   public action: String = '';
 
   form = new FormGroup({
@@ -68,7 +70,7 @@ export class LostReasonsComponent implements OnInit {
     this.modalService.dismissAll();
     this.lostReasonsService.getLostReasonsPage().subscribe({
       next: (n) => {
-        this.lostReasons = n.payload;
+        this.dataSource = n;
       },
       error: (e) => { },
       complete: () => { }

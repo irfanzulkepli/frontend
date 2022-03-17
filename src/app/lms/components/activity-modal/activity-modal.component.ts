@@ -7,7 +7,6 @@ import { USER } from '../../data/user-data';
 import { ALLDEALS } from '../../data/all-deals.data';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
-import { People, User } from '../../leads/lead-profile/lead-profile.component';
 import { map, startWith } from 'rxjs/operators';
 import { LMSService } from '../../lms-service';
 
@@ -34,21 +33,21 @@ export class ActivityModalComponent implements OnInit {
   organizationCtrl = new FormControl();
   dealCtrl = new FormControl();
 
-  collaborators: Array<User> = [];
-  allCollaborators: Array<User> = [];
-  filteredCollaborators: Observable<Array<User>>;
+  collaborators;
+  allCollaborators;
+  filteredCollaborators;
 
-  participants: Array<People> = [];
-  allParticipants: Array<People> = [];
-  filteredParticipants: Observable<Array<People>>;
+  participants;
+  allParticipants;
+  filteredParticipants;
 
-  peoples: Array<People> = [];
-  allPeoples: Array<People> = [];
-  filteredPeoples: Observable<Array<People>>;
+  peoples;
+  allPeoples;
+  filteredPeoples;
 
-  organizations: Array<any> = [];
-  allOrganizations: Array<any> = [];
-  filteredOrganizations: Observable<Array<any>>;
+  organizations;
+  allOrganizations;
+  filteredOrganizations;
 
   deals: Array<any> = [];
   allDeals: Array<any> = [];
@@ -148,14 +147,14 @@ export class ActivityModalComponent implements OnInit {
   }
 
   removeCollaborator(id: number): void {
-    const collaborator = this.activityForm.get('collaborators').value as Array<People>;
+    const collaborator = this.activityForm.get('collaborators').value;
     const newCollaborators = collaborator.filter(collaborator => collaborator.id != id);
 
     this.activityForm.get('collaborators').setValue(newCollaborators);
   }
 
   removeParticipant(id: number): void {
-    const participants = this.activityForm.get('participants').value as Array<People>;
+    const participants = this.activityForm.get('participants').value;
     const newParticipants = participants.filter(participant => participant.id != id);
 
     this.activityForm.get('participants').setValue(newParticipants);
@@ -184,19 +183,19 @@ export class ActivityModalComponent implements OnInit {
 
   }
 
-  private _filterParticipants(value: string): Array<People> {
+  private _filterParticipants(value: string) {
     const filterValue = value;
 
     return this.allParticipants.filter(person => person.name.toLowerCase().includes(filterValue));
   }
 
-  private _filterCollaborator(value: string): Array<User> {
+  private _filterCollaborator(value: string) {
     const filterValue = value.toLowerCase();
 
     return this.allCollaborators.filter(collaborator => collaborator.fullName.toLowerCase().includes(filterValue));
   }
 
-  private _filterPerson(value: string): Array<People> {
+  private _filterPerson(value: string) {
     const filterValue = value.toLowerCase();
 
     return this.allPeoples.filter(people => people.name.toLowerCase().includes(filterValue));

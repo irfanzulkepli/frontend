@@ -1,12 +1,11 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable } from 'rxjs';
-import { LEADPEOPLELIST } from '../../data/lead-people-list';
+import { CustomTableDatasource } from 'src/app/components/custom-table/custom-table.interface';
+import { DeleteModal2Component } from '../../components/delete-modal2/delete-modal2.component';
+import { DIRECTION, PageableRequest } from '../../interfaces/pageable-request.interface';
 import { ColumnsInfo } from '../../lms-service';
-import { AdvancedSortableDirective, SortEvent } from '../advanced-sortable.directive';
-import { AdvancedService } from '../advanced.service';
+import { LeadService } from '../lead.service';
+import { PeopleDetailsModalComponent } from './people-details-modal/people-details-modal.component';
 
 @Component({
   selector: 'app-people',
@@ -14,37 +13,36 @@ import { AdvancedService } from '../advanced.service';
   styleUrls: ['./people.component.scss']
 })
 
-/**
- * Contacts user-list component
- */
 export class PeopleComponent implements OnInit {
 
   public columnInfos: Array<ColumnsInfo> = [
     {
       displayName: 'Name',
       columnDef: 'name',
-      type: 'profile'
+      type: 'profile',
+      profileType: 'people'
     },
     {
       displayName: 'Lead Group',
-      columnDef: 'contactType',
+      columnDef: 'contactTypes',
       type: 'badge'
     },
     {
       displayName: 'Organization(s)',
-      columnDef: 'organizations',
+      columnDef: 'organization',
       type: 'link',
-      isList: true
+      isList: true,
+      profileType: 'organization'
     },
     {
       displayName: 'Email(s)',
-      columnDef: 'email',
+      columnDef: 'emails',
       type: 'textWithBadge',
       isList: true
     },
     {
       displayName: 'Phone(s)',
-      columnDef: 'phone',
+      columnDef: 'phones',
       type: 'textWithBadge',
       isList: true
     },
@@ -55,7 +53,7 @@ export class PeopleComponent implements OnInit {
     },
     {
       displayName: 'Closed deal(s)',
-      columnDef: 'closeDealsCount',
+      columnDef: 'closedDealsCount',
       type: 'number'
     },
     {
@@ -65,8 +63,8 @@ export class PeopleComponent implements OnInit {
     },
     {
       displayName: 'Owner',
-      columnDef: 'owner.fullName',
-      type: 'text'
+      columnDef: 'owner',
+      type: 'combinedName'
     },
     {
       displayName: 'Tags',
@@ -84,123 +82,67 @@ export class PeopleComponent implements OnInit {
   pageSize: number = 10;
   class: string = 'primary';
 
-  public peoples = LEADPEOPLELIST;
-
-  public selected: any;
-
-  tables$: Observable<any[]>;
-  total$: Observable<number>;
-
-  leadGroupForm: FormGroup;
-
-  isEditLeadGroup: boolean = false;
-  leadGroupIdToDelete: string;
-
-  @ViewChildren(AdvancedSortableDirective) headers: QueryList<AdvancedSortableDirective>;
+  dataSource: CustomTableDatasource;
 
   constructor(
-    private modalService: NgbModal,
-    private fb: FormBuilder,
-    public service: AdvancedService,
-    private router: Router
+    private leadService: LeadService,
+    private modalService: NgbModal
   ) { }
 
   ngOnInit() {
-    this.initForm();
-    this.service.setData(this.peoples);
-    this.tables$ = this.service.tables$;
-    this.total$ = this.service.total$;
+    this.getPeopleListing();
   }
 
-  openLeadsModal(content, leadGroup?) {
-    if (leadGroup) {
-      this.isEditLeadGroup = true;
-      this.leadGroupForm.patchValue({
-        id: leadGroup.id,
-        name: leadGroup.name,
-        class: leadGroup.class
-      });
-    }
-    else {
-      this.isEditLeadGroup = false;
-      this.leadGroupForm.patchValue({
-        name: '',
-        class: 'primary'
-      });
-    }
+  onAddClick() {
+    const modalRef = this.modalService.open(PeopleDetailsModalComponent, { centered: true, size: 'lg', scrollable: true });
 
-    this.modalService.open(content, { scrollable: true });
-  }
-
-  deleteLeadsModal(content, leadGroup) {
-    this.leadGroupIdToDelete = leadGroup.id;
-    this.modalService.open(content, { scrollable: true, centered: true });
-  }
-
-  initForm() {
-    this.leadGroupForm = this.fb.group({
-      id: [''],
-      name: ['', Validators.required],
-      class: ['primary', Validators.required]
+    modalRef.result.then(() => {
+      this.getPeopleListing();
     });
   }
 
-  getAddress(people) {
-    let addressString = '';
-    if (people.address)
-      addressString = addressString.concat(addressString ? `,${people.address}` : people.address);
-    if (people.area)
-      addressString = addressString.concat(addressString ? `,${people.area}` : people.area);
-    if (people.zipCode)
-      addressString = addressString.concat(addressString ? `,${people.zipCode}` : people.zipCode);
-    if (people.city)
-      addressString = addressString.concat(addressString ? `,${people.city}` : people.city);
-    if (people.state)
-      addressString = addressString.concat(addressString ? `,${people.state}` : people.state);
-    if (people.country)
-      addressString = addressString.concat(addressString ? `,${people.country?.name}` : people.country?.name);
-
-    return addressString;
+  onPageChange(ev: number) {
+    const page = ev - 1;
+    this.getPeopleListing(page);
   }
 
-  onSort({ column, direction }: SortEvent) {
-    console.log('clicked?');
+  onDelete(ev) {
+    const modalRef = this.modalService.open(DeleteModal2Component, { centered: true });
 
-    // resetting other headers
-    this.headers.forEach(header => {
-      if (header.sortable !== column) {
-        header.direction = '';
+    modalRef.result.then(confirmation => {
+      if (confirmation) {
+        this.leadService.deletePeople(ev.id).subscribe({
+          next: () => {
+            this.getPeopleListing();
+          }
+        });
       }
     });
-    this.service.sortColumn = column;
-    this.service.sortDirection = direction;
   }
 
-  redirectToProfile(leadPerson) {
-    console.log('leadPerson: ', leadPerson);
+  onEdit(ev) {
+    const modalRef = this.modalService.open(PeopleDetailsModalComponent, { centered: true, size: 'lg', scrollable: true });
 
-    this.router.navigate([`/lms/leads/people/${leadPerson.id}`]);
+    modalRef.componentInstance.peopleData = ev;
+    modalRef.componentInstance.isEdit = true;
+
+    modalRef.result.then(() => {
+      this.getPeopleListing();
+    });
   }
 
-  getInitial(leadPerson) {
-    if (leadPerson.name) {
-      const fullName = leadPerson.name.split(' ');
+  private getPeopleListing(page: number = 0) {
+    const pageableRequest: PageableRequest = {
+      direction: DIRECTION.descending,
+      page: page,
+      size: 10,
+      properties: ["updatedAt"]
+    };
+    this.leadService.getPage(pageableRequest, "person").subscribe({
+      next: (n) => {
+        this.dataSource = n;
+      },
 
-      let initials;
-      if (fullName.length > 1) {
-        initials = fullName.shift().charAt(0) + fullName.pop().charAt(0);
-      }
-      else {
-        initials = fullName.shift().charAt(0);
-      }
-      return initials.toUpperCase();
-    }
-    else {
-      return 'AZ';
-    }
-  }
-
-  redirectToOrganization(id) {
-    this.router.navigate([`/lms/leads/organization/${id}`]);
+    });
   }
 }

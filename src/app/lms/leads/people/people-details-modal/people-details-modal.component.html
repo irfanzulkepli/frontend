@@ -1,0 +1,300 @@
+<div class="modal-header">
+  <h5 class="modal-title mt-0"> {{ isEdit ? 'Edit person' : 'Add person' }}</h5>
+  <button type="button" class="btn-close" (click)="activeModal.close()" aria-label="Close">
+  </button>
+</div>
+
+<ng-container *ngIf="isLoading">
+  <div class="row mt-4 mb-4">
+    <div class="col-12 d-flex justify-content-center">
+      <div class="spinner-border text-primary m-1" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="!isLoading">
+  <div class="modal-body">
+    <form [formGroup]="peopleForm">
+
+      <div class="mb-3 row">
+        <label class="col-md-3 col-lg-2 col-form-label">Name</label>
+        <div class="col-md-9 col-lg-10">
+          <input placeholder="Enter title" class="form-control" type="text" formControlName="name"
+            [ngClass]="{'is-invalid': submitClicked && peopleForm.get('name').getError('required')}">
+          <div *ngIf="submitClicked && peopleForm.get('name').getError('required')" class="invalid-feedback">
+            <span>Please provide a name.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3 row">
+        <label class="col-md-3 col-lg-2 col-form-label">Lead Group</label>
+        <div class="col-md-9 col-lg-10">
+          <select class="form-select" formControlName="leadGroup"
+            [ngClass]="{'is-invalid': submitClicked && peopleForm.controls.leadGroup.getError('required')}">
+            <option hidden value="">Choose a lead group</option>
+            <option *ngFor="let leadtype of leadTypes" [value]="leadtype.id">
+              {{ leadtype.name }}
+            </option>
+          </select>
+          <div class="invalid-feedback">
+            <span *ngIf="submitClicked && peopleForm.controls.leadGroup.getError('required')">Please select a lead
+              group.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3 row">
+        <label class="col-md-3 col-lg-2 col-form-label">Organization</label>
+
+        <div class="col-md-9 col-lg-10">
+          <ng-container formArrayName="organizations">
+            <ng-container *ngFor="let organizationForm of organizations.controls; let i = index">
+              <ng-container [formGroupName]="i">
+
+                <div class="row mb-2">
+                  <div class="col-md-7">
+                    <mat-select class="form-select" formControlName="organization" placeholder="Choose One"
+                      [ngClass]="{'is-invalid': invalidChecking(organizationForm, 'organization') }">
+                      <mat-option>
+                        <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="No result"
+                          formControlName="name">
+                        </ngx-mat-select-search>
+                      </mat-option>
+
+                      <mat-option *ngFor="let organization of filteredOrganizations[i] | async"
+                        [value]="organization.id">
+                        {{organization.name}}
+                      </mat-option>
+                    </mat-select>
+                    <div class="invalid-feedback">
+                      <span
+                        *ngIf="submitClicked && organizationForm.controls.organization.getError('required') && organizationForm.touched">Please
+                        select an organization.
+                      </span>
+                      <span
+                        *ngIf="submitClicked && organizationForm.controls.organization.getError('duplicated') && organizationForm.touched">
+                        Duplicated organization.
+                      </span>
+                    </div>
+                    <div>
+                      <a class="cursor-pointer" *ngIf="i == organizations.controls.length - 1"
+                        (click)="createOrganization()">
+                        + create new
+                      </a>
+                    </div>
+                  </div>
+
+                  <div class="col-md-5">
+                    <div class="d-flex">
+                      <input class="form-control" placeholder="Type job title" formControlName="jobTitle" />
+                      <i class="bx bx-trash-alt font-size-24 d-flex align-items-center cursor-pointer"
+                        style="margin-left: 10px;" (click)="deleteOrganization(i)"
+                        *ngIf="organizations.controls.length > 1"></i>
+                    </div>
+                    <div>
+                      <a class="cursor-pointer" (click)="addOrganization()"
+                        *ngIf="i == organizations.controls.length - 1">
+                        + add more
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </div>
+
+      </div>
+
+      <div class="mb-1 row">
+        <label class="col-md-3 col-lg-2 col-form-label">Contact Info</label>
+      </div>
+
+
+      <div class="mb-3 row">
+        <label class="col-md-3 col-lg-2 col-form-label">Phone</label>
+        <div class="col-md-9 col-lg-10">
+
+          <ng-container formArrayName="phones">
+            <ng-container *ngFor="let phoneForm of phones.controls; let i = index">
+              <ng-container [formGroupName]="i">
+
+                <div class="row mb-2">
+                  <div class="col-7">
+                    <input type="tel" class="form-control" ng2TelInput [ng2TelInputOptions]="{initialCountry: 'my'}"
+                      (countryChange)="onCountryChange($event)" formControlName="contactNumber" [ngClass]="{'is-invalid': submitClicked 
+                          && phoneForm.controls.contactNumber.getError('required')
+                          && phoneForm.touched}" />
+                    <div
+                      *ngIf="submitClicked && phoneForm.controls.contactNumber.getError('required') && phoneForm.touched"
+                      class="invalid-feedback" style="display: block;">
+                      <span>Please enter a valid phone number.</span>
+                    </div>
+                  </div>
+                  <div class="col-5 d-flex">
+                    <select class="form-select" formControlName="contactType">
+                      <option value="" style="display: none;">Type</option>
+                      <option *ngFor="let type of contactTypes" [value]="type.id">
+                        {{ type.name }}
+                      </option>
+                    </select>
+                    <i class="bx bx-trash-alt font-size-24 d-flex align-items-center cursor-pointer"
+                      style="margin-left: 10px;" (click)="deletePhone(i)" *ngIf="phones.controls.length > 1"></i>
+                  </div>
+                </div>
+
+              </ng-container>
+            </ng-container>
+          </ng-container>
+
+          <div style="margin-top: -0.5rem;">
+            <a class="cursor-pointer" (click)="addPhone()">
+              + add more
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="mb-3 row">
+        <label class="col-md-3 col-lg-2 col-form-label">Email</label>
+        <div class="col-md-9 col-lg-10">
+
+          <ng-container formArrayName="emails">
+            <ng-container *ngFor="let emailForm of emails.controls; let i = index">
+              <ng-container [formGroupName]="i">
+
+                <div class="row mb-2">
+
+                  <div class="col-7">
+                    <input class="form-control" type="email" formControlName="email" placeholder="Email" [ngClass]="{'is-invalid': submitClicked
+                    && (emailForm.controls.email.getError('required') || submitClicked && emailForm.controls.email.getError('email')) 
+                   && emailForm.touched}" />
+                    <div
+                      *ngIf="submitClicked &&
+                  (emailForm.controls.email.getError('required') || submitClicked && emailForm.controls.email.getError('email')) && emailForm.touched"
+                      class="invalid-feedback">
+                      <span>Please enter a valid email.</span>
+                    </div>
+                  </div>
+                  <div class="col-5 d-flex">
+                    <select class="form-select" formControlName="emailType">
+                      <option value="" style="display: none;">Type</option>
+                      <option *ngFor="let type of contactTypes" [value]="type.id">
+                        {{ type.name }}
+                      </option>
+                    </select>
+                    <i class="bx bx-trash-alt font-size-24 d-flex align-items-center cursor-pointer"
+                      style="margin-left: 10px;" (click)="deleteEmail(i)" *ngIf="emails.controls.length > 1"></i>
+                  </div>
+                </div>
+
+              </ng-container>
+            </ng-container>
+          </ng-container>
+
+          <div style="margin-top: -0.5rem;">
+            <a class="cursor-pointer" (click)="addEmail()">
+              + add more
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="mb-3 row">
+        <label class="col-md-3 col-lg-2 col-form-label">Owner</label>
+        <div class="col-md-9 col-lg-10">
+          <select class="form-select" formControlName="owner"
+            [ngClass]="{'is-invalid': submitClicked && peopleForm.controls.owner.getError('required')}">
+            <option hidden value="">Owner</option>
+            <option *ngFor="let user of users" [value]="user.id">
+              {{ user.firstName }} {{ user.lastName }}
+            </option>
+          </select>
+          <div class="invalid-feedback">
+            <span *ngIf="submitClicked && peopleForm.controls.owner.getError('required')">Please select an
+              user.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-1 row">
+        <label class="col-md-3 col-lg-2 col-form-label">
+          <span *ngIf="addAddress">
+            Address details
+          </span>
+        </label>
+        <div class="col-md-9 col-lg-10">
+          <a class="cursor-pointer" (click)="addAddress = !addAddress" *ngIf="!addAddress">
+            + Add address
+          </a>
+        </div>
+      </div>
+
+      <ng-container *ngIf="addAddress">
+        <div class="mb-3 row">
+          <label class="col-md-3 col-lg-2 col-form-label">Country</label>
+          <div class="col-md-9 col-lg-10">
+            <mat-select class="form-select" formControlName="country" placeholder="Choose a country">
+              <mat-option>
+                <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="No result"
+                  [formControl]="countryName">
+                </ngx-mat-select-search>
+              </mat-option>
+
+              <mat-option *ngFor="let country of filteredCountries | async" [value]="country.id">
+                {{country.name}}
+              </mat-option>
+            </mat-select>
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label class="col-md-3 col-lg-2 col-form-label">Area</label>
+          <div class="col-md-9 col-lg-10">
+            <input placeholder="Enter area" class="form-control" type="text" formControlName="area">
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label class="col-md-3 col-lg-2 col-form-label">City</label>
+          <div class="col-md-9 col-lg-10">
+            <input placeholder="Enter city" class="form-control" type="text" formControlName="city">
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label class="col-md-3 col-lg-2 col-form-label">State</label>
+          <div class="col-md-9 col-lg-10">
+            <input placeholder="Enter state" class="form-control" type="text" formControlName="state">
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label class="col-md-3 col-lg-2 col-form-label">Zip code</label>
+          <div class="col-md-9 col-lg-10">
+            <input placeholder="Enter zip code" class="form-control" type="text" formControlName="zipCode">
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label class="col-md-3 col-lg-2 col-form-label">Address</label>
+          <div class="col-md-9 col-lg-10">
+            <input placeholder="Enter address" class="form-control" type="text" formControlName="address">
+          </div>
+        </div>
+      </ng-container>
+
+    </form>
+  </div>
+</ng-container>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="activeModal.close()">Cancel</button>
+  <button type="button" class="btn btn-primary" (click)="onSaveClick()">Save</button>
+</div>

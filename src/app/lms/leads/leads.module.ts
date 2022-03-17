@@ -19,10 +19,18 @@ import { Ng2TelInputModule } from 'ng2-tel-input';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { MatSelectModule } from '@angular/material/select';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
-import { AdvancedSortableDirective } from './advanced-sortable.directive';
-import { AdvancedService } from './advanced.service';
 import { CustomTableModule } from 'src/app/components/custom-table/custom-table.module';
 import { ComponentsModule } from '../components/component.module';
+import { TagsCardComponent } from './lead-profile/tags-card/tags-card.component';
+import { DetailsCardComponent } from './lead-profile/details-card/details-card.component';
+import { AddressCardComponent } from './lead-profile/address-card/address-card.component';
+import { PersonOrganizationCardComponent } from './lead-profile/person-organization-card/person-organization-card.component';
+import { ContactCardComponent } from './lead-profile/contact-card/contact-card.component';
+import { FollowersCardComponent } from './lead-profile/followers-card/followers-card.component';
+import { DealsCardComponent } from './lead-profile/deals-card/deals-card.component';
+import { CustomFieldsCardComponent } from './lead-profile/custom-fields-card/custom-fields-card.component';
+import { PeopleDetailsModalComponent } from './people/people-details-modal/people-details-modal.component';
+import { OrganizationDetailsModalComponent } from './organization/organization-details-modal/organization-details-modal.component';
 
 
 const config: DropzoneConfigInterface = {
@@ -38,7 +46,16 @@ const config: DropzoneConfigInterface = {
         LeadGroupComponent,
         LeadProfileComponent,
         OrganizationComponent,
-        AdvancedSortableDirective
+        TagsCardComponent,
+        DetailsCardComponent,
+        AddressCardComponent,
+        PersonOrganizationCardComponent,
+        ContactCardComponent,
+        FollowersCardComponent,
+        DealsCardComponent,
+        CustomFieldsCardComponent,
+        PeopleDetailsModalComponent,
+        OrganizationDetailsModalComponent
     ],
     imports: [
         CommonModule,
@@ -70,8 +87,7 @@ const config: DropzoneConfigInterface = {
             provide: DROPZONE_CONFIG,
             useValue: config
         },
-        DecimalPipe,
-        AdvancedService
+        DecimalPipe
     ]
 })
 export class LeadsModule { }

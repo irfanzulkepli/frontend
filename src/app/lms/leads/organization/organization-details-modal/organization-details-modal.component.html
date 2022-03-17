@@ -1,0 +1,140 @@
+<div class="modal-header">
+  <h5 class="modal-title mt-0"> {{ isEdit ? 'Edit organization' : 'Add organization' }}</h5>
+  <button type="button" class="btn-close" (click)="activeModal.close()" aria-label="Close">
+  </button>
+</div>
+
+<ng-container *ngIf="isLoading">
+  <div class="row mt-4 mb-4">
+    <div class="col-12 d-flex justify-content-center">
+      <div class="spinner-border text-primary m-1" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="!isLoading">
+  <div class="modal-body">
+    <form [formGroup]="organizationForm">
+
+      <div class="mb-3 row">
+        <label class="col-md-3 col-lg-2 col-form-label">Name</label>
+        <div class="col-md-9 col-lg-10">
+          <input placeholder="Enter title" class="form-control" type="text" formControlName="name"
+            [ngClass]="{'is-invalid': submitClicked && organizationForm.get('name').getError('required')}">
+          <div *ngIf="submitClicked && organizationForm.get('name').getError('required')" class="invalid-feedback">
+            <span>Please provide a name.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3 row">
+        <label class="col-md-3 col-lg-2 col-form-label">Lead Group</label>
+        <div class="col-md-9 col-lg-10">
+          <select class="form-select" formControlName="leadGroup"
+            [ngClass]="{'is-invalid': submitClicked && organizationForm.controls.leadGroup.getError('required')}">
+            <option hidden value="">Choose a lead group</option>
+            <option *ngFor="let leadtype of leadTypes" [value]="leadtype.id">
+              {{ leadtype.name }}
+            </option>
+          </select>
+          <div class="invalid-feedback">
+            <span *ngIf="submitClicked && organizationForm.controls.leadGroup.getError('required')">Please select a lead
+              group.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3 row">
+        <label class="col-md-3 col-lg-2 col-form-label">Owner</label>
+        <div class="col-md-9 col-lg-10">
+          <select class="form-select" formControlName="owner"
+            [ngClass]="{'is-invalid': submitClicked && organizationForm.controls.owner.getError('required')}">
+            <option hidden value="">Owner</option>
+            <option *ngFor="let user of users" [value]="user.id">
+              {{ user.firstName }} {{ user.lastName }}
+            </option>
+          </select>
+          <div class="invalid-feedback">
+            <span *ngIf="submitClicked && organizationForm.controls.owner.getError('required')">Please select an
+              user.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-1 row">
+        <label class="col-md-3 col-lg-2 col-form-label">
+          <span *ngIf="addAddress">
+            Address details
+          </span>
+        </label>
+        <div class="col-md-9 col-lg-10">
+          <a class="cursor-pointer" (click)="addAddress = !addAddress" *ngIf="!addAddress">
+            + Add address
+          </a>
+        </div>
+      </div>
+
+      <ng-container *ngIf="addAddress">
+        <div class="mb-3 row">
+          <label class="col-md-3 col-lg-2 col-form-label">Country</label>
+          <div class="col-md-9 col-lg-10">
+            <mat-select class="form-select" formControlName="country" placeholder="Choose a country">
+              <mat-option>
+                <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="No result"
+                  [formControl]="countryName">
+                </ngx-mat-select-search>
+              </mat-option>
+
+              <mat-option *ngFor="let country of filteredCountries | async" [value]="country.id">
+                {{country.name}}
+              </mat-option>
+            </mat-select>
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label class="col-md-3 col-lg-2 col-form-label">Area</label>
+          <div class="col-md-9 col-lg-10">
+            <input placeholder="Enter area" class="form-control" type="text" formControlName="area">
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label class="col-md-3 col-lg-2 col-form-label">City</label>
+          <div class="col-md-9 col-lg-10">
+            <input placeholder="Enter city" class="form-control" type="text" formControlName="city">
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label class="col-md-3 col-lg-2 col-form-label">State</label>
+          <div class="col-md-9 col-lg-10">
+            <input placeholder="Enter state" class="form-control" type="text" formControlName="state">
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label class="col-md-3 col-lg-2 col-form-label">Zip code</label>
+          <div class="col-md-9 col-lg-10">
+            <input placeholder="Enter zip code" class="form-control" type="text" formControlName="zipCode">
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label class="col-md-3 col-lg-2 col-form-label">Address</label>
+          <div class="col-md-9 col-lg-10">
+            <input placeholder="Enter address" class="form-control" type="text" formControlName="address">
+          </div>
+        </div>
+      </ng-container>
+
+    </form>
+  </div>
+</ng-container>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="activeModal.close()">Cancel</button>
+  <button type="button" class="btn btn-primary" (click)="onSaveClick()">Save</button>
+</div>

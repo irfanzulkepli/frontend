@@ -2,6 +2,13 @@
 @import '~bootstrap/scss/bootstrap';
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons"); 
 
+
+::ng-deep {
+  .cdk-overlay-container {
+      z-index: 1060 !important;
+  }
+}
+
 /* width */
 ::-webkit-scrollbar {
   width: 5px;

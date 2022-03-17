@@ -1,0 +1,160 @@
+<div class="card">
+  <div class="card-body">
+    <div class="card-title border-btm pb-4 d-flex justify-content-between align-items-center">
+      <span>
+        {{ isEditContact ? 'Edit Contact' : 'Contact' }}
+      </span>
+      <div class="page-title-right" *ngIf="!isEditContact">
+        <i class="mdi mdi-square-edit-outline font-size-24 cursor-pointer" (click)="isEditContact = !isEditContact"></i>
+      </div>
+      <div class="page-title-right" *ngIf="isEditContact">
+        <i class="mdi mdi-close-box-outline font-size-24 cursor-pointer" (click)="onCancel()"></i>
+        <i class="mdi mdi-checkbox-marked-outline font-size-24 cursor-pointer" (click)="onSaveClick()"></i>
+      </div>
+    </div>
+
+    <ng-container *ngIf="isLoading">
+      <div class="row mt-4">
+        <div class="col-12 d-flex justify-content-center">
+          <div class="spinner-border text-primary m-1" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!isLoading">
+      <div class="table-responsive" *ngIf="!isEditContact">
+        <table class="table mb-0">
+          <tbody>
+            <tr>
+              <td>
+                {{ leadProfileData.phones.length <= 0 ? 'No phone number added' : 'Phone(s)' }} </td>
+            </tr>
+            <tr class="d-flex justify-content-between" *ngFor="let phone of leadProfileData.phones">
+              <td>
+                {{ phone.value }}
+              </td>
+              <td>
+                <span class="badge rounded-pill {{phone.type ? phone.type.clazz : ''}}">{{ phone.type ?
+                  phone.type.name : ''
+                  }}</span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ leadProfileData.emails.length <= 0 ? 'No email added' : 'Email(s)' }} </td>
+            </tr>
+            <tr class="d-flex justify-content-between" *ngFor="let email of leadProfileData.emails">
+              <td>
+                {{ email.value }}
+              </td>
+              <td>
+                <span class="badge rounded-pill {{email.type ? email.type.clazz : ''}}">
+                  {{ email.type ? email.type.name : '' }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-responsive" style="overflow: unset;" *ngIf="isEditContact">
+        <table class="table table-nowrap mb-0">
+          <tbody>
+            <tr>
+              <td>
+                {{ phones.controls.length > 0 ? 'Phone(s)' : 'Phone' }}
+              </td>
+            </tr>
+            <ng-container [formGroup]="phoneForms">
+              <ng-container formArrayName="phones">
+                <ng-container *ngFor="let phoneForm of phones.controls; let i = index">
+                  <ng-container [formGroupName]="i">
+                    <tr>
+                      <td>
+                        <input type="tel" class="form-control" ng2TelInput [ng2TelInputOptions]="{initialCountry: 'my'}"
+                          (countryChange)="onCountryChange($event)" formControlName="contactNumber" [ngClass]="{'is-invalid': submitClicked 
+                        && phoneForm.controls.contactNumber.getError('required')
+                        && phoneForm.touched}" />
+                        <div
+                          *ngIf="submitClicked && phoneForm.controls.contactNumber.getError('required') && phoneForm.touched"
+                          class="invalid-feedback" style="display: block;">
+                          <span>Please enter a valid phone number.</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="d-inline-flex w-100 page-title-right">
+                        <select class="form-select" formControlName="contactType">
+                          <option value="" style="display: none;">Type</option>
+                          <option *ngFor="let type of contactTypes" [value]="type.id">
+                            {{ type.name }}
+                          </option>
+                        </select>
+                        <i class="bx bx-trash-alt font-size-24 d-flex align-items-center cursor-pointer"
+                          style="margin-left: 10px;" (click)="deletePhone(i)"></i>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+              <tr>
+                <td>
+                  <a class="cursor-pointer" (click)="addPhone()">
+                    + add more
+                  </a>
+                </td>
+              </tr>
+            </ng-container>
+            <tr>
+              <td>
+                {{ emails.controls.length > 0 ? 'Email(s)' : 'Email' }}
+              </td>
+            </tr>
+            <ng-container [formGroup]="emailForms">
+              <ng-container formArrayName="emails">
+                <ng-container *ngFor="let emailForm of emails.controls; let i = index">
+                  <ng-container [formGroupName]="i">
+                    <tr>
+                      <td>
+                        <input class="form-control" type="email" formControlName="email" placeholder="Email" [ngClass]="{'is-invalid': submitClicked
+                         && (emailForm.controls.email.getError('required') || submitClicked && emailForm.controls.email.getError('email')) 
+                        && emailForm.touched}" />
+                        <div
+                          *ngIf="submitClicked &&
+                       (emailForm.controls.email.getError('required') || submitClicked && emailForm.controls.email.getError('email')) && emailForm.touched"
+                          class="invalid-feedback">
+                          <span>Please enter a valid email.</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="d-inline-flex w-100 page-title-right">
+                        <select class="form-select" formControlName="emailType">
+                          <option value="" style="display: none;">Type</option>
+                          <option *ngFor="let type of contactTypes" [value]="type.id">
+                            {{ type.name }}
+                          </option>
+                        </select>
+                        <i class="bx bx-trash-alt font-size-24 d-flex align-items-center cursor-pointer"
+                          style="margin-left: 10px;" (click)="deleteEmail(i)"></i>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+              <tr>
+                <td>
+                  <a class="cursor-pointer" (click)="addEmail()">
+                    + add more
+                  </a>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+
+  </div>
+</div>

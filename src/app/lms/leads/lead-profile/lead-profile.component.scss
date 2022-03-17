@@ -129,6 +129,17 @@ th,td {
     background-color: rgba(255,204,23,0.09);
 }
 
+span.done-circle {
+    content: "";
+    margin-right: 0.4rem;
+    display: inline-flex;
+    width: 16px;
+    height: 16px;
+    border-radius: 100%;
+    border: 1px solid var(--bs-primary);
+    cursor: pointer;
+}
+
 @include screen-breakpoint($min, $desktop) {
     .d-lg {
         display: flex !important;

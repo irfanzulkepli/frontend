@@ -7,7 +7,6 @@ import { Observable } from 'rxjs';
 import { LMSService } from '../../lms-service';
 import { map, startWith } from 'rxjs/operators';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { People } from '../../leads/lead-profile/lead-profile.component';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { DealsService } from '../deals.service';
 import { StagesService } from '../stages.service';
@@ -59,8 +58,8 @@ export class ProfileModalComponent implements OnInit {
   allTag: Array<Tags> = [];
   filteredTags: Observable<Array<Tags>>;
 
-  followerList: Array<People>;
-  allFollowers: Array<People>;
+  followerList: Array<any>;
+  allFollowers: Array<any>;
   filteredFollowers = [];
 
   public Editor = ClassicEditor;
@@ -198,7 +197,7 @@ export class ProfileModalComponent implements OnInit {
     return this.allTag.filter(tag => tag.name.toLowerCase().includes(filterValue));
   }
 
-  private _filterFollower(value): Array<People> {
+  private _filterFollower(value): Array<any> {
     const filterValue = value;
 
     return this.allFollowers.filter(follower => follower.name.toLowerCase().includes(filterValue));

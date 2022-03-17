@@ -2,16 +2,16 @@ import { DecimalPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CustomTableDatasource } from 'src/app/components/custom-table/custom-table.interface';
 import { DeleteModal2Component } from '../../components/delete-modal2/delete-modal2.component';
 import { ColumnsInfo } from '../../lms-service';
-import { AdvancedService } from '../advanced.service';
-import { LeadGroupService } from '../lead-group.service';
+import { LeadService } from '../lead.service';
 
 @Component({
   selector: 'app-lead-group',
   templateUrl: './lead-group.component.html',
   styleUrls: ['./lead-group.component.scss'],
-  providers: [AdvancedService, DecimalPipe]
+  providers: [DecimalPipe]
 })
 export class LeadGroupComponent implements OnInit {
 
@@ -45,6 +45,7 @@ export class LeadGroupComponent implements OnInit {
 
   page: number = 1;
   pageSize: number = 10;
+  dataSource: CustomTableDatasource;
   class: string = 'primary';
 
   public leadGroups: any[] = [];
@@ -61,7 +62,7 @@ export class LeadGroupComponent implements OnInit {
   constructor(
     private modalService: NgbModal,
     private fb: FormBuilder,
-    private leadGroupService :LeadGroupService
+    private leadService: LeadService
   ) { }
 
   ngOnInit() {
@@ -91,9 +92,9 @@ export class LeadGroupComponent implements OnInit {
   getLeadGroups() {
     this.leadGroups = [];
     this.modalService.dismissAll();
-    this.leadGroupService.getContactTypesPage().subscribe({
+    this.leadService.getContactTypesPage().subscribe({
       next: (n) => {
-        this.leadGroups = n.payload;
+        this.dataSource = n;
       },
       error: (e) => { },
       complete: () => { }
@@ -118,7 +119,7 @@ export class LeadGroupComponent implements OnInit {
   }
 
   deleteLeadGroups(id) {
-    this.leadGroupService.deleteContactTypesById(id).subscribe({
+    this.leadService.deleteContactTypesById(id).subscribe({
       next: (n) => {
         this.getLeadGroups();
       },
@@ -133,7 +134,7 @@ export class LeadGroupComponent implements OnInit {
       clazz: this.leadGroupForm.value.clazz
     }
 
-    this.leadGroupService.updateContactTypes(this.leadGroupForm.value.id, data).subscribe({
+    this.leadService.updateContactTypes(this.leadGroupForm.value.id, data).subscribe({
       next: (n) => {
         this.getLeadGroups();
       },
@@ -148,7 +149,7 @@ export class LeadGroupComponent implements OnInit {
       clazz: this.leadGroupForm.value.clazz
     }
 
-    this.leadGroupService.addContactTypes(data).subscribe({
+    this.leadService.addContactTypes(data).subscribe({
       next: (n) => {
         this.getLeadGroups();
       },

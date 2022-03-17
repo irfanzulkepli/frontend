@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
+import { CustomTableDatasource } from './custom-table.interface';
 
 @Component({
   selector: 'app-custom-table',
@@ -9,9 +10,10 @@ import * as moment from 'moment';
 })
 export class CustomTableComponent implements OnInit {
 
-  @Input() dataSource: Array<any>;
+  @Input() dataSource: CustomTableDatasource;
   @Input() columnsInfo: Array<any>;
   @Input() requirePaginator: boolean = true;
+  @Output() onPageEmit = new EventEmitter();
   @Output() onActionClick = new EventEmitter();
   @Output() onEditClick = new EventEmitter();
   @Output() onDeleteClick = new EventEmitter();
@@ -33,15 +35,13 @@ export class CustomTableComponent implements OnInit {
 
   }
 
-  redirectToOrganization(id) {
-    this.router.navigate([`/lms/leads/organization/${id}`]);
+  redirect(id, profileType: string) {
+    if (profileType == 'pipeline-view')
+      this.router.navigate([`/lms/deals/${profileType}/${id}`]);
+    else
+      this.router.navigate([`/lms/leads/${profileType}/${id}`]);
   }
 
-  redirectToProfile(leadPerson) {
-    console.log('leadPerson: ', leadPerson);
-
-    this.router.navigate([`/lms/leads/people/${leadPerson.id}`]);
-  }
 
   getInitial(name) {
     if (name) {
@@ -92,7 +92,23 @@ export class CustomTableComponent implements OnInit {
     }
   }
 
+  onEdit(data) {
+    this.onEditClick.emit(data);
+  }
+
+  onDelete(data) {
+    this.onDeleteClick.emit(data);
+  }
+
   convert24HTo12H(timestring: string) {
     return moment(timestring, 'HH:mm:ss').format('hh:mm A');
+  }
+
+  showPagination(): boolean {
+    return this.dataSource.limit < this.dataSource.totalSize;
+  }
+
+  onPageChange(ev: number) {
+    this.onPageEmit.emit(ev);
   }
 }
