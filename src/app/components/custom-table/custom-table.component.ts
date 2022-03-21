@@ -79,6 +79,19 @@ export class CustomTableComponent implements OnInit {
     return addressString;
   }
 
+  getStatus(status: string) {
+    switch (status) {
+      case 'status_done': {
+        return 'Done';
+        break;
+      }
+      case 'status_open': {
+        return 'Open';
+        break;
+      }
+    }
+  }
+
   onIconClick(action: string, data) {
     switch (action) {
       case 'edit': {

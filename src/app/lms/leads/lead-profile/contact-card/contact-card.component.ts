@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LEADTYPE } from 'src/app/lms/enum/lms-type.enum';
 import { ContactRequestModel, UpdateContactRequest } from '../../interfaces/update-contact-request.interface';
 import { LeadService } from '../../lead.service';
 
@@ -67,7 +68,7 @@ export class ContactCardComponent implements OnInit {
       emails.push({
         value: email.email,
         typeId: email.emailType,
-        contextableType: "person"
+        contextableType: LEADTYPE.PERSON
       });
     }
 
@@ -76,7 +77,7 @@ export class ContactCardComponent implements OnInit {
       phones.push({
         value: phone.contactNumber,
         typeId: phone.contactType,
-        contextableType: "person"
+        contextableType: LEADTYPE.PERSON
       });
     }
 

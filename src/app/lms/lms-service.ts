@@ -75,4 +75,5 @@ export interface ColumnsInfo {
     showIcon?: boolean;
     iconList?: Array<any>;
     profileType?: string;
+    enum?: boolean;
 }

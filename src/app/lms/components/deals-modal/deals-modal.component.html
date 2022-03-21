@@ -4,149 +4,165 @@
 </div>
 
 <div class="modal-body">
+  <ng-container *ngIf="isLoading">
+    <div class="row mt-4">
+      <div class="col-12 d-flex justify-content-center">
+        <div class="spinner-border text-primary m-1" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
   <form [formGroup]="dealForm">
-
-    <div class="form-group row mb-3">
-      <label for="formDealTitleInput" class="col-sm-3 col-form-label">Title</label>
-      <div class="col-sm-9">
-        <input type="text" class="form-control" id="formDealTitleInput" placeholder="Enter deal title"
-          formControlName="title"
-          [ngClass]="{'is-invalid': commonService.validationChecking('title', 'required', dealForm, submitClicked)}">
-        <div class="invalid-feedback">
-          <span *ngIf="commonService.validationChecking('title', 'required', dealForm, submitClicked)">Please provide a
-            title.</span>
-        </div>
-      </div>
-    </div>
-    <div class="form-group row mb-3">
-      <label for="formDescriptionInput" class="col-sm-3 col-form-label">Description</label>
-      <div class="col-sm-9">
-        <textarea class="form-control text-muted" id="formDescriptionInput" rows="3" placeholder="Enter description"
-          formControlName="description"></textarea>
-      </div>
-    </div>
-
-    <div class="form-group row mb-3" *ngIf="showLeadType">
-      <label for="formLeadTypeInput" class="col-sm-3 col-form-label text-nowrap">Lead Type</label>
-      <div class="col-sm-9 d-flex align-items-center">
-        <div class="form-check form-check-inline" *ngFor="let lead of leadTypes">
-          <input class="form-check-input" [id]="lead" type="radio" [value]="lead" formControlName="contextableType">
-          <label class="form-check-label" [for]="lead" class="lead-text">{{ lead }}</label>
-        </div>
-      </div>
-    </div>
-
-    <div class="form-group row mb-3" *ngIf="dealForm.controls.contextableType.value.toLowerCase() == 'person'">
-      <label for="formLeadTypeInput" class="col-sm-3 col-form-label text-nowrap">Person</label>
-      <div class="col-sm-9 d-block align-items-center">
-        <mat-select class="form-select" formControlName="personId" placeholder="Choose a contact person"
-          [ngClass]="{'is-invalid': commonService.validationChecking('personId', 'required', dealForm, submitClicked)}">
-          <mat-option>
-            <ngx-mat-select-search [formControl]="personFilterCtrl" placeholderLabel="Search"
-              noEntriesFoundLabel="No Results"></ngx-mat-select-search>
-          </mat-option>
-          <mat-option *ngFor="let person of filteredPerson | async" [value]="person.id">
-            {{person.name}}
-          </mat-option>
-        </mat-select>
-        <div class="invalid-feedback">
-          <span *ngIf="commonService.validationChecking('personId', 'required', dealForm, submitClicked)">Please select
-            a person.</span>
-        </div>
-      </div>
-    </div>
-
-    <ng-container *ngIf="dealForm.controls.contextableType.value.toLowerCase() == 'organization'">
-      <div class="form-group row mb-3" *ngIf="showOrganization">
-        <label for="formLeadTypeInput" class="col-sm-3 col-form-label text-nowrap">Organization</label>
-        <div class="col-sm-9 d-block align-items-center">
-          <mat-select class="form-control" formControlName="organizationId" placeholder="Choose an organization"
-            [ngClass]="{'is-invalid': commonService.validationChecking('organizationId', 'required', dealForm, submitClicked)}">
-            <mat-option>
-              <ngx-mat-select-search [formControl]="organizationFilterCtrl" placeholderLabel="Search"
-                noEntriesFoundLabel="No Results"></ngx-mat-select-search>
-            </mat-option>
-            <mat-option *ngFor="let organization of filteredOrganizations | async" [value]="organization.id">
-              {{organization.name}}
-            </mat-option>
-          </mat-select>
+    <ng-container *ngIf="!isLoading">
+      <div class="form-group row mb-3">
+        <label for="formDealTitleInput" class="col-sm-3 col-form-label">Title</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="formDealTitleInput" placeholder="Enter deal title"
+            formControlName="title"
+            [ngClass]="{'is-invalid': commonService.validationChecking('title', 'required', dealForm, submitClicked)}">
           <div class="invalid-feedback">
-            <span *ngIf="commonService.validationChecking('organizationId', 'required', dealForm, submitClicked)">Please
-              select an
-              organization.</span>
+            <span *ngIf="commonService.validationChecking('title', 'required', dealForm, submitClicked)">Please provide
+              a
+              title.</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formDescriptionInput" class="col-sm-3 col-form-label">Description</label>
+        <div class="col-sm-9">
+          <textarea class="form-control text-muted" id="formDescriptionInput" rows="3" placeholder="Enter description"
+            formControlName="description"></textarea>
+        </div>
+      </div>
+
+      <div class="form-group row mb-3" *ngIf="showLeadType">
+        <label for="formLeadTypeInput" class="col-sm-3 col-form-label text-nowrap">Lead Type</label>
+        <div class="col-sm-9 d-flex align-items-center">
+          <div class="form-check form-check-inline" *ngFor="let lead of leadTypes">
+            <input class="form-check-input" [id]="lead" type="radio" [value]="lead" formControlName="contextableType">
+            <label class="form-check-label" [for]="lead" class="lead-text">{{ lead }}</label>
           </div>
         </div>
       </div>
 
-      <div class="form-group row mb-3">
-        <label for="formLeadTypeInput" class="col-sm-3 col-form-label text-nowrap">Contact Person</label>
-        <div class="col-sm-9 d-flex align-items-center">
-          <mat-select class="form-control" formControlName="contactPerson" placeholder="Choose a contact person">
-            <mat-option disabled *ngIf="persons.length <= 0">No options found.</mat-option>
-            <mat-option *ngFor="let person of persons" [value]="person.id">
+      <div class="form-group row mb-3" *ngIf="dealForm.controls.contextableType.value.toLowerCase() == 'person'">
+        <label for="formLeadTypeInput" class="col-sm-3 col-form-label text-nowrap">Person</label>
+        <div class="col-sm-9 d-block align-items-center">
+          <mat-select class="form-select" formControlName="personId" placeholder="Choose a contact person"
+            [ngClass]="{'is-invalid': commonService.validationChecking('personId', 'required', dealForm, submitClicked)}">
+            <mat-option>
+              <ngx-mat-select-search [formControl]="personFilterCtrl" placeholderLabel="Search"
+                noEntriesFoundLabel="No Results"></ngx-mat-select-search>
+            </mat-option>
+            <mat-option *ngFor="let person of filteredPerson | async" [value]="person.id">
               {{person.name}}
             </mat-option>
           </mat-select>
+          <div class="invalid-feedback">
+            <span *ngIf="commonService.validationChecking('personId', 'required', dealForm, submitClicked)">Please
+              select
+              a person.</span>
+          </div>
+        </div>
+      </div>
+
+      <ng-container *ngIf="dealForm.controls.contextableType.value.toLowerCase() == 'organization'">
+        <div class="form-group row mb-3" *ngIf="showOrganization">
+          <label for="formLeadTypeInput" class="col-sm-3 col-form-label text-nowrap">Organization</label>
+          <div class="col-sm-9 d-block align-items-center">
+            <mat-select class="form-control" formControlName="organizationId" placeholder="Choose an organization"
+              [ngClass]="{'is-invalid': commonService.validationChecking('organizationId', 'required', dealForm, submitClicked)}">
+              <mat-option>
+                <ngx-mat-select-search [formControl]="organizationFilterCtrl" placeholderLabel="Search"
+                  noEntriesFoundLabel="No Results"></ngx-mat-select-search>
+              </mat-option>
+              <mat-option *ngFor="let organization of filteredOrganizations | async" [value]="organization.id">
+                {{organization.name}}
+              </mat-option>
+            </mat-select>
+            <div class="invalid-feedback">
+              <span
+                *ngIf="commonService.validationChecking('organizationId', 'required', dealForm, submitClicked)">Please
+                select an
+                organization.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row mb-3">
+          <label for="formLeadTypeInput" class="col-sm-3 col-form-label text-nowrap">Contact Person</label>
+          <div class="col-sm-9 d-flex align-items-center">
+            <mat-select class="form-control" formControlName="contactPerson" placeholder="Choose a contact person">
+              <mat-option disabled *ngIf="persons.length <= 0">No options found.</mat-option>
+              <mat-option *ngFor="let person of persons" [value]="person.id">
+                {{person.name}}
+              </mat-option>
+            </mat-select>
+          </div>
+        </div>
+      </ng-container>
+
+      <div class="form-group row mb-3">
+        <label for="formDealValueInput" class="col-sm-3 col-form-label">Deal Value</label>
+        <div class="col-sm-9">
+          <input type="number" class="form-control" id="formDealValueInput" placeholder="Enter Deal Value"
+            formControlName="value">
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formLeadTypeInput" class="col-sm-3 col-form-label text-nowrap">Pipeline</label>
+        <div class="col-sm-9 d-block align-items-center">
+          <select class="form-select" formControlName="pipelinesId" (change)="onPipelinesIdChange()"
+            [ngClass]="{'is-invalid': commonService.validationChecking('pipelinesId', 'required', dealForm, submitClicked)}">
+            <option hidden value="">Pipeline</option>
+            <option *ngFor="let pipelineOption of pipelines" [value]="pipelineOption.id">{{ pipelineOption.name }}
+            </option>
+          </select>
+          <div class="invalid-feedback">
+            <span *ngIf="commonService.validationChecking('pipelinesId', 'required', dealForm, submitClicked)">Please
+              select a
+              pipeline.</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formStageTypeInput" class="col-sm-3 col-form-label text-nowrap">Stage</label>
+        <div class="col-sm-9 d-block align-items-center">
+          <select class="form-select" formControlName="stagesId"
+            [ngClass]="{'is-invalid': commonService.validationChecking('stagesId', 'required', dealForm, submitClicked)}">
+            <!-- <option hidden value="">Stage</option> -->
+            <option *ngFor="let stage of stages" [value]="stage.id">{{ stage.name }}</option>
+          </select>
+          <div class="invalid-feedback">
+            <span *ngIf="commonService.validationChecking('stagesId', 'required', dealForm, submitClicked)">Please
+              select
+              a
+              stage.</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formExpClosingDateInput" class="col-sm-3 col-form-label">Expecting Closing Date</label>
+        <div class="col-sm-9 d-flex align-items-center">
+          <input class="form-control" type="date" id="formExpClosingDateInput" formControlName="expiredAt"
+            placeholder="Choose a date">
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formLeadTypeInput" class="col-sm-3 col-form-label text-nowrap">Owner</label>
+        <div class="col-sm-9 d-flex align-items-center">
+          <select class="form-select" formControlName="ownerId">
+            <option hidden value="">Owner</option>
+            <option *ngFor="let user of users" [value]="user.id">
+              {{ user.firstName }} {{ user.lastName }}
+            </option>
+          </select>
         </div>
       </div>
     </ng-container>
 
-    <div class="form-group row mb-3">
-      <label for="formDealValueInput" class="col-sm-3 col-form-label">Deal Value</label>
-      <div class="col-sm-9">
-        <input type="number" class="form-control" id="formDealValueInput" placeholder="Enter Deal Value"
-          formControlName="value">
-      </div>
-    </div>
-    <div class="form-group row mb-3">
-      <label for="formLeadTypeInput" class="col-sm-3 col-form-label text-nowrap">Pipeline</label>
-      <div class="col-sm-9 d-block align-items-center">
-        <select class="form-select" formControlName="pipelinesId" (change)="onPipelinesIdChange()"
-          [ngClass]="{'is-invalid': commonService.validationChecking('pipelinesId', 'required', dealForm, submitClicked)}">
-          <option hidden value="">Pipeline</option>
-          <option *ngFor="let pipelineOption of pipelines" [value]="pipelineOption.id">{{ pipelineOption.name }}
-          </option>
-        </select>
-        <div class="invalid-feedback">
-          <span *ngIf="commonService.validationChecking('pipelinesId', 'required', dealForm, submitClicked)">Please
-            select a
-            pipeline.</span>
-        </div>
-      </div>
-    </div>
-    <div class="form-group row mb-3">
-      <label for="formStageTypeInput" class="col-sm-3 col-form-label text-nowrap">Stage</label>
-      <div class="col-sm-9 d-block align-items-center">
-        <select class="form-select" formControlName="stagesId"
-          [ngClass]="{'is-invalid': commonService.validationChecking('stagesId', 'required', dealForm, submitClicked)}">
-          <!-- <option hidden value="">Stage</option> -->
-          <option *ngFor="let stage of stages" [value]="stage.id">{{ stage.name }}</option>
-        </select>
-        <div class="invalid-feedback">
-          <span *ngIf="commonService.validationChecking('stagesId', 'required', dealForm, submitClicked)">Please select
-            a
-            stage.</span>
-        </div>
-      </div>
-    </div>
-    <div class="form-group row mb-3">
-      <label for="formExpClosingDateInput" class="col-sm-3 col-form-label">Expecting Closing Date</label>
-      <div class="col-sm-9 d-flex align-items-center">
-        <input class="form-control" type="date" id="formExpClosingDateInput" formControlName="expiredAt"
-          placeholder="Choose a date">
-      </div>
-    </div>
-    <div class="form-group row mb-3">
-      <label for="formLeadTypeInput" class="col-sm-3 col-form-label text-nowrap">Owner</label>
-      <div class="col-sm-9 d-flex align-items-center">
-        <select class="form-select" formControlName="ownerId">
-          <option hidden value="">Owner</option>
-          <option *ngFor="let user of users" [value]="user.id">
-            {{ user.firstName }} {{ user.lastName }}
-          </option>
-        </select>
-      </div>
-    </div>
   </form>
 </div>
 

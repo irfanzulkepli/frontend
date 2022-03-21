@@ -205,7 +205,7 @@
 
       <app-address-card [leadProfileData]="leadProfileData" [profileType]="profileType"></app-address-card>
 
-      <app-deals-card (onDealsEmit)="openDealsModal()"></app-deals-card>
+      <app-deals-card [leadProfileData]="leadProfileData" [profileType]="profileType" [onChanges]="onChange" (onDealsEmit)="openDealsModal()"></app-deals-card>
 
       <app-custom-fields-card></app-custom-fields-card>
 

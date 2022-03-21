@@ -8,8 +8,10 @@ export interface ActivitiyRequest {
     endTime: string,
     collaboratorsIds: Array<number>,
     participantsIds: Array<number>,
-    statusId: number,
+    markAsDone: boolean,
     contextableType: string,
-    contextableId: number,
+    personsId: number,
+    organizationsId: number,
+    dealsId: number
     createdById: number
 }

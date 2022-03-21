@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { map, startWith } from 'rxjs/operators';
 import { FormControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -9,6 +8,7 @@ import * as moment from 'moment';
 import { LeadService } from '../lead.service';
 import { ActivitiyRequest } from '../interfaces/add-activities-reqeust.interface';
 import { DealsModalComponent } from '../../components/deals-modal/deals-modal.component';
+import { ACTIVITYSTATUS, LEADTYPE } from '../../enum/lms-type.enum';
 
 @Component({
   selector: 'app-lead-profile',
@@ -26,6 +26,7 @@ export class LeadProfileComponent implements OnInit {
   isLoadingActivities: boolean = true;
   isLoading: boolean = true;
   submitClicked: boolean = false;
+  onChange: boolean = false;
 
   collaboratorCtrl = new FormControl();
   participantCtrl = new FormControl();
@@ -127,15 +128,17 @@ export class LeadProfileComponent implements OnInit {
       createdById: 43,
       description: formValue.description,
       title: formValue.title,
-      statusId: formValue.markAsDone ? 12 : 11,
-      contextableType: this.profileType == 'person' ? 'person' : 'organization',
-      contextableId: this.id,
+      markAsDone: formValue.markAsDone,
+      contextableType: this.profileType == 'person' ? LEADTYPE.PERSON : LEADTYPE.ORGANIZATION,
       collaboratorsIds: collaboratorIds,
       participantsIds: participantIds,
-      startTime: formValue.startDate.concat(`T${formValue.startTime}`),
+      startTime: formValue.startTime,
       startedAt: formValue.startDate,
-      endTime: formValue.endDate.concat(`T${formValue.endTime}`),
-      endedAt: formValue.endDate
+      endTime: formValue.endTime,
+      endedAt: formValue.endDate,
+      dealsId: null,
+      personsId: this.profileType == 'person' ? this.id : null,
+      organizationsId: this.profileType == 'organization' ? this.id : null
     };
 
     this.leadService.addActivity(payload).subscribe({
@@ -246,11 +249,11 @@ export class LeadProfileComponent implements OnInit {
         }
 
         for (const activity of activities) {
-          if (activity.status.name == 'status_todo') {
+          if (activity.status.name == ACTIVITYSTATUS.TODO) {
             this.tasksTodo.push(activity);
             this.tasksOpen.push(activity);
           }
-          if (activity.status.name == 'status_done')
+          if (activity.status.name == ACTIVITYSTATUS.DONE)
             this.tasksDone.push(activity);
         }
 
@@ -289,11 +292,15 @@ export class LeadProfileComponent implements OnInit {
   }
 
   openDealsModal() {
-    const leadType = this.profileType == 'person' ? 'Person' : 'Organization';
+    const leadType = this.profileType == 'person' ? LEADTYPE.PERSON : LEADTYPE.ORGANIZATION;
     const modalRef = this.modalService.open(DealsModalComponent, { scrollable: true });
     modalRef.componentInstance.showLeadType = false;
-    modalRef.componentInstance.leadType = leadType;
-    modalRef.componentInstance.organization = leadType == 'Organization' ? this.id : null;
+    modalRef.componentInstance.contextableType = leadType;
+    modalRef.componentInstance.organization = leadType == LEADTYPE.ORGANIZATION ? this.id : null;
+
+    modalRef.result.then(() => {
+      this.onChange = true;
+    });
   }
 
   onBack(profileType: string) {

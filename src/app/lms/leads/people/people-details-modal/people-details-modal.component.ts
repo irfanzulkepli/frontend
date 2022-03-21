@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { map, startWith } from 'rxjs/operators';
+import { LEADTYPE } from 'src/app/lms/enum/lms-type.enum';
 import { PeopleRequest } from '../../interfaces/people-request.interface';
 import { ContactRequestModel } from '../../interfaces/update-contact-request.interface';
 import { PersonOrganizationRequest } from '../../interfaces/update-person-organization-request.interface';
@@ -262,7 +263,7 @@ export class PeopleDetailsModalComponent implements OnInit {
       if (email.email) {
         emails.push({
           value: email.email,
-          contextableType: 'person',
+          contextableType: LEADTYPE.PERSON,
           typeId: email.emailType ? email.emailType : ''
         });
       }
@@ -273,7 +274,7 @@ export class PeopleDetailsModalComponent implements OnInit {
       if (phone.contactNumber) {
         phones.push({
           value: phone.contactNumber,
-          contextableType: 'person',
+          contextableType: LEADTYPE.PERSON,
           typeId: phone.contactType ? phone.contactType : ''
         });
       }

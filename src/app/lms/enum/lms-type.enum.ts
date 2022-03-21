@@ -8,3 +8,8 @@ export enum ACTIVITYTYPE {
     ORGANIZATION = "ORGANIZATION",
     DEAL = "DEAL"
 }
+
+export enum ACTIVITYSTATUS {
+    TODO = "status_todo",
+    DONE = "status_done"
+}

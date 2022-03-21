@@ -40,6 +40,7 @@ export class DealsModalComponent implements OnInit {
   organizationFilterCtrl = new FormControl();
 
   persons = [];
+  isLoading: boolean = true;
 
   showOrganization: boolean = true;
   submitClicked: boolean = false;
@@ -77,7 +78,6 @@ export class DealsModalComponent implements OnInit {
         this.dealForm.get('personId').clearValidators();
         this.dealForm.get('organizationId').setValidators(Validators.required);
         this.dealForm.get('organizationId').valueChanges.subscribe(async (value) => {
-          console.log(value);
           this.persons = await this.leadService.getPersonsByOrganizationId(value).toPromise();
         });
       }
@@ -92,6 +92,7 @@ export class DealsModalComponent implements OnInit {
 
     this.getPipelinesList();
     this.getUsersList();
+    this.getPersonList();
     this.getOrganizationList();
 
     if (this.dealDatas) {
@@ -105,6 +106,7 @@ export class DealsModalComponent implements OnInit {
       this.showOrganization = false;
       this.dealForm.get('organizationId').setValue(this.organization);
     }
+    this.isLoading = false;
   }
 
   ngOnDestroy() {
@@ -131,9 +133,9 @@ export class DealsModalComponent implements OnInit {
           organizationId: n.organization ? n.organization.id : ''
         });
 
-        if (n.contextableType === 'person') {
+        if (n.contextableType === LEADTYPE.PERSON) {
           this.dealForm.controls['personId'].setValue(n.contextableId + '');
-        } else if (n.contextableType === 'organization') {
+        } else if (n.contextableType === LEADTYPE.ORGANIZATION) {
           this.dealForm.controls['organizationId'].setValue(n.contextableId + '');
         }
 
@@ -170,25 +172,31 @@ export class DealsModalComponent implements OnInit {
   }
 
   addDeals() {
+    this.isLoading = true;
     this.dealsService.addDeals(this.dealForm.value).subscribe({
       next: (n) => {
         this.activeModal.close(true);
         this.refreshDealsListPipelineView.emit();
+        this.isLoading = false;
       },
       error: (e) => {
         this.activeModal.close(false);
+        this.isLoading = false;
       },
       complete: () => { }
     })
   }
 
   updateDeals() {
+    this.isLoading = true;
     this.dealsService.updateDeals(this.dealForm.value).subscribe({
       next: (n) => {
         this.activeModal.close(true);
+        this.isLoading = false;
       },
       error: (e) => {
         this.activeModal.close(false);
+        this.isLoading = false;
       },
       complete: () => { }
     })

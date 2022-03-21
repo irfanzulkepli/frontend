@@ -76,7 +76,7 @@
                         <span class="d-flex align-items-center" *ngFor="let field of element[column['columnDef']]">
                           <span class="me-2"> {{ field.value }} </span>
                           <span class="badge rounded-pill
-                      {{ field.type?.class ? field.type?.class : '' }}  font-size-12">
+                      {{ field.type?.clazz ? field.type?.clazz : '' }}  font-size-12">
                             {{ field.type?.name }}
                           </span>
                         </span>
@@ -96,8 +96,13 @@
                     <td mat-cell>
                       <span class="badge rounded-pill {{ element[column['columnDef']] ? element[column['columnDef']] : ''}}
                   {{ element[column['columnDef']]?.clazz ? element[column['columnDef']]?.clazz : ''}}  font-size-12">
-                        {{ element[column['columnDef']].name ? element[column['columnDef']].name :
-                        element[column['columnDef']] }}
+                        <span *ngIf="!column['enum']">
+                          {{ element[column['columnDef']].name ? element[column['columnDef']].name :
+                          element[column['columnDef']] }}
+                        </span>
+                        <span *ngIf="column['enum']">
+                          {{ getStatus(element[column['columnDef']].name) }}
+                        </span>
                       </span>
                     </td>
                   </ng-container>

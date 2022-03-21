@@ -2,13 +2,93 @@
   <div class="card-body">
     <div class="card-title border-btm pb-4 d-flex justify-content-between align-items-center">
       <span>
-        Deals (0)
+        Deals <span *ngIf="deals?.totalSize"> ({{ deals.totalSize }}) </span>
       </span>
       <div class="page-title-right">
         <i class="mdi mdi-plus-box-outline font-size-24 cursor-pointer" (click)="openDealsModal()"></i>
       </div>
     </div>
-    <div class="table-responsive">
-    </div>
+
+    <ng-container *ngIf="isLoading">
+      <div class="row mt-4">
+        <div class="col-12 d-flex justify-content-center">
+          <div class="spinner-border text-primary m-1" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!isLoading">
+      <div class="table-responsive">
+
+        <ng-container *ngIf="deals.payload.length > 0">
+          <div class="card-container">
+            <div class="card" *ngFor="let deal of deals.payload" style="margin: 10px;">
+              <div class="card-body cursor-pointer">
+                <div class="media align-items-center me-2 mb-3">
+                  <div
+                    class="me-1 rounded-circle avatar-xs bg-secondary d-flex align-items-center justify-content-center"
+                    alt="user-pic">
+                    <i
+                      [ngClass]="{'bx bx-briefcase-alt': profileType == 'organization', 'bx bx-user': profileType == 'person'}"></i>
+                  </div>
+                  <div class="media-body link">
+                    {{ deal.title }}
+                  </div>
+                </div>
+                <div class="media align-items-center me-2">
+                  <div
+                    class="me-1 rounded-circle avatar-xs bg-secondary d-flex align-items-center justify-content-center"
+                    alt="user-pic">
+                    {{ commonService.getInitials2(deal.owner.firstName, deal.owner.lastName) }}
+                  </div>
+                  <div class="media-body d-flex w-100 justify-content-between">
+                    {{ deal.owner.firstName }} {{ deal.owner.lastName }}
+
+                    <span>
+                      $ {{ deal.value | number: '1.2-2' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ng-container *ngIf="deals.totalSize > 3">
+            <button style="width: 100%;" type="button" class="btn btn-primary btn-rounded" (click)="openModal(dealsModal)">
+              View all
+            </button>
+          </ng-container>
+        </ng-container>
+
+      </div>
+    </ng-container>
   </div>
 </div>
+
+<ng-template #dealsModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">All followers</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+    </button>
+  </div>
+
+  <ng-container *ngIf="isModalLoading">
+    <div class="row mt-4 mb-4">
+      <div class="col-12 d-flex justify-content-center">
+        <div class="spinner-border text-primary m-1" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!isModalLoading">
+    <div class="modal-body">
+      <app-custom-table [columnsInfo]="columnsInfo" [dataSource]="dataSource"></app-custom-table>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">Close</button>
+    </div>
+  </ng-container>
+</ng-template>

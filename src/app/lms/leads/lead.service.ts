@@ -8,6 +8,7 @@ import { ActivitiyRequest } from './interfaces/add-activities-reqeust.interface'
 import { TagRequest } from './interfaces/delete-tag-request.interface';
 import { OrganizationRequest } from './interfaces/organization-request.interface';
 import { PeopleRequest } from './interfaces/people-request.interface';
+import { PersonList } from './interfaces/person-list.interface';
 import { UpdateAddressRequest } from './interfaces/update-address-request.interface';
 import { UpdateContactRequest } from './interfaces/update-contact-request.interface';
 import { UpdateDetailsRequest } from './interfaces/update-details-request.interface';
@@ -75,8 +76,8 @@ export class LeadService {
     return this.httpClient.get(`${environment.baseUrl}/activities/activityTypes/list`);
   }
 
-  getUsersListing() {
-    return this.httpClient.get(`${environment.baseUrl}/users/list`);
+  getUsersListing(): Observable<Array<PersonList>> {
+    return this.httpClient.get<Array<PersonList>>(`${environment.baseUrl}/users/list`);
   }
 
   getOrganizationsListing(): Observable<any> {
@@ -93,6 +94,10 @@ export class LeadService {
 
   getPersonsByOrganizationId(id: number): Observable<any> {
     return this.httpClient.get(`${environment.baseUrl}/organization/${id}/persons`);
+  }
+
+  getDealsByLeadId(id: number, leadType: string, pageableRequest): Observable<any> {
+    return this.httpClient.get(`${environment.baseUrl}/${leadType}/${id}/deals/page`, { params: pageableRequest });
   }
 
   updateAddress(requestBody: UpdateAddressRequest, id: number, profileType: string) {
