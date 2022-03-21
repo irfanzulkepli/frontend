@@ -1,9 +1,8 @@
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ThemeService } from 'ng2-charts';
 import { DeleteModal2Component } from '../../components/delete-modal2/delete-modal2.component';
 import { LMSService } from '../../lms-service';
 import { DealsService } from '../deals.service';
@@ -77,18 +76,48 @@ export class PipelineDetailsComponent implements OnInit {
     stages.push(stageForm);
   }
 
+  removeStageFromPipelineForm(index: number) {
+    let stages: FormArray = this.pipelineForm.get('stages') as FormArray;
+    stages.removeAt(index);
+  }
+
   getStagesControl() {
     let stages: FormArray = this.pipelineForm.get('stages') as FormArray;
     return stages.controls;
   }
 
   drop(event: CdkDragDrop<string[]>) {
-    // moveItemInArray(this.movies, event.previousIndex, event.currentIndex);
+
+    if (event.previousContainer === event.container) {
+      // console.log('Transfering item to existing container')
+      moveItemInArray(event.container.data,
+        event.previousIndex,
+        event.currentIndex);
+    } else {
+      // console.log('Transfering item to new container')
+      transferArrayItem(event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex);
+    }
+
+    let eventFormControls: any = event.container.data;
+    let stagesFormArray: FormArray = this.pipelineForm.get('stages') as FormArray;
+
+    let priority: number = 0;
+    stagesFormArray.controls.forEach(stagesFormControl => {
+      eventFormControls.forEach(eventFormControl => {
+        if (eventFormControl.value.id == stagesFormControl.value.id) {
+          stagesFormControl.get('priority').setValue(priority);
+          priority++;
+        }
+      });
+    });
+
   }
 
   savePipelines() {
     if (this.pipelineForm.value.id) {
-      console.log("update");
       this.updatePipelines();
     } else {
       this.createPipelines();
@@ -103,27 +132,33 @@ export class PipelineDetailsComponent implements OnInit {
     }
   }
 
-  onClickDelete(content: any, oldStagesId: number) {
-    this.deleteStageForm.reset();
+  onClickDelete(content: any, oldStagesId: number, formArrayIndex: number) {
 
-    this.deleteStageForm.patchValue({
-      oldStagesId: oldStagesId
-    });
+    if (oldStagesId) {
+      this.deleteStageForm.reset();
 
-    this.filteredStages = [];
-    let dealsCount: number = 0;
-    this.stages.forEach(element => {
-      if (element.id != oldStagesId) {
-        this.filteredStages.push(element);
+      this.deleteStageForm.patchValue({
+        oldStagesId: oldStagesId
+      });
+
+      this.filteredStages = [];
+      let dealsCount: number = 0;
+      this.stages.forEach(element => {
+        if (element.id != oldStagesId) {
+          this.filteredStages.push(element);
+        } else {
+          dealsCount = element.dealsCount;
+        }
+      });
+
+      if (dealsCount <= 0) {
+        this.deleteConfirmation();
       } else {
-        dealsCount = element.dealsCount;
+        this.modalService.open(content);
       }
-    });
 
-    if (dealsCount <= 0) {
-      this.deleteConfirmation();
     } else {
-      this.modalService.open(content);
+      this.removeStageFromPipelineForm(formArrayIndex);
     }
   }
 
@@ -142,13 +177,24 @@ export class PipelineDetailsComponent implements OnInit {
       next: (n) => {
         this.stages = n;
 
+        let highestPriority: number = 0;
         this.stages.forEach(element => {
-          this.addStageToPipelineForm(element);
-          this.pipelineForm.patchValue({
-            id: element.pipelines.id,
-            name: element.pipelines.name
-          })
+          if (element.priority > highestPriority){
+            highestPriority = element.priority;
+          }
         });
+
+        for (let priority: number = 0; priority <= highestPriority; priority++) {
+          this.stages.forEach(element => {
+            if (element.priority == priority) {
+              this.addStageToPipelineForm(element);
+              this.pipelineForm.patchValue({
+                id: element.pipelines.id,
+                name: element.pipelines.name
+              });
+            }
+          });
+        }
       },
       error: (e) => { },
       complete: () => { }

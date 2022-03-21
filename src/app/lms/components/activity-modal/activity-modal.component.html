@@ -8,28 +8,18 @@
       <label for="formDealTitleInput" class="col-sm-2 col-form-label">Activity</label>
       <div class="col-sm-10">
         <div class="btn-group flex-wrap" role="group" aria-label="Basic radio toggle button group">
-          <input type="radio" class="btn-check" id="call" autocomplete="off" formControlName="activity" value="call">
-          <label class="btn btn-outline-primary" for="call">Call</label>
-          <input type="radio" class="btn-check" id="meeting" autocomplete="off" formControlName="activity"
-            value="meeting">
-          <label class="btn btn-outline-primary" for="meeting">Meeting</label>
-          <input type="radio" class="btn-check" id="email" autocomplete="off" formControlName="activity" value="email">
-          <label class="btn btn-outline-primary" for="email">Email</label>
-          <input type="radio" class="btn-check" id="task" autocomplete="off" formControlName="activity" value="task">
-          <label class="btn btn-outline-primary" for="task">Task</label>
-          <input type="radio" class="btn-check" id="deadline" autocomplete="off" formControlName="activity"
-            value="deadline">
-          <label class="btn btn-outline-primary" for="deadline">Deadline</label>
-          <input type="radio" class="btn-check" id="others" autocomplete="off" formControlName="activity"
-            value="others">
-          <label class="btn btn-outline-primary" for="others">Others</label>
+          <ng-container *ngFor="let activity of activities">
+            <input type="radio" class="btn-check" id="{{activity.name}}" formControlName="activityTypeId"
+              value="{{activity.id}}">
+            <label class="btn btn-outline-primary" for="{{activity.name}}">{{activity.name}}</label>
+          </ng-container>
         </div>
       </div>
     </div>
     <div class="form-group row mb-3">
       <label for="formActivityTitleInput" class="col-sm-2 col-form-label">Title</label>
       <div class="col-sm-10">
-        <input type="text" class="form-control" id="formActivityTitleInput" placeholder="Enter Deal Title Here"
+        <input type="text" class="form-control" id="formActivityTitleInput" placeholder="Enter Title Here"
           formControlName="title">
       </div>
     </div>
@@ -45,7 +35,7 @@
       <div class="col-sm-10">
         <div class="row mb-1">
           <div class="col-lg-7 pr-lg-0">
-            <input class="form-control" type="date" id="startDateInput" formControlName="startDate">
+            <input class="form-control" type="date" id="startDateInput" formControlName="startedAt">
           </div>
           <div class="col-lg-5 pl-lg-0">
             <input class="form-control" type="time" id="startTimeInput" formControlName="startTime">
@@ -53,7 +43,7 @@
         </div>
         <div class="row mb-1">
           <div class="col-lg-7 pr-lg-0">
-            <input class="form-control" type="date" id="endDateInput" formControlName="endDate">
+            <input class="form-control" type="date" id="endDateInput" formControlName="endedAt">
           </div>
           <div class="col-lg-5 pl-lg-0">
             <input class="form-control" type="time" id="endTimeInput" formControlName="endTime">
@@ -70,23 +60,22 @@
     <div class="form-group row mb-3">
       <label for="formActivityTypeInput" class="col-sm-2 col-form-label">Activity Types</label>
       <div class="col-sm-10 d-flex align-items-center">
-        <select class="form-select" formControlName="activityType">
-          <option value="deal"> Deal </option>
-          <option value="person"> Person </option>
-          <option value="organization"> Organization </option>
+        <select class="form-select" formControlName="contextableType">
+          <option *ngFor="let activityType of activityTypes" value="{{activityType}}"> {{activityType | titlecase}}
+          </option>
         </select>
       </div>
     </div>
 
-    <div class="form-group row mb-3" *ngIf="activityForm.get('activityType').value == 'deal'">
+    <div class="form-group row mb-3" *ngIf="activityForm.get('contextableType').value == 'DEAL'">
       <label for="formDealValueInput" class="col-sm-2 col-form-label">Deal</label>
       <div class="col-sm-10 mb-1">
-        <mat-select class="form-select" formControlName="deal">
+        <mat-select class="form-select" formControlName="dealsId">
           <mat-option>
             <ngx-mat-select-search [formControl]="dealCtrl" placeholderLabel="Search" noEntriesFoundLabel="No results">
             </ngx-mat-select-search>
           </mat-option>
-          <mat-option *ngFor="let deal of filteredDeals | async" [value]="deal">
+          <mat-option *ngFor="let deal of filteredDeals | async" value="{{deal.id}}">
             {{deal.title}}
           </mat-option>
         </mat-select>
@@ -112,29 +101,29 @@
       </div>
     </div>
 
-    <div class="form-group row mb-3" *ngIf="activityForm.get('activityType').value == 'organization'">
+    <div class="form-group row mb-3" *ngIf="activityForm.get('contextableType').value == 'ORGANIZATION'">
       <label for="formDealValueInput" class="col-sm-2 col-form-label">Organization</label>
       <div class="col-sm-10 mb-1">
-        <mat-select class="form-select" formControlName="organization">
+        <mat-select class="form-select" formControlName="organizationsId">
           <mat-option>
             <ngx-mat-select-search [formControl]="organizationCtrl" placeholderLabel="Search"
               noEntriesFoundLabel="No results"></ngx-mat-select-search>
           </mat-option>
-          <mat-option *ngFor="let organization of filteredOrganizations | async" [value]="organization">
+          <mat-option *ngFor="let organization of filteredOrganizations | async" value="{{organization.id}}">
             {{organization.name}}
           </mat-option>
         </mat-select>
       </div>
     </div>
-    <div class="form-group row mb-3" *ngIf="activityForm.get('activityType').value == 'person'">
+    <div class="form-group row mb-3" *ngIf="activityForm.get('contextableType').value == 'PERSON'">
       <label for="formDealValueInput" class="col-sm-2 col-form-label">Person</label>
       <div class="col-sm-10 mb-1">
-        <mat-select class="form-select" formControlName="person">
+        <mat-select class="form-select" formControlName="personsId">
           <mat-option>
             <ngx-mat-select-search [formControl]="personCtrl" placeholderLabel="Search"
               noEntriesFoundLabel="No results"></ngx-mat-select-search>
           </mat-option>
-          <mat-option *ngFor="let person of filteredPeoples | async" [value]="person">
+          <mat-option *ngFor="let person of filteredPeoples | async" value="{{person.id}}">
             {{person.name}}
           </mat-option>
         </mat-select>
@@ -144,11 +133,12 @@
     <div class="form-group row mb-3">
       <label for="formActivityTypeInput" class="col-sm-2 col-form-label">Participants</label>
       <div class="col-sm-10">
-        <mat-select class="form-control chip-bg" placeholder="+ Add" multiple formControlName="participants">
+        <mat-select class="form-control chip-bg" placeholder="+ Add" multiple formControlName="participantsIds"
+          (ngModelChange)="onParticipantChange()">
           <mat-select-trigger>
             <mat-chip-list>
-              <mat-chip *ngFor="let participant of activityForm.controls.participants.value" [removable]="true"
-                (removed)="removeParticipant(participant.id)">
+              <mat-chip *ngFor="let participant of selectedParticipants; let i = index" [removable]="true"
+                (removed)="onParticipantRemove(i)">
                 {{ participant.name }}
                 <mat-icon matChipRemove>cancel</mat-icon>
               </mat-chip>
@@ -159,7 +149,7 @@
               [formControl]="participantCtrl">
             </ngx-mat-select-search>
           </mat-option>
-          <mat-option *ngFor="let participant of filteredParticipants | async" [value]="participant">
+          <mat-option *ngFor="let participant of filteredParticipants | async" value="{{participant.id}}">
             {{participant.name}}
           </mat-option>
         </mat-select>
@@ -168,12 +158,13 @@
     <div class="form-group row mb-3">
       <label for="formActivityTypeInput" class="col-sm-2 col-form-label">Collaborators</label>
       <div class="col-sm-10 d-flex align-items-center">
-        <mat-select class="form-control chip-bg" placeholder="+ Add" multiple formControlName="collaborators">
+        <mat-select class="form-control chip-bg" placeholder="+ Add" multiple formControlName="collaboratorsIds"
+          (ngModelChange)="onCollaboratorChange()">
           <mat-select-trigger>
             <mat-chip-list>
-              <mat-chip *ngFor="let collaborator of activityForm.controls.collaborators.value" [removable]="true"
-                (removed)="removeCollaborator(collaborator.id)">
-                {{ collaborator.fullName }}
+              <mat-chip *ngFor="let collaborator of selectedCollaborators; let i = index" [removable]="true"
+                (removed)="onCollaboratorRemove(i)">
+                {{collaborator.firstName}} {{collaborator.lastName}}
                 <mat-icon matChipRemove>cancel</mat-icon>
               </mat-chip>
             </mat-chip-list>
@@ -183,8 +174,8 @@
               [formControl]="collaboratorCtrl">
             </ngx-mat-select-search>
           </mat-option>
-          <mat-option *ngFor="let collaborator of filteredCollaborators | async" [value]="collaborator">
-            {{collaborator.fullName}}
+          <mat-option *ngFor="let collaborator of filteredCollaborators | async" value="{{collaborator.id}}">
+            {{collaborator.firstName}} {{collaborator.lastName}}
           </mat-option>
         </mat-select>
       </div>

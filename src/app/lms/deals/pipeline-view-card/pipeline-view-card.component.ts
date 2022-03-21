@@ -229,6 +229,7 @@ export class PipelineViewCardComponent implements OnInit {
     const modalRef = this.modalService.open(ActivityModalComponent, { size: 'lg', scrollable: true });
     modalRef.componentInstance.activityData = this.cardData;
     modalRef.componentInstance.isEdit = false;
+    modalRef.componentInstance.pipelineViewId = this.cardData.pipelines.id;
 
     modalRef.result.then(result => result);
   }

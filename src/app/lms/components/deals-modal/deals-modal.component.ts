@@ -23,7 +23,7 @@ export class DealsModalComponent implements OnInit {
 
   @Input() dealDatas;
   @Input() showLeadType: boolean = true;
-  @Input() leadType: string = LEADTYPE.PERSON;
+  @Input() contextableType: string = LEADTYPE.PERSON;
   @Input() organization;
   @Output() dealDetails = new EventEmitter();
   @Output() refreshDealsListPipelineView = new EventEmitter();
@@ -48,7 +48,7 @@ export class DealsModalComponent implements OnInit {
     id: [''],
     title: ['', Validators.required],
     description: [''],
-    leadType: [LEADTYPE.PERSON],
+    contextableType: [LEADTYPE.PERSON],
     personId: ['', Validators.required],
     organizationId: [''],
     value: [''],
@@ -72,11 +72,12 @@ export class DealsModalComponent implements OnInit {
 
   ngOnInit() {
     this.dealForm.get('stagesId').disable();
-    this.dealForm.get('leadType').valueChanges.subscribe((value) => {
+    this.dealForm.get('contextableType').valueChanges.subscribe((value) => {
       if (value == LEADTYPE.ORGANIZATION) {
         this.dealForm.get('personId').clearValidators();
         this.dealForm.get('organizationId').setValidators(Validators.required);
         this.dealForm.get('organizationId').valueChanges.subscribe(async (value) => {
+          console.log(value);
           this.persons = await this.leadService.getPersonsByOrganizationId(value).toPromise();
         });
       }
@@ -90,7 +91,6 @@ export class DealsModalComponent implements OnInit {
     });
 
     this.getPipelinesList();
-    this.getPersonList();
     this.getUsersList();
     this.getOrganizationList();
 
@@ -100,7 +100,7 @@ export class DealsModalComponent implements OnInit {
       this.getDeals();
     }
 
-    this.dealForm.get('leadType').setValue(this.leadType);
+    this.dealForm.get('contextableType').setValue(this.contextableType);
     if (this.organization) {
       this.showOrganization = false;
       this.dealForm.get('organizationId').setValue(this.organization);
@@ -125,11 +125,17 @@ export class DealsModalComponent implements OnInit {
           pipelinesId: n.pipelines.id ? n.pipelines.id : '',
           stagesId: n.stages.id ? n.stages.id : '',
           ownerId: n.owner.id ? n.owner.id : '',
-          leadType: leadTypeIndicator ? LEADTYPE.PERSON : LEADTYPE.ORGANIZATION,
+          contextableType: leadTypeIndicator ? LEADTYPE.PERSON : LEADTYPE.ORGANIZATION,
           expiredAt: n.expiredAt ? n.expiredAt : '',
-          personId: n.person.id ? n.person.id : '',
-          organizationId: n.organization.id ? n.organization.id : ''
+          personId: n.person ? n.person.id : '',
+          organizationId: n.organization ? n.organization.id : ''
         });
+
+        if (n.contextableType === 'person') {
+          this.dealForm.controls['personId'].setValue(n.contextableId + '');
+        } else if (n.contextableType === 'organization') {
+          this.dealForm.controls['organizationId'].setValue(n.contextableId + '');
+        }
 
         this.getStagesListByPipelineId();
       },

@@ -26,7 +26,7 @@
           </div>
 
           <div cdkDropList class="example-list" [cdkDropListData]="dealsByStageId[i]"
-            (cdkDropListDropped)="drop($event)" style="background-color: rgb(240, 240, 240);">
+            (cdkDropListDropped)="drop($event, stage)" style="background-color: rgb(240, 240, 240);">
             <div class="col" *ngFor="let deal of dealsByStageId[i]" cdkDrag>
               <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
               <app-pipeline-view-card [cardData]="deal" [lostReasons]="lostReasons" [tags]="tags"

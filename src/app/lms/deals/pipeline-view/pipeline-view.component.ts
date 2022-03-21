@@ -79,15 +79,18 @@ export class PipelineViewComponent implements OnInit, OnDestroy {
     return ownerInitials.toUpperCase();
   }
 
-  drop(event: CdkDragDrop<string[]>) {
+  drop(event: CdkDragDrop<string[]>, stage: any) {
 
-    console.log(event);
+    let movedDeals: any = event.previousContainer.data[event.previousIndex];
+    this.updateDealsStage(movedDeals.id, stage.id);
 
     if (event.previousContainer === event.container) {
-      console.log('Transfering item to existing container')
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      // console.log('Transfering item to existing container')
+      moveItemInArray(event.container.data,
+        event.previousIndex,
+        event.currentIndex);
     } else {
-      console.log('Transfering item to new container')
+      // console.log('Transfering item to new container')
       transferArrayItem(event.previousContainer.data,
         event.container.data,
         event.previousIndex,
@@ -97,7 +100,7 @@ export class PipelineViewComponent implements OnInit, OnDestroy {
 
   addModal() {
     const modalRef = this.modalService.open(DealsModalComponent);
-    modalRef.componentInstance.refreshDealsListPipelineView.subscribe(($e) =>{
+    modalRef.componentInstance.refreshDealsListPipelineView.subscribe(($e) => {
       this.getDealsListByPipelineId();
     });
   }
@@ -136,7 +139,23 @@ export class PipelineViewComponent implements OnInit, OnDestroy {
   getStagesListByPipelineId() {
     this.stagesService.getStagesListByPipelineId(this.pipelineViewId).subscribe({
       next: (n) => {
-        this.stages = n;
+        this.stages = [];
+
+        let highestPriority: number = 0;
+        n.forEach(element => {
+          if (element.priority > highestPriority){
+            highestPriority = element.priority;
+          }
+        });
+
+        for (let priority: number = 0; priority <= highestPriority; priority++) {
+          n.forEach(element => {
+            if (element.priority == priority) {
+              this.stages.push(element);
+            }
+          });
+        }
+
         this.setPipelineViewData();
       },
       error: (e) => { },
@@ -182,6 +201,16 @@ export class PipelineViewComponent implements OnInit, OnDestroy {
     this.lmsService.getTagsList().subscribe({
       next: (n) => {
         this.tags = n;
+      },
+      error: (e) => { },
+      complete: () => { }
+    })
+  }
+
+  updateDealsStage(dealsId: number, newStageId: number) {
+    this.dealsService.updateDealsStage(dealsId, newStageId).subscribe({
+      next: (n) => {
+        console.log(n);
       },
       error: (e) => { },
       complete: () => { }
