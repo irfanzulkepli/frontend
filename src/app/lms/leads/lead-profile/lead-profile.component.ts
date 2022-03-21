@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import * as moment from 'moment';
 import { LeadService } from '../lead.service';
 import { ActivitiyRequest } from '../interfaces/add-activities-reqeust.interface';
+import { DealsModalComponent } from '../../components/deals-modal/deals-modal.component';
 
 @Component({
   selector: 'app-lead-profile',
@@ -287,8 +288,12 @@ export class LeadProfileComponent implements OnInit {
     }
   }
 
-  openDealsModal(content) {
-    this.modalService.open(content, { scrollable: true })
+  openDealsModal() {
+    const leadType = this.profileType == 'person' ? 'Person' : 'Organization';
+    const modalRef = this.modalService.open(DealsModalComponent, { scrollable: true });
+    modalRef.componentInstance.showLeadType = false;
+    modalRef.componentInstance.leadType = leadType;
+    modalRef.componentInstance.organization = leadType == 'Organization' ? this.id : null;
   }
 
   onBack(profileType: string) {

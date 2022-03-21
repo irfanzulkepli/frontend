@@ -79,7 +79,7 @@ export class LeadService {
     return this.httpClient.get(`${environment.baseUrl}/users/list`);
   }
 
-  getOrganizationsListing() {
+  getOrganizationsListing(): Observable<any> {
     return this.httpClient.get(`${environment.baseUrl}/organization/list`);
   }
 
@@ -89,6 +89,10 @@ export class LeadService {
 
   getFollowersById(id: number, pageableRequest, profileType: string) {
     return this.httpClient.get(`${environment.baseUrl}/${profileType}/${id}/followers/page`, { params: pageableRequest });
+  }
+
+  getPersonsByOrganizationId(id: number): Observable<any> {
+    return this.httpClient.get(`${environment.baseUrl}/organization/${id}/persons`);
   }
 
   updateAddress(requestBody: UpdateAddressRequest, id: number, profileType: string) {

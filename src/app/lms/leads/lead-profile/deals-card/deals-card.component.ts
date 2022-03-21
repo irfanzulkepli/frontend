@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DealsModalComponent } from 'src/app/lms/components/deals-modal/deals-modal.component';
 import { LeadService } from '../../lead.service';
@@ -10,6 +10,8 @@ import { LeadService } from '../../lead.service';
 })
 export class DealsCardComponent implements OnInit {
 
+  @Output() onDealsEmit = new EventEmitter();
+
   constructor(
     private leadService: LeadService,
     private modalService: NgbModal
@@ -19,7 +21,7 @@ export class DealsCardComponent implements OnInit {
   }
 
   openDealsModal() {
-    this.modalService.open(DealsModalComponent, { scrollable: true })
+    this.onDealsEmit.emit(true);
   }
 
 }
