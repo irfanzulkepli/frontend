@@ -10,9 +10,11 @@
       <label for="formDealTitleInput" class="col-sm-3 col-form-label">Title</label>
       <div class="col-sm-9">
         <input type="text" class="form-control" id="formDealTitleInput" placeholder="Enter deal title"
-          formControlName="title" [ngClass]="{'is-invalid': validationChecking('title', dealForm)}">
+          formControlName="title"
+          [ngClass]="{'is-invalid': commonService.validationChecking('title', 'required', dealForm, submitClicked)}">
         <div class="invalid-feedback">
-          <span *ngIf="validationChecking('title', dealForm)">Please provide a title.</span>
+          <span *ngIf="commonService.validationChecking('title', 'required', dealForm, submitClicked)">Please provide a
+            title.</span>
         </div>
       </div>
     </div>
@@ -29,7 +31,7 @@
       <div class="col-sm-9 d-flex align-items-center">
         <div class="form-check form-check-inline" *ngFor="let lead of leadTypes">
           <input class="form-check-input" [id]="lead" type="radio" [value]="lead" formControlName="leadType">
-          <label class="form-check-label" [for]="lead">{{ lead }}</label>
+          <label class="form-check-label" [for]="lead" class="lead-text">{{ lead }}</label>
         </div>
       </div>
     </div>
@@ -38,7 +40,7 @@
       <label for="formLeadTypeInput" class="col-sm-3 col-form-label text-nowrap">Person</label>
       <div class="col-sm-9 d-block align-items-center">
         <mat-select class="form-select" formControlName="personId" placeholder="Choose a contact person"
-          [ngClass]="{'is-invalid': validationChecking('personId', dealForm)}">
+          [ngClass]="{'is-invalid': commonService.validationChecking('personId', 'required', dealForm, submitClicked)}">
           <mat-option>
             <ngx-mat-select-search [formControl]="personFilterCtrl" placeholderLabel="Search"
               noEntriesFoundLabel="No Results"></ngx-mat-select-search>
@@ -48,7 +50,8 @@
           </mat-option>
         </mat-select>
         <div class="invalid-feedback">
-          <span *ngIf="validationChecking('personId', dealForm)">Please select a person.</span>
+          <span *ngIf="commonService.validationChecking('personId', 'required', dealForm, submitClicked)">Please select
+            a person.</span>
         </div>
       </div>
     </div>
@@ -58,7 +61,7 @@
         <label for="formLeadTypeInput" class="col-sm-3 col-form-label text-nowrap">Organization</label>
         <div class="col-sm-9 d-block align-items-center">
           <mat-select class="form-control" formControlName="organizationId" placeholder="Choose an organization"
-            [ngClass]="{'is-invalid': validationChecking('organizationId', dealForm)}">
+            [ngClass]="{'is-invalid': commonService.validationChecking('organizationId', 'required', dealForm, submitClicked)}">
             <mat-option>
               <ngx-mat-select-search [formControl]="organizationFilterCtrl" placeholderLabel="Search"
                 noEntriesFoundLabel="No Results"></ngx-mat-select-search>
@@ -68,7 +71,9 @@
             </mat-option>
           </mat-select>
           <div class="invalid-feedback">
-            <span *ngIf="validationChecking('organizationId', dealForm)">Please select an organization.</span>
+            <span *ngIf="commonService.validationChecking('organizationId', 'required', dealForm, submitClicked)">Please
+              select an
+              organization.</span>
           </div>
         </div>
       </div>
@@ -97,13 +102,15 @@
       <label for="formLeadTypeInput" class="col-sm-3 col-form-label text-nowrap">Pipeline</label>
       <div class="col-sm-9 d-block align-items-center">
         <select class="form-select" formControlName="pipelinesId" (change)="onPipelinesIdChange()"
-          [ngClass]="{'is-invalid': validationChecking('pipelinesId', dealForm)}">
+          [ngClass]="{'is-invalid': commonService.validationChecking('pipelinesId', 'required', dealForm, submitClicked)}">
           <option hidden value="">Pipeline</option>
           <option *ngFor="let pipelineOption of pipelines" [value]="pipelineOption.id">{{ pipelineOption.name }}
           </option>
         </select>
         <div class="invalid-feedback">
-          <span *ngIf="validationChecking('pipelinesId', dealForm)">Please select a pipeline.</span>
+          <span *ngIf="commonService.validationChecking('pipelinesId', 'required', dealForm, submitClicked)">Please
+            select a
+            pipeline.</span>
         </div>
       </div>
     </div>
@@ -111,12 +118,14 @@
       <label for="formStageTypeInput" class="col-sm-3 col-form-label text-nowrap">Stage</label>
       <div class="col-sm-9 d-block align-items-center">
         <select class="form-select" formControlName="stagesId"
-          [ngClass]="{'is-invalid': validationChecking('stagesId', dealForm)}">
+          [ngClass]="{'is-invalid': commonService.validationChecking('stagesId', 'required', dealForm, submitClicked)}">
           <!-- <option hidden value="">Stage</option> -->
           <option *ngFor="let stage of stages" [value]="stage.id">{{ stage.name }}</option>
         </select>
         <div class="invalid-feedback">
-          <span *ngIf="validationChecking('stagesId', dealForm)">Please select a stage.</span>
+          <span *ngIf="commonService.validationChecking('stagesId', 'required', dealForm, submitClicked)">Please select
+            a
+            stage.</span>
         </div>
       </div>
     </div>

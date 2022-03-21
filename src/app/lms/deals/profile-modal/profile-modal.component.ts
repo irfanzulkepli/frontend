@@ -38,7 +38,9 @@ export class ProfileModalComponent implements OnInit {
   isEditFollower: boolean = false;
   isEditDescription: boolean = false;
 
-  followerForms: FormGroup;
+  followerForms: FormGroup = this.fb.group({
+    followers: this.fb.array([])
+  });
   profileForm: FormGroup = this.fb.group({
     stage: ['', Validators.required],
     dealValue: ['', Validators.required],
@@ -68,28 +70,28 @@ export class ProfileModalComponent implements OnInit {
   profileType: string = "deal";
 
   constructor(
-    public activeModal: NgbActiveModal, 
+    public activeModal: NgbActiveModal,
     private datepipe: DatePipe,
     private fb: FormBuilder,
     private lmsService: LMSService,
     private stagesService: StagesService,
     private dealsService: DealsService,
-    ) { }
+  ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     console.log(this.inputData)
     this.tags = this.lmsService.getTags();
     this.initForm();
     this.initValues()
 
     const pageableRequest: PageableRequest = {
-      direction: DIRECTION.ascending,
+      direction: DIRECTION.ASCENDING,
       page: 0,
       properties: ["id"],
       size: 3
     }
 
-    this.allFollowers =  this.lmsService.getPersons();
+    this.allFollowers = this.lmsService.getPersons();
     this.followerDetails = this.dealsService.getFollowersById(this.inputData.id, pageableRequest, this.profileType).subscribe({
       next: () => { },
       error: (e) => { },
@@ -111,7 +113,7 @@ export class ProfileModalComponent implements OnInit {
     });
 
     this.profileForm.patchValue({
-      stage: this.inputData.stages.name,
+      // stage: this.inputData.stages.name,
       dealValue: this.inputData.value,
       personName: this.inputData.person.name,
       expiredDate: this.inputData.expiredAt,
@@ -168,7 +170,7 @@ export class ProfileModalComponent implements OnInit {
     const dateCreated = this.datepipe.transform(this.inputData.createdAt, 'MM-dd-yyyy h:mm:ss a');
     let startTime = new Date(dateCreated)
     let timeLapsed = endTime.getTime() - startTime.getTime();
-    let timediff = timeLapsed/1000;
+    let timediff = timeLapsed / 1000;
 
     timediff = Math.floor(timediff / 60);
     let minutes = timediff % 60;
@@ -181,15 +183,15 @@ export class ProfileModalComponent implements OnInit {
     let totalHoursAsString = totalHours < 10 ? "0" + totalHours : totalHours;
 
     if (totalHoursAsString === "00") {
-        return minutesAsString + " minutes";
-      } else {
-        if (totalHours < 24 ) {
-          return totalHoursAsString + " hours " + minutesAsString + " minutes" ;
-        }
-        else {
-          return days.toString() + " days " + hours.toString() + " hours " + minutesAsString + " minutes" ;
-        }
+      return minutesAsString + " minutes";
+    } else {
+      if (totalHours < 24) {
+        return totalHoursAsString + " hours " + minutesAsString + " minutes";
       }
+      else {
+        return days.toString() + " days " + hours.toString() + " hours " + minutesAsString + " minutes";
+      }
+    }
   }
 
   deleteFollower(index: number) {
@@ -238,7 +240,7 @@ export class ProfileModalComponent implements OnInit {
     })
   }
 
-  getStageByName(stageName) : number {
+  getStageByName(stageName): number {
     let stageId: number;
     this.stages.map(stages => {
       if (stages.name == stageName) {
@@ -248,7 +250,7 @@ export class ProfileModalComponent implements OnInit {
     return stageId;
   }
 
-  getPersonByName(personName) : number {
+  getPersonByName(personName): number {
     let personId: number;
     this.personData.map(person => {
       if (person.name == personName) {
@@ -261,7 +263,7 @@ export class ProfileModalComponent implements OnInit {
   updateStage() {
     this.isEditStage = !this.isEditStage;
     this.stage = this.profileForm.value.stage;
-    this.dealsService.updateDealsStage(this.inputData.id,this.getStageByName(this.stage)).subscribe({
+    this.dealsService.updateDealsStage(this.inputData.id, this.getStageByName(this.stage)).subscribe({
       next: (n) => { },
       error: (e) => { },
       complete: () => { }
@@ -272,7 +274,7 @@ export class ProfileModalComponent implements OnInit {
   updateDealValue() {
     this.isEditDealValue = !this.isEditDealValue;
     this.dealValue = this.profileForm.value.dealValue;
-    this.dealsService.updateDealsValue(this.inputData.id,this.dealValue).subscribe({
+    this.dealsService.updateDealsValue(this.inputData.id, this.dealValue).subscribe({
       next: (n) => { },
       error: (e) => { },
       complete: () => { }
@@ -282,7 +284,7 @@ export class ProfileModalComponent implements OnInit {
   updateLeadType() {
     this.isEditLeadType = !this.isEditLeadType;
     this.personName = this.profileForm.value.personName;
-    this.dealsService.updateDealsLeadTypePerson(this.inputData.id,this.getPersonByName(this.personName)).subscribe({
+    this.dealsService.updateDealsLeadTypePerson(this.inputData.id, this.getPersonByName(this.personName)).subscribe({
       next: (n) => { },
       error: (e) => { },
       complete: () => { }
@@ -295,7 +297,7 @@ export class ProfileModalComponent implements OnInit {
 
     this.isEditExpectedClosingDate = !this.isEditExpectedClosingDate;
     this.expectedClosingDate = this.profileForm.value.expiredDate;
-    this.dealsService.updateDealsExpectedClosingDate(this.inputData.id,closingDate).subscribe({
+    this.dealsService.updateDealsExpectedClosingDate(this.inputData.id, closingDate).subscribe({
       next: (n) => { },
       error: (e) => { },
       complete: () => { }
@@ -309,7 +311,7 @@ export class ProfileModalComponent implements OnInit {
   updateDescription() {
     this.isEditDescription = !this.isEditDescription;
     this.description = this.profileForm.value.description;
-    this.dealsService.updateDealsDescription(this.inputData.id,this.profileForm.value.description).subscribe({
+    this.dealsService.updateDealsDescription(this.inputData.id, this.profileForm.value.description).subscribe({
       next: (n) => { },
       error: (e) => { },
       complete: () => { }

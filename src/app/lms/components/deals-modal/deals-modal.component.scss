@@ -1,2 +1,9 @@
 ::ng-deep .mat-select-arrow { opacity: 0; }
 ::ng-deep .cdk-overlay-container { z-index: 1060 !important; }
+
+.lead-text {
+    text-transform: lowercase;
+}
+.lead-text::first-letter {
+    text-transform: uppercase;
+}

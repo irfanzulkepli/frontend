@@ -6,6 +6,6 @@ export interface PageableRequest {
 };
 
 export enum DIRECTION  {
-    ascending = "ASC",
-    descending = "DESC"
+    ASCENDING = "ASC",
+    DESCENDING = "DESC"
 };

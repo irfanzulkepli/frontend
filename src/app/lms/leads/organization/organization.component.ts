@@ -115,7 +115,7 @@ export class OrganizationComponent implements OnInit {
 
   private getOrganizationListing(page: number = 0) {
     const pageableRequest: PageableRequest = {
-      direction: DIRECTION.descending,
+      direction: DIRECTION.DESCENDING,
       page: page,
       size: 10,
       properties: ["updatedAt"]

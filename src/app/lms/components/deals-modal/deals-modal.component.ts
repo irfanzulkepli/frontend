@@ -3,10 +3,12 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, Subject } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { CommonService } from '../../common/common.service';
 import { Person } from '../../data/person-data';
 import { DealsService } from '../../deals/deals.service';
 import { PipelinesService } from '../../deals/pipelines.service';
 import { StagesService } from '../../deals/stages.service';
+import { LEADTYPE } from '../../enum/lms-type.enum';
 import { LeadService } from '../../leads/lead.service';
 import { LMSService } from '../../lms-service';
 
@@ -21,14 +23,14 @@ export class DealsModalComponent implements OnInit {
 
   @Input() dealDatas;
   @Input() showLeadType: boolean = true;
-  @Input() leadType: string = 'Person';
+  @Input() leadType: string = LEADTYPE.PERSON;
   @Input() organization;
   @Output() dealDetails = new EventEmitter();
   @Output() refreshDealsListPipelineView = new EventEmitter();
 
   public pipelines;
   public users;
-  public leadTypes: string[] = ["Person", "Organization"];
+  public leadTypes: string[] = [LEADTYPE.PERSON, LEADTYPE.ORGANIZATION];
   public stages;
 
   public filteredOrganizations;
@@ -46,7 +48,7 @@ export class DealsModalComponent implements OnInit {
     id: [''],
     title: ['', Validators.required],
     description: [''],
-    leadType: ['Person'],
+    leadType: [LEADTYPE.PERSON],
     personId: ['', Validators.required],
     organizationId: [''],
     value: [''],
@@ -59,6 +61,7 @@ export class DealsModalComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    public commonService: CommonService,
     public activeModal: NgbActiveModal,
     private dealsService: DealsService,
     private pipelinesService: PipelinesService,
@@ -70,7 +73,7 @@ export class DealsModalComponent implements OnInit {
   ngOnInit() {
     this.dealForm.get('stagesId').disable();
     this.dealForm.get('leadType').valueChanges.subscribe((value) => {
-      if (value == 'Organization') {
+      if (value == LEADTYPE.ORGANIZATION) {
         this.dealForm.get('personId').clearValidators();
         this.dealForm.get('organizationId').setValidators(Validators.required);
         this.dealForm.get('organizationId').valueChanges.subscribe(async (value) => {
@@ -100,7 +103,7 @@ export class DealsModalComponent implements OnInit {
     this.dealForm.get('leadType').setValue(this.leadType);
     if (this.organization) {
       this.showOrganization = false;
-      this.dealForm.get('organization').setValue(this.organization);
+      this.dealForm.get('organizationId').setValue(this.organization);
     }
   }
 
@@ -112,7 +115,7 @@ export class DealsModalComponent implements OnInit {
   getDeals() {
     this.dealsService.getDealsById(this.dealDatas.id).subscribe({
       next: (n) => {
-        const leadTypeIndicator = n.contextableType.split('\\').includes('Person');
+        const leadTypeIndicator = n.contextableType.includes(LEADTYPE.PERSON);
 
         this.dealForm.patchValue({
           id: n.id ? n.id : '',
@@ -122,7 +125,7 @@ export class DealsModalComponent implements OnInit {
           pipelinesId: n.pipelines.id ? n.pipelines.id : '',
           stagesId: n.stages.id ? n.stages.id : '',
           ownerId: n.owner.id ? n.owner.id : '',
-          leadType: leadTypeIndicator ? 'Person' : 'Organization',
+          leadType: leadTypeIndicator ? LEADTYPE.PERSON : LEADTYPE.ORGANIZATION,
           expiredAt: n.expiredAt ? n.expiredAt : '',
           personId: n.person.id ? n.person.id : '',
           organizationId: n.organization.id ? n.organization.id : ''
@@ -147,8 +150,6 @@ export class DealsModalComponent implements OnInit {
   }
 
   onSaveClick() {
-    console.log('dealForm: ', this.dealForm);
-
     this.submitClicked = true;
 
     if (this.dealForm.invalid) {
@@ -225,7 +226,7 @@ export class DealsModalComponent implements OnInit {
       next: (n) => {
         this.filteredPerson = this.personFilterCtrl.valueChanges.pipe(
           startWith(null),
-          map((value: string) => (value ? this._filter(value, n, "name") : n))
+          map((value: string) => (value ? this.commonService.filter(value, n, "name") : n))
         );
 
       },
@@ -239,23 +240,9 @@ export class DealsModalComponent implements OnInit {
       next: (n) => {
         this.filteredOrganizations = this.organizationFilterCtrl.valueChanges.pipe(
           startWith(null),
-          map((value: string) => value ? this._filter(value, n, "name") : n)
+          map((value: string) => value ? this.commonService.filter(value, n, "name") : n)
         );
       }
     });
-  }
-
-  private _filter(value: string, dataList: Array<any>, fieldName: string): Array<any> {
-    const filterValue = value.toLowerCase();
-    return dataList.filter(data => (data[fieldName] as string).toLowerCase().includes(filterValue));
-  }
-
-  validationChecking(fieldName: string, formGroup: FormGroup) {
-    if (formGroup.get(fieldName).getError('required') && this.submitClicked) {
-      return true;
-    }
-    else {
-      return false;
-    }
   }
 }

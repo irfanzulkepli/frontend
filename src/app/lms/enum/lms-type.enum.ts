@@ -1,0 +1,10 @@
+export enum LEADTYPE {
+    PERSON = "PERSON",
+    ORGANIZATION = "ORGANIZATION"
+};
+
+export enum ACTIVITYTYPE {
+    PERSON = "PERSON",
+    ORGANIZATION = "ORGANIZATION",
+    DEAL = "DEAL"
+}

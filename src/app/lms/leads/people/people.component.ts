@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CustomTableDatasource } from 'src/app/components/custom-table/custom-table.interface';
 import { DeleteModal2Component } from '../../components/delete-modal2/delete-modal2.component';
+import { DealsService } from '../../deals/deals.service';
 import { DIRECTION, PageableRequest } from '../../interfaces/pageable-request.interface';
 import { ColumnsInfo } from '../../lms-service';
 import { LeadService } from '../lead.service';
@@ -86,7 +87,8 @@ export class PeopleComponent implements OnInit {
 
   constructor(
     private leadService: LeadService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private dealService: DealsService
   ) { }
 
   ngOnInit() {
@@ -133,10 +135,10 @@ export class PeopleComponent implements OnInit {
 
   private getPeopleListing(page: number = 0) {
     const pageableRequest: PageableRequest = {
-      direction: DIRECTION.descending,
+      direction: DIRECTION.ASCENDING,
       page: page,
       size: 10,
-      properties: ["updatedAt"]
+      properties: ["id"]
     };
     this.leadService.getPage(pageableRequest, "person").subscribe({
       next: (n) => {

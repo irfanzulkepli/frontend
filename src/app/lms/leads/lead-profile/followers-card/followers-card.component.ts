@@ -77,7 +77,7 @@ export class FollowersCardComponent implements OnInit {
     this.allFollowers = await this.leadService.getPeopleListing().toPromise();
 
     const pageableRequest: PageableRequest = {
-      direction: DIRECTION.ascending,
+      direction: DIRECTION.ASCENDING,
       page: 0,
       properties: ["id"],
       size: 3
@@ -121,7 +121,7 @@ export class FollowersCardComponent implements OnInit {
     this.leadService.updateFollowers(payload, this.leadProfileData.id, this.profileType).subscribe({
       next: async (n) => {
         const pageableRequest: PageableRequest = {
-          direction: DIRECTION.ascending,
+          direction: DIRECTION.ASCENDING,
           page: 0,
           properties: ["id"],
           size: 3
@@ -182,7 +182,7 @@ export class FollowersCardComponent implements OnInit {
   async openModal(content) {
     this.isModalLoading = true;
     const pageableRequest: PageableRequest = {
-      direction: DIRECTION.ascending,
+      direction: DIRECTION.ASCENDING,
       page: 0,
       properties: ["id"],
       size: 10
@@ -208,7 +208,7 @@ export class FollowersCardComponent implements OnInit {
     this.followers.clear();
     if (this.followerDetails.totalSize > 3) {
       const pageableRequest: PageableRequest = {
-        direction: DIRECTION.ascending,
+        direction: DIRECTION.ASCENDING,
         page: 0,
         properties: ["id"],
         size: this.followerDetails.totalSize
