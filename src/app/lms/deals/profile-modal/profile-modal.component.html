@@ -1,3 +1,4 @@
+<div *ngIf="!isLoading">
 <div class="modal-header d-flex align-items-center justify-content-between">
   <div class="d-flex align-items-center">
     <div class="avatar-sm ml-2">
@@ -12,7 +13,7 @@
   </div>
   <div class="d-flex">
     <button type="button" class="btn btn-primary p-2" aria-hidden="true"><i class="bx bx-window-open font-size-16"></i> View Details</button>
-    <button type="button" class="btn btn-close align-self-center" aria-hidden="true" (click)="activeModal.dismiss('Cross click')"></button>
+    <button type="button" class="btn btn-close align-self-center" aria-hidden="true" (click)="refreshOnClose()"></button>
   </div>
 </div>
 <div class="modal-body">
@@ -51,9 +52,45 @@
             </form>
           </div>
         </div>
-        <ckeditor class="mt-3" [editor]="Editor" data="<p></p>"></ckeditor>
+        <!-- <pre>{{commentForm.value|json}}</pre> -->
+        <form [formGroup]="commentForm">
+          <ng-container formArrayName="comments">
+            <div class="card-body comment-card border" *ngFor="let commentForm of comments.controls; let i = index">
+              <ng-container [formGroup]="commentForm">
+                <!-- <p>{{test(commentForm)}}</p> -->
+                <div class="d-flex align-items-center">
+                  <div class="me-1 rounded-circle avatar-xs bg-black text-white d-flex align-items-center justify-content-center"
+                  alt="user-pic">{{getInitials(commentForm.value.name)}}</div>
+                  <div class="media-body p-2">
+                    <p style="margin: 0;font-size: medium;">{{commentForm.value.name}}</p>
+                    <p class="text-muted" style="margin: 0;">
+                      {{commentForm.value.createdAt}}
+                    </p>
+                  </div>
+                  <div class="card-title d-flex justify-content-between align-items-center">
+                    <div class="page-title-right" *ngIf="!commentForm.value.editFlag">
+                      <i class="mdi mdi-square-edit-outline font-size-24 cursor-pointer"
+                        (click)="displayEdit(commentForm)"></i>
+                      <i class="mdi mdi-delete-outline font-size-24 cursor-pointer"
+                        (click)="deleteComment(i,commentForm.value.id)"></i>
+                    </div>
+                    <div class="page-title-right" *ngIf="commentForm.value.editFlag">
+                      <i class="mdi mdi-close-box-outline font-size-24 cursor-pointer"
+                        (click)="displayEdit(commentForm)"></i>
+                      <i class="mdi mdi-checkbox-marked-outline font-size-24 cursor-pointer"
+                        (click)="updateComment(commentForm)"></i>
+                    </div>
+                  </div>
+                </div>
+                <p class="text" *ngIf="!commentForm.value.editFlag">{{commentForm.value.comment}}</p>
+                <ckeditor class="mt-3" *ngIf="commentForm.value.editFlag" [editor]="Editor" formControlName="comment">{{commentForm.value.comment}}</ckeditor>
+              </ng-container>
+            </div>
+          </ng-container>
+        </form>
+        <ckeditor class="mt-3" [editor]="Editor" [(ngModel)]="comment"></ckeditor>
         <div class="d-flex justify-content-end mt-2">
-          <button class="btn btn-primary">Comment</button>
+          <button class="btn btn-primary" (click)="addComment()">Comment</button>
         </div>
       </div>
     </div>
@@ -234,8 +271,8 @@
 
       <div class="border-bottom mb-4 pb-4">
         <div class="card-title d-flex justify-content-between align-items-center">
-          <span>
-            {{ isEditFollower ? 'Edit Followers' : 'Followers ('+followers.length+')'  }}
+          <span *ngIf="!loadingFollowers">
+            {{ isEditFollower ? 'Edit Followers' : 'Followers (' + followerDetails.totalSize + ')'}}
           </span>
           <div class="page-title-right" *ngIf="!isEditFollower">
             <i class="mdi mdi-square-edit-outline font-size-24 cursor-pointer"
@@ -243,20 +280,45 @@
           </div>
           <div class="page-title-right" *ngIf="isEditFollower">
             <i class="mdi mdi-close-box-outline font-size-24 cursor-pointer"
-              (click)="isEditFollower = !isEditFollower"></i>
+              (click)="onCancel()"></i>
             <i class="mdi mdi-checkbox-marked-outline font-size-24 cursor-pointer"
-              (click)="updateFollower()"></i>
+              (click)="onSaveClick()"></i>
           </div>
         </div>
         <div class="table-responsive">
           <div  *ngIf="!isEditFollower">
-            <div *ngIf="followers.length == 0">
+            <div *ngIf="!loadingFollowers && followerDetails.totalSize <= 0">
               <p>No person linked yet</p>
               <a class="cursor-pointer" (click)="isEditFollower = !isEditFollower">
                 Link as person
               </a>
             </div>
           </div>
+
+          <ng-container *ngIf="!loadingFollowers && !isEditFollower && followerDetails.payload.length > 0">
+            <tr *ngFor="let follower of followerDetails.payload">
+              <td>
+                <div class="media align-items-center me-2">
+                  <div
+                    class="me-1 rounded-circle avatar-xs bg-secondary d-flex align-items-center justify-content-center"
+                    alt="user-pic">
+                    {{ getInitials(follower.name) }}
+                  </div>
+                  <div class="media-body">
+                    {{ follower.name }}
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="followerDetails.totalSize > 3">
+              <td class="d-flex justify-content-center">
+                <button type="button" class="btn btn-primary btn-rounded" (click)="openModal(followersModal)">
+                  View all
+                </button>
+              </td>
+            </tr>
+          </ng-container>
+
           <form [formGroup]="followerForms" *ngIf="isEditFollower">
             <table class="table table-nowrap mb-0">
               <tbody>
@@ -265,7 +327,8 @@
                     <ng-container [formGroupName]="i">
                       <tr>
                         <td class="d-inline-flex w-100 page-title-right">
-                          <mat-select class="form-control" formControlName="follower" placeholder="Choose One">
+                          <mat-select class="form-control" formControlName="follower" placeholder="Choose One" 
+                            [ngClass]="{'is-invalid': invalidChecking(followerForm, 'follower')}">
                             <mat-option>
                               <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="No result"
                                 formControlName="followerCtrlName">
@@ -279,6 +342,15 @@
                           <i class="bx bx-trash-alt font-size-24 d-flex align-items-center cursor-pointer"
                             style="margin-left: 10px;" (click)="deleteFollower(i)"></i>
                         </td>
+                        <div class="invalid-feedback"
+                        style="display: block; padding-top: 0px; margin-top: -8px !important;">
+                        <span
+                          *ngIf="submitClicked && followerForm.controls.follower.getError('required') && followerForm.touched">Please
+                          select a person.</span>
+                        <span
+                          *ngIf="submitClicked && followerForm.controls.follower.getError('duplicated') && followerForm.touched">
+                          Duplicated person.</span>
+                      </div>
                       </tr>
                     </ng-container>
                   </ng-container>
@@ -299,3 +371,20 @@
     </div>
   </div>
 </div>
+</div>
+
+
+<ng-template #followersModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">All followers</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <app-custom-table [columnsInfo]="columnsInfo" [dataSource]="dataSource"></app-custom-table>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">Close</button>
+  </div>
+</ng-template>

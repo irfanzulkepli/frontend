@@ -222,7 +222,14 @@ export class PipelineViewCardComponent implements OnInit {
 
   openProfile() {
     const modalRef = this.modalService.open(ProfileModalComponent, { size: 'xl' });
+    console.log(this.cardData);
     (<ProfileModalComponent>modalRef.componentInstance).inputData = this.cardData;
+    
+    modalRef.result.then(result => {
+      if (result === true) {
+        this.refreshData();
+      }
+    });
   }
 
   activityModal() {

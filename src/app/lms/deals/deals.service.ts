@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { UpdateCommentRequest } from '../leads/interfaces/update-comment-request.interface';
 import { UpdateFollowerRequest } from '../leads/interfaces/update-follower-request.interface';
 
 @Injectable({
@@ -29,8 +30,20 @@ export class DealsService {
     return this.httpClient.get(`${environment.baseUrl}/${profileType}/${id}/followers/page`, { params: pageableRequest });
   }
 
+  getCommentsById(id: number) {
+    return this.httpClient.get(`${environment.baseUrl}/deals/${id}/comments/list`);
+  }
+
+  addComments(body: any): Observable<any> {
+    return this.httpClient.post(environment.baseUrl + '/deals/comments', body);
+  }
+
   addDeals(body: any): Observable<any> {
     return this.httpClient.post(environment.baseUrl + '/deals', body);
+  }
+
+  updateComments(requestBody: UpdateCommentRequest, id: number) {
+    return this.httpClient.put(`${environment.baseUrl}/deals/${id}/comments`, requestBody);
   }
 
   updateFollowers(requestBody: UpdateFollowerRequest, id: number, profileType: string) {
@@ -79,5 +92,9 @@ export class DealsService {
 
   deleteDealsById(id: number): Observable<any> {
     return this.httpClient.delete(environment.baseUrl + '/deals/' + id);
+  }
+
+  deleteCommentById(id: number): Observable<any> {
+    return this.httpClient.delete(environment.baseUrl + '/deals/' + id + '/comments');
   }
 }
