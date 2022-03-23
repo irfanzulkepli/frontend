@@ -33,7 +33,13 @@
       <div class="form-group row mb-3">
         <label for="formDealTitleInput" class="col-sm-2 col-form-label">Name</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" placeholder="Enter name" formControlName="lostReason">
+          <input type="text" class="form-control" placeholder="Enter name" formControlName="lostReason"
+            [ngClass]="{'is-invalid': commonService.validationChecking('lostReason', 'required', form, submitClicked)}">
+          <div class="invalid-feedback">
+            <span *ngIf="commonService.validationChecking('lostReason', 'required', form, submitClicked)">
+              Please provide a name. 
+            </span>
+          </div>
         </div>
       </div>
     </form>

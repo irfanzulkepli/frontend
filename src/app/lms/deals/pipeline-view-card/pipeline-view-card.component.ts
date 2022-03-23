@@ -230,6 +230,7 @@ export class PipelineViewCardComponent implements OnInit {
     modalRef.componentInstance.activityData = this.cardData;
     modalRef.componentInstance.isEdit = false;
     modalRef.componentInstance.pipelineViewId = this.cardData.pipelines.id;
+    modalRef.componentInstance.dealId = this.cardData.id;
 
     modalRef.result.then(result => result);
   }

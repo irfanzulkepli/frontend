@@ -134,9 +134,9 @@ export class DealsModalComponent implements OnInit {
         });
 
         if (n.contextableType === LEADTYPE.PERSON) {
-          this.dealForm.controls['personId'].setValue(n.contextableId + '');
+          this.dealForm.controls['personId'].setValue(n.contextableId);
         } else if (n.contextableType === LEADTYPE.ORGANIZATION) {
-          this.dealForm.controls['organizationId'].setValue(n.contextableId + '');
+          this.dealForm.controls['organizationId'].setValue(n.contextableId);
         }
 
         this.getStagesListByPipelineId();

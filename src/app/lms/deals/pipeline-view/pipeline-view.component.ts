@@ -210,7 +210,6 @@ export class PipelineViewComponent implements OnInit, OnDestroy {
   updateDealsStage(dealsId: number, newStageId: number) {
     this.dealsService.updateDealsStage(dealsId, newStageId).subscribe({
       next: (n) => {
-        console.log(n);
       },
       error: (e) => { },
       complete: () => { }

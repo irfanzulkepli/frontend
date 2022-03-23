@@ -20,7 +20,12 @@
       <label for="formActivityTitleInput" class="col-sm-2 col-form-label">Title</label>
       <div class="col-sm-10">
         <input type="text" class="form-control" id="formActivityTitleInput" placeholder="Enter Title Here"
-          formControlName="title">
+          formControlName="title"
+          [ngClass]="{'is-invalid': commonService.validationChecking('title', 'required', activityForm, submitClicked)}">
+        <div class="invalid-feedback"
+          *ngIf="commonService.validationChecking('title', 'required', activityForm, submitClicked)">
+          <span>Please provide a title. </span>
+        </div>
       </div>
     </div>
     <div class="form-group row mb-3">
@@ -59,18 +64,24 @@
     </div>
     <div class="form-group row mb-3">
       <label for="formActivityTypeInput" class="col-sm-2 col-form-label">Activity Types</label>
-      <div class="col-sm-10 d-flex align-items-center">
-        <select class="form-select" formControlName="contextableType">
+      <div class="col-sm-10 d-block align-items-center">
+        <select class="form-select" formControlName="contextableType" (change)="onContextableTypeChange()"
+          [ngClass]="{'is-invalid': commonService.validationChecking('contextableType', 'required', activityForm, submitClicked)}">
           <option *ngFor="let activityType of activityTypes" value="{{activityType}}"> {{activityType | titlecase}}
           </option>
         </select>
+        <div class="invalid-feedback">
+          <span *ngIf="commonService.validationChecking('contextableType', 'required', activityForm, submitClicked)">
+            Please select an activity type.</span>
+        </div>
       </div>
     </div>
 
     <div class="form-group row mb-3" *ngIf="activityForm.get('contextableType').value == 'DEAL'">
       <label for="formDealValueInput" class="col-sm-2 col-form-label">Deal</label>
       <div class="col-sm-10 mb-1">
-        <mat-select class="form-select" formControlName="dealsId">
+        <mat-select class="form-select" formControlName="dealsId" (ngModelChange)="getDeals()"
+          [ngClass]="{'is-invalid': commonService.validationChecking('dealsId', 'required', activityForm, submitClicked)}">
           <mat-option>
             <ngx-mat-select-search [formControl]="dealCtrl" placeholderLabel="Search" noEntriesFoundLabel="No results">
             </ngx-mat-select-search>
@@ -79,22 +90,27 @@
             {{deal.title}}
           </mat-option>
         </mat-select>
+        <div class="invalid-feedback"
+          *ngIf="commonService.validationChecking('dealsId', 'required', activityForm, submitClicked)">
+          <span>Please select a deal. </span>
+        </div>
         <div class="form-row">
           <div class="d-flex align-items-center">
             <div class="col-sm-5 d-flex align-items-center">
               <div class="avatar-sm ml-2">
-                <span class="avatar-title rounded-circle bg-light text-black font-size-16">{{
-                  getInitials(activityData.owner.fullName) }}</span>
+                <span class="avatar-title rounded-circle bg-light text-black font-size-16">
+                  {{getInitials(dealData?.owner?.firstName) }}</span>
               </div>
               <div class="media-body p-2">
-                <p style="margin: 0;font-size: large;">{{ activityData.owner.fullName }}</p>
+                <p style="margin: 0;font-size: large;">
+                  {{ dealData?.owner?.firstName }} {{ dealData?.owner?.lastName }} </p>
                 <p class="text-muted font-size-90 mb-0">Owner</p>
               </div>
             </div>
-            <div class="pt-4">
-              <p class="text-muted font-size-90 mb-2">
-                No lead added yet
-              </p>
+            <div class="">
+              <p style="margin: 0;font-size: large;">{{ dealData?.person?.name }}</p>
+              <p class="text-muted font-size-90 mb-0" *ngIf="dealData?.person">Lead</p>
+              <p class="text-muted font-size-90 mb-2" *ngIf="!dealData?.person">No lead added yet</p>
             </div>
           </div>
         </div>
@@ -104,7 +120,8 @@
     <div class="form-group row mb-3" *ngIf="activityForm.get('contextableType').value == 'ORGANIZATION'">
       <label for="formDealValueInput" class="col-sm-2 col-form-label">Organization</label>
       <div class="col-sm-10 mb-1">
-        <mat-select class="form-select" formControlName="organizationsId">
+        <mat-select class="form-select" formControlName="organizationsId"
+          [ngClass]="{'is-invalid': commonService.validationChecking('organizationsId', 'required', activityForm, submitClicked)}">
           <mat-option>
             <ngx-mat-select-search [formControl]="organizationCtrl" placeholderLabel="Search"
               noEntriesFoundLabel="No results"></ngx-mat-select-search>
@@ -113,12 +130,17 @@
             {{organization.name}}
           </mat-option>
         </mat-select>
+        <div class="invalid-feedback"
+          *ngIf="commonService.validationChecking('organizationsId', 'required', activityForm, submitClicked)">
+          <span>Please select an organization. </span>
+        </div>
       </div>
     </div>
     <div class="form-group row mb-3" *ngIf="activityForm.get('contextableType').value == 'PERSON'">
       <label for="formDealValueInput" class="col-sm-2 col-form-label">Person</label>
       <div class="col-sm-10 mb-1">
-        <mat-select class="form-select" formControlName="personsId">
+        <mat-select class="form-select" formControlName="personsId"
+          [ngClass]="{'is-invalid': commonService.validationChecking('personsId', 'required', activityForm, submitClicked)}">
           <mat-option>
             <ngx-mat-select-search [formControl]="personCtrl" placeholderLabel="Search"
               noEntriesFoundLabel="No results"></ngx-mat-select-search>
@@ -127,6 +149,10 @@
             {{person.name}}
           </mat-option>
         </mat-select>
+        <div class="invalid-feedback"
+          *ngIf="commonService.validationChecking('personsId', 'required', activityForm, submitClicked)">
+          <span>Please select a person. </span>
+        </div>
       </div>
     </div>
 
@@ -189,6 +215,8 @@
       </div>
     </div>
   </form>
+
+  <pre>{{activityForm.value|json}}</pre>
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-light" (click)="activeModal.close('Close click')">Cancel</button>

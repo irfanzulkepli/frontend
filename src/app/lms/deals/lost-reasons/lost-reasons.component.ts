@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CustomTableDatasource } from 'src/app/components/custom-table/custom-table.interface';
+import { CommonService } from '../../common/common.service';
 import { DeleteModal2Component } from '../../components/delete-modal2/delete-modal2.component';
 import { ColumnsInfo } from '../../lms-service';
 import { LostReasonsService } from '../lost-reasons.service';
@@ -50,15 +51,17 @@ export class LostReasonsComponent implements OnInit {
   public lostReasons: any[] = [];
   dataSource: CustomTableDatasource;
   public action: String = '';
+  submitClicked: boolean = false;
 
   form = new FormGroup({
     id: new FormControl(''),
-    lostReason: new FormControl('')
+    lostReason: new FormControl('', Validators.required)
   });
 
   constructor(
     private modalService: NgbModal,
-    private lostReasonsService: LostReasonsService
+    private lostReasonsService: LostReasonsService,
+    public commonService: CommonService
   ) { }
 
   ngOnInit() {
@@ -81,7 +84,7 @@ export class LostReasonsComponent implements OnInit {
    * Open modal
    * @param content modal content
    */
-  openModal(content: any, lostReasonsData: any, action: string ) {
+  openModal(content: any, lostReasonsData: any, action: string) {
     this.form.patchValue({
       id: lostReasonsData?.id,
       lostReason: lostReasonsData?.lostReason
@@ -104,7 +107,13 @@ export class LostReasonsComponent implements OnInit {
     });
   }
 
-  onSaveLostReasons(){
+  onSaveLostReasons() {
+    this.submitClicked = true;
+
+    if (this.form.invalid) {
+      return;
+    }
+
     switch (this.action) {
       case 'add': {
         this.addLostReasons();

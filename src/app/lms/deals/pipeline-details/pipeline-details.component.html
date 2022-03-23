@@ -15,7 +15,13 @@
     <div class="form-group row mb-3">
       <label class="col-sm-2 col-form-label">Name</label>
       <div class="col-sm-10">
-        <input type="text" class="form-control" placeholder="Enter pipeline name" formControlName="name">
+        <input type="text" class="form-control" placeholder="Enter pipeline name" formControlName="name"
+          [ngClass]="{'is-invalid': commonService.validationChecking('name', 'required', pipelineForm, submitClicked)}">
+        <div class="invalid-feedback">
+          <span *ngIf="commonService.validationChecking('name', 'required', pipelineForm, submitClicked)">
+            Please provide a name.
+          </span>
+        </div>
       </div>
     </div>
 
@@ -33,7 +39,13 @@
               <div class="form-group row mb-3">
                 <label class="col-sm-12 col-form-label">Name</label>
                 <div class="col-sm-12">
-                  <input type="text" class="form-control" placeholder="Enter name" formControlName="name">
+                  <input type="text" class="form-control" placeholder="Enter name" formControlName="name"
+                    [ngClass]="{'is-invalid': commonService.validationChecking('name', 'required', stageForm, submitClicked)}">
+                  <div class="invalid-feedback">
+                    <span *ngIf="commonService.validationChecking('name', 'required', stageForm, submitClicked)">
+                      Please provide a name.
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -41,7 +53,13 @@
                 <label class="col-sm-12 col-form-label">Probability</label>
                 <div class="col-sm-12">
                   <input type="number" class="form-control" placeholder="Enter probability"
-                    formControlName="probability">
+                    formControlName="probability"
+                    [ngClass]="{'is-invalid': commonService.validationChecking('probability', 'required', stageForm, submitClicked)}">
+                  <div class="invalid-feedback">
+                    <span *ngIf="commonService.validationChecking('probability', 'required', stageForm, submitClicked)">
+                      Please provide a probability.
+                    </span>
+                  </div>
                 </div>
               </div>
 

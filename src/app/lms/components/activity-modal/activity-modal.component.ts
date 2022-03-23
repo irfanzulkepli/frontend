@@ -1,18 +1,15 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { ACTIVITIES } from '../../data/activities.data';
-import { PERSON } from '../../data/person-data';
-import { USER } from '../../data/user-data';
-import { ALLDEALS } from '../../data/all-deals.data';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { LMSService } from '../../lms-service';
-import { LeadService } from '../../leads/lead.service';
+import { CommonService } from '../../common/common.service';
 import { DealsService } from '../../deals/deals.service';
-import { ActivatedRoute } from '@angular/router';
 import { ACTIVITYTYPE } from '../../enum/lms-type.enum';
+import { LeadService } from '../../leads/lead.service';
+import { LMSService } from '../../lms-service';
 
 @Component({
   selector: 'app-activity-modal',
@@ -25,6 +22,10 @@ export class ActivityModalComponent implements OnInit {
   @Input() dateString: string;
   @Input() isEdit: boolean = false;
   @Input() pipelineViewId: string;
+  @Input() dealId: number;
+
+  isLoading: boolean = true;
+  submitClicked: boolean = false;
 
   // public person = PERSON;
   // public userData = USER;
@@ -57,6 +58,7 @@ export class ActivityModalComponent implements OnInit {
   allOrganizations;
   filteredOrganizations;
 
+  dealData;
   deals: Array<any> = [];
   allDeals: Array<any> = [];
   filteredDeals: Observable<Array<any>>;
@@ -65,11 +67,11 @@ export class ActivityModalComponent implements OnInit {
     activityTypeId: ['', Validators.required],
     title: ['', Validators.required],
     description: [],
-    startedAt: [],
-    startTime: [],
-    endedAt: [],
-    endTime: [],
-    contextableType: [],
+    startedAt: ['', Validators.required],
+    startTime: ['', Validators.required],
+    endedAt: ['', Validators.required],
+    endTime: ['', Validators.required],
+    contextableType: ['', Validators.required],
     personsId: [],
     dealsId: [],
     organizationsId: [],
@@ -84,7 +86,8 @@ export class ActivityModalComponent implements OnInit {
     private lmsService: LMSService,
     private leadService: LeadService,
     private dealsService: DealsService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    public commonService: CommonService
   ) { }
 
   async ngOnInit() {
@@ -128,6 +131,11 @@ export class ActivityModalComponent implements OnInit {
         collaboratorsIds: '',
         markAsDone: false
       });
+    }
+
+    if (this.dealId) {
+      this.activityForm.controls['contextableType'].setValue(ACTIVITYTYPE.DEAL);
+      this.onContextableTypeChange();
     }
   }
 
@@ -206,7 +214,39 @@ export class ActivityModalComponent implements OnInit {
     }
   }
 
+  onContextableTypeChange() {
+    let contextableType: ACTIVITYTYPE = this.activityForm.value.contextableType;
+
+    this.activityForm.get('personsId').clearValidators();
+    this.activityForm.get('organizationsId').clearValidators();
+    this.activityForm.get('dealsId').clearValidators();
+
+    if (contextableType == ACTIVITYTYPE.PERSON) {
+      this.activityForm.get('personsId').setValidators(Validators.required);
+      this.activityForm.get('personsId').reset();
+
+    } else if (contextableType == ACTIVITYTYPE.ORGANIZATION) {
+      this.activityForm.get('organizationsId').setValidators(Validators.required);
+      this.activityForm.get('organizationsId').reset();
+
+    } else if (contextableType == ACTIVITYTYPE.DEAL) {
+      this.activityForm.get('dealsId').setValidators(Validators.required);
+      this.activityForm.get('dealsId').reset();
+
+      if (this.dealId) {
+        this.activityForm.controls['dealsId'].setValue(this.dealId + '');
+        this.getDeals();
+      }
+    }
+  }
+
   onSave() {
+    this.submitClicked = true;
+
+    if (this.activityForm.invalid) {
+      return;
+    }
+
     this.addActiviy();
   }
 
@@ -326,6 +366,18 @@ export class ActivityModalComponent implements OnInit {
           startWith(null),
           map((dealName: string | null) => (dealName ? this._filterDeals(dealName) : this.allDeals.slice()))
         );
+      },
+      error: (e) => { },
+      complete: () => { }
+    })
+  }
+
+  getDeals() {
+    this.dealData = {};
+    let dealId = this.activityForm.value.dealsId;
+    this.dealsService.getDealsById(dealId).subscribe({
+      next: (n) => {
+        this.dealData = n;
       },
       error: (e) => { },
       complete: () => { }

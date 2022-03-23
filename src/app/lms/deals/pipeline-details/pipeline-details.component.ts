@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CommonService } from '../../common/common.service';
 import { DeleteModal2Component } from '../../components/delete-modal2/delete-modal2.component';
 import { LMSService } from '../../lms-service';
 import { DealsService } from '../deals.service';
@@ -19,8 +20,10 @@ export class PipelineDetailsComponent implements OnInit {
   public action: string = '';
   public pipelineViewId: string = '';
   public defaultStages;
-  public stages;
+  public stages: any[] = [];
   public filteredStages;
+
+  submitClicked: boolean = false;
 
   pipelineForm = new FormGroup({
     id: new FormControl(''),
@@ -41,7 +44,8 @@ export class PipelineDetailsComponent implements OnInit {
     private dealsService: DealsService,
     private pipelinesService: PipelinesService,
     private router: Router,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    public commonService: CommonService
   ) { }
 
   ngOnInit() {
@@ -63,15 +67,18 @@ export class PipelineDetailsComponent implements OnInit {
       id: new FormControl(''),
       name: new FormControl('', Validators.required),
       probability: new FormControl('', Validators.required),
-      priority: new FormControl('', Validators.required),
+      priority: new FormControl(''),
     });
 
     stageForm.patchValue({
-      id: data ? data.id : '',
       name: data ? data.name : '',
       probability: data ? data.probability : '',
       priority: data ? data.priority : ''
     });
+
+    if (this.action === 'Edit'){
+      stageForm.controls['id'].setValue(data.id);
+    }
 
     stages.push(stageForm);
   }
@@ -117,6 +124,12 @@ export class PipelineDetailsComponent implements OnInit {
   }
 
   savePipelines() {
+    this.submitClicked = true;
+
+    if (this.pipelineForm.invalid) {
+      return;
+    }
+
     if (this.pipelineForm.value.id) {
       this.updatePipelines();
     } else {
@@ -179,7 +192,7 @@ export class PipelineDetailsComponent implements OnInit {
 
         let highestPriority: number = 0;
         this.stages.forEach(element => {
-          if (element.priority > highestPriority){
+          if (element.priority > highestPriority) {
             highestPriority = element.priority;
           }
         });
