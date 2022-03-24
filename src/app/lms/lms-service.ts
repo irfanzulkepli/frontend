@@ -60,10 +60,6 @@ export class LMSService {
     getTagsList(): Observable<any> {
         return this.httpClient.get(environment.baseUrl + '/tags/list');
     }
-
-    addActiviy(body: any): Observable<any> {
-        return this.httpClient.post(environment.baseUrl + '/activities/add', body);
-    }
 }
 
 export interface ColumnsInfo {

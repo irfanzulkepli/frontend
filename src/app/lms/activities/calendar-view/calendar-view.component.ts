@@ -1,10 +1,11 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { CalendarOptions, EventClickArg } from '@fullcalendar/angular';
-import { ACTIVITIES } from '../../data/activities.data';
+import { Calendar, CalendarOptions, EventClickArg, FullCalendarComponent } from '@fullcalendar/angular';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivityModalComponent } from '../../components/activity-modal/activity-modal.component';
+import { ACTIVITIES } from '../../data/activities.data';
+import { DealsService } from '../../deals/deals.service';
 
 @Component({
   selector: 'app-calendar-view',
@@ -16,7 +17,8 @@ export class CalendarViewComponent implements OnInit {
   @ViewChild('editmodalShow') editmodalShow: TemplateRef<any>;
 
   formData: FormGroup;
-  public activitiesData = ACTIVITIES;
+  // public activitiesData = ACTIVITIES;
+  public activitiesData: any[] = [];
 
   calendarEvents: any[] = [];
   newEventDate: any;
@@ -25,7 +27,8 @@ export class CalendarViewComponent implements OnInit {
 
   constructor(
     private modalService: NgbModal,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private dealsService: DealsService
   ) { }
 
   calendarOptions: CalendarOptions = {
@@ -56,23 +59,29 @@ export class CalendarViewComponent implements OnInit {
 
 
   ngOnInit() {
-    this.getCalendarEvents();
+    this.getDealsActivityList();
   }
 
   getCalendarEvents() {
     for (var activity of this.activitiesData) {
-      let activityStartDate = Date.parse(activity.startedAt + " " + activity.startTime)
-      let activityEndtDate = Date.parse(activity.endedAt + " " + activity.endTime)
-      this.calendarEvents.push(
-        {
-          id: activity.id.toString(),
-          title: activity.title,
-          start: new Date(activityStartDate),
-          end: new Date(activityEndtDate),
-          cardData: activity
-        }
-      );
+      this.calendarEvents.push({
+        id: activity.id.toString(),
+        title: activity.title,
+        start: new Date(activity.startDate + ' ' + activity.startTime),
+        end: new Date(activity.endDate + ' ' + activity.endTime),
+        cardData: activity
+      });
     }
+
+    this.rerenderFullCalendar();
+  }
+
+  rerenderFullCalendar() {
+
+    let appFullCalendarEl: HTMLElement = document.getElementById('appFullCalendar');
+
+    let appFullCalendar = new Calendar(appFullCalendarEl, this.calendarOptions);
+    appFullCalendar.render();
   }
 
   handleDateClick(clickInfo) {
@@ -83,8 +92,16 @@ export class CalendarViewComponent implements OnInit {
 
   handleEventClick(clickInfo: EventClickArg) {
     const modalRef = this.modalService.open(ActivityModalComponent, { size: 'lg', scrollable: true });
+
     modalRef.componentInstance.isEdit = true;
     modalRef.componentInstance.activityData = clickInfo.event.extendedProps.cardData;
+  }
+
+  activityModal() {
+    const modalRef = this.modalService.open(ActivityModalComponent, { size: 'lg', scrollable: true });
+    modalRef.componentInstance.isEdit = false;
+
+    modalRef.result.then(result => result);
   }
 
   closeEventModal() {
@@ -93,5 +110,16 @@ export class CalendarViewComponent implements OnInit {
       category: '',
     });
     this.modalService.dismissAll();
+  }
+
+  getDealsActivityList() {
+    this.dealsService.getDealsActivityList().subscribe({
+      next: (n) => {
+        this.activitiesData = n;
+        this.getCalendarEvents();
+      },
+      error: (e) => { },
+      complete: () => { }
+    })
   }
 }

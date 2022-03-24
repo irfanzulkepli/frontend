@@ -18,12 +18,24 @@ export class DealsService {
     return this.httpClient.get(environment.baseUrl + '/deals/page', { params: pageableRequest });
   }
 
+  getDealsList(): Observable<any> {
+    return this.httpClient.get(environment.baseUrl + '/deals/list');
+  }
+
   getDealsListByPipelineId(id: string): Observable<any> {
     return this.httpClient.get(environment.baseUrl + '/deals/list/pipeline/' + id);
   }
 
   getDealsById(id: number): Observable<any> {
     return this.httpClient.get(environment.baseUrl + '/deals/' + id);
+  }
+
+  getDealsActivitiesByDealId(id: number): Observable<any> {
+    return this.httpClient.get(environment.baseUrl + '/deals/' + id + '/activities/list');
+  }
+
+  getDealsActivityList(): Observable<any> {
+    return this.httpClient.get(environment.baseUrl + '/deals/activities/list');
   }
 
   getFollowersById(id: number, pageableRequest, profileType: string) {

@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { TransitionCheckState } from '@angular/material/checkbox';
 import { ActivatedRoute } from '@angular/router';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import * as moment from 'moment';
@@ -101,7 +102,12 @@ export class ActivityModalComponent implements OnInit {
     this.getUsersList();
     this.getPersonList();
     this.getOrganizationList();
-    this.getDealsListByPipelineId();
+
+    if (this.pipelineViewId) {
+      this.getDealsListByPipelineId();
+    } else {
+      this.getDealsList();
+    }
 
     const dateNow = moment().format('YYYY-MM-DD');
     const timeNow = moment().format('HH:mm');
@@ -115,27 +121,55 @@ export class ActivityModalComponent implements OnInit {
     });
 
     if (this.isEdit) {
-      this.activityForm.patchValue({
-        activityTypeId: '',
-        title: this.activityData.title ? this.activityData.title : '',
-        description: this.activityData.description ? this.activityData.description : '',
-        startedAt: this.activityData.startedAt,
-        startTime: this.activityData.startTime,
-        endedAt: this.activityData.endedAt,
-        endTime: this.activityData.endTime,
-        contextableType: '',
-        personsId: '',
-        dealsId: '',
-        organizationsId: '',
-        participantsIds: '',
-        collaboratorsIds: '',
-        markAsDone: false
-      });
+      this.getActivityById();
     }
 
     if (this.dealId) {
       this.activityForm.controls['contextableType'].setValue(ACTIVITYTYPE.DEAL);
       this.onContextableTypeChange();
+    }
+  }
+
+  patchActivityDataToActivityForm() {
+    let activityParticipantIds: string[] = [];
+    this.activityData.participants.forEach(element => {
+      activityParticipantIds.push(element.id + '');
+    });
+
+    let activityCollaboratorIds: string[] = [];
+    this.activityData.collaborators.forEach(element => {
+      activityCollaboratorIds.push(element.id + '');
+    });
+
+    this.activityForm.patchValue({
+      activityTypeId: this.activityData.activityType.id + '',
+      title: this.activityData.title ? this.activityData.title : '',
+      description: this.activityData.description ? this.activityData.description : '',
+      startedAt: this.activityData.startDate,
+      startTime: this.activityData.startTime,
+      endedAt: this.activityData.endDate,
+      endTime: this.activityData.endTime,
+      contextableType: this.activityData.contextableType,
+      participantsIds: activityParticipantIds,
+      collaboratorsIds: activityCollaboratorIds,
+      markAsDone: this.activityData.markAsDone
+    });
+
+    this.onParticipantChange();
+    this.onCollaboratorChange();
+    this.onContextableTypeChange();
+
+    let contextableType: ACTIVITYTYPE = this.activityForm.value.contextableType;
+
+    if (contextableType == ACTIVITYTYPE.PERSON) {
+      this.activityForm.controls['personsId'].setValue(this.activityData.contextableId + '');
+
+    } else if (contextableType == ACTIVITYTYPE.ORGANIZATION) {
+      this.activityForm.controls['organizationsId'].setValue(this.activityData.contextableId + '');
+
+    } else if (contextableType == ACTIVITYTYPE.DEAL) {
+      this.activityForm.controls['dealsId'].setValue(this.activityData.contextableId + '');
+      this.getDeals();
     }
   }
 
@@ -153,6 +187,10 @@ export class ActivityModalComponent implements OnInit {
   onCollaboratorChange() {
     let formCollaboratorIds: any[] = this.activityForm.value.collaboratorsIds;
 
+    if (!formCollaboratorIds) {
+      return;
+    }
+
     this.selectedCollaborators = []
     this.allCollaborators.forEach(collaborator => {
       formCollaboratorIds.forEach(formCollaboratorId => {
@@ -166,6 +204,10 @@ export class ActivityModalComponent implements OnInit {
   onCollaboratorRemove(index: number) {
     let formCollaboratorIds: any[] = this.activityForm.value.collaboratorsIds;
 
+    if (!formCollaboratorIds) {
+      return;
+    }
+
     formCollaboratorIds.splice(index, 1);
     this.selectedCollaborators.splice(index, 1);
     this.activityForm.patchValue({
@@ -175,6 +217,10 @@ export class ActivityModalComponent implements OnInit {
 
   onParticipantChange() {
     let formParticipantIds: any[] = this.activityForm.value.participantsIds;
+
+    if (!formParticipantIds) {
+      return;
+    }
 
     this.selectedParticipants = []
     this.allParticipants.forEach(participant => {
@@ -188,6 +234,10 @@ export class ActivityModalComponent implements OnInit {
 
   onParticipantRemove(index: number) {
     let formParticipantIds: any[] = this.activityForm.value.participantsIds;
+
+    if (!formParticipantIds) {
+      return;
+    }
 
     formParticipantIds.splice(index, 1);
     this.selectedParticipants.splice(index, 1);
@@ -280,8 +330,19 @@ export class ActivityModalComponent implements OnInit {
     return this.allDeals.filter(deal => deal.title.toLowerCase().includes(filterValue));
   }
 
+  getActivityById() {
+    this.leadService.getActivityById(this.activityData.id).subscribe({
+      next: (n) => {
+        this.activityData = n;
+        this.patchActivityDataToActivityForm();
+      },
+      error: (e) => { },
+      complete: () => { }
+    })
+  }
+
   addActiviy() {
-    this.lmsService.addActiviy(this.activityForm.value).subscribe({
+    this.leadService.addActivity(this.activityForm.value).subscribe({
       next: (n) => {
         this.activeModal.close();
       },
@@ -350,6 +411,21 @@ export class ActivityModalComponent implements OnInit {
         this.filteredOrganizations = this.organizationCtrl.valueChanges.pipe(
           startWith(null),
           map((organizationName: string | null) => (organizationName ? this._filterOrganization(organizationName) : this.allOrganizations.slice()))
+        );
+      },
+      error: (e) => { },
+      complete: () => { }
+    })
+  }
+
+  getDealsList() {
+    this.dealsService.getDealsList().subscribe({
+      next: (n) => {
+        this.allDeals = n;
+
+        this.filteredDeals = this.dealCtrl.valueChanges.pipe(
+          startWith(null),
+          map((dealName: string | null) => (dealName ? this._filterDeals(dealName) : this.allDeals.slice()))
         );
       },
       error: (e) => { },

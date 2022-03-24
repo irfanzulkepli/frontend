@@ -1,9 +1,8 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CustomTableDatasource } from 'src/app/components/custom-table/custom-table.interface';
 import { environment } from 'src/environments/environment';
-import { PageableRequest } from '../interfaces/pageable-request.interface';
 import { ActivitiyRequest } from './interfaces/add-activities-reqeust.interface';
 import { TagRequest } from './interfaces/delete-tag-request.interface';
 import { OrganizationRequest } from './interfaces/organization-request.interface';
@@ -130,6 +129,10 @@ export class LeadService {
 
   addActivity(requestBody: ActivitiyRequest) {
     return this.httpClient.post(`${environment.baseUrl}/activities/add`, requestBody);
+  }
+
+  getActivityById(id: number) {
+    return this.httpClient.get(`${environment.baseUrl}/activities/` + id);
   }
 
   markActivityAsDone(id: number) {
