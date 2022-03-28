@@ -72,4 +72,6 @@ export interface ColumnsInfo {
     iconList?: Array<any>;
     profileType?: string;
     enum?: boolean;
+    contextableType?: string;
+    showBadge?: boolean;
 }

@@ -12,7 +12,7 @@
                     {{ column['displayName'] }}
                   </th>
                   <td mat-cell *matCellDef="let row">
-                    <mat-checkbox (click)="$event.stopPropagation()"></mat-checkbox>
+                    <mat-checkbox (click)="onCheckBox(row)"></mat-checkbox>
                   </td>
                 </ng-container>
 
@@ -160,6 +160,39 @@
                       <ng-container *ngIf="!column['isList']">
                         <span class="d-flex align-items-center link fw-normal cursor-pointer"
                           (click)="redirect(element.id, column['profileType'])">
+                          <span class="text-ellipsis me-1">
+                            {{ element[column['columnDef']] }}
+                          </span>
+                          <i *ngIf="column['showIcon']" class="mdi mdi-exit-to-app font-size-12"></i>
+                        </span>
+                      </ng-container>
+                    </td>
+                  </ng-container>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'activityLink'" [matColumnDef]="column['columnDef']">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ column['displayName'] }}
+                  </th>
+                  <ng-container *matCellDef="let element">
+                    <td mat-cell>
+                      <ng-container *ngIf="column['showBadge']">
+                        <span class="badge rounded-pill
+                        {{ element[column['columnDef']] ? element[column['columnDef']] : '' }} font-size-12">
+                            {{ element[column['columnDef']].toLowerCase() }}
+                        </span>
+                        <span class="d-flex align-items-center link fw-normal cursor-pointer"
+                          (click)="redirect(element.contextableId, getContextableType(element[column['columnDef']]))">
+                          <span class="text-ellipsis me-1">
+                            {{ getContextableName(element, element[column['columnDef']]) }}
+                          </span>
+                          <i *ngIf="column['showIcon']" class="mdi mdi-exit-to-app font-size-12"></i>
+                        </span>
+                      </ng-container>
+
+                      <ng-container *ngIf="!column['showBadge']">
+                        <span class="d-flex align-items-center link fw-normal cursor-pointer"
+                          (click)="redirect(element.contextableId, getContextableType(element[column['contextableType']]))">
                           <span class="text-ellipsis me-1">
                             {{ element[column['columnDef']] }}
                           </span>

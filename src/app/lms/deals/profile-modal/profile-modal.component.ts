@@ -90,13 +90,17 @@ export class ProfileModalComponent implements OnInit {
     comment: ['', Validators.required]
   })
 
-  // public comments = [];
   public tags;
   filteredTags: any[] = [];
   dealTagForm = new FormGroup({
     id: new FormControl('', Validators.required),
     tagIds: new FormControl([], Validators.required)
   });
+
+  peoples;
+  allPeoples;
+  filteredPeoples;
+  personCtrl = new FormControl();
 
   followerDetails;
   followerList: Array<any>;
@@ -121,17 +125,13 @@ export class ProfileModalComponent implements OnInit {
   ngOnInit() {
     this.tags = this.lmsService.getTags();
     this.initDealsData();
-    // this.initForm();
-    // this.initValues();
-    // this.initFollowers();
-    // this.getComments();
+    this.getPersonList();
 
     this.allFollowers = this.lmsService.getPersons();
-
-
   }
 
   initFollowers() {
+    this.isLoading = true;
     const pageableRequest: PageableRequest = {
       direction: DIRECTION.ASCENDING,
       page: 0,
@@ -144,8 +144,11 @@ export class ProfileModalComponent implements OnInit {
         this.followerDetails = n;
         this.populateForms();
         this.loadingFollowers = false;
+        this.isLoading = false;
       },
-      error: (e) => { },
+      error: (e) => { 
+        this.isLoading = false;
+      },
       complete: () => { }
     });
   }
@@ -155,7 +158,6 @@ export class ProfileModalComponent implements OnInit {
       next: (n: any) => {
         this.dealsData = n;
         this.isLoading = false;
-        console.log(this.dealsData);
         this.initFollowers();
         this.initForm();
         this.initValues();
@@ -165,7 +167,9 @@ export class ProfileModalComponent implements OnInit {
           this.hasDuplicate('follower');
         });
       },
-      error: (e) => { },
+      error: (e) => { 
+        this.isLoading = false;
+      },
       complete: () => { }
     });
   }
@@ -231,7 +235,6 @@ export class ProfileModalComponent implements OnInit {
               follower: [follower.peopleId, Validators.required],
               followerCtrlName: ['']
             });
-            console.log(followerForm)
             this.followers.push(followerForm);
             this.manageFollowerFilter(this.followers.controls.length - 1);
           }
@@ -254,6 +257,27 @@ export class ProfileModalComponent implements OnInit {
     }
   }
 
+  private _filterPerson(value: string) {
+    const filterValue = value.toLowerCase();
+
+    return this.allPeoples.filter(people => people.name.toLowerCase().includes(filterValue));
+  }
+
+  getPersonList() {
+    this.lmsService.getPersonList().subscribe({
+      next: (n) => {
+        this.allPeoples = n;
+
+        this.filteredPeoples = this.personCtrl.valueChanges.pipe(
+          startWith(null),
+          map((personName: string | null) => (personName ? this._filterPerson(personName) : this.allPeoples.slice()))
+        );
+      },
+      error: (e) => { },
+      complete: () => { }
+    })
+  }
+
   onCancel() {
     this.populateForms();
     this.submitClicked = false;
@@ -265,7 +289,6 @@ export class ProfileModalComponent implements OnInit {
     this.followers.markAllAsTouched();
     this.submitClicked = true;
 
-    console.log('followers: ', this.followers);
 
     if (!formValid) {
       return;
@@ -279,7 +302,6 @@ export class ProfileModalComponent implements OnInit {
     const payload: UpdateFollowerRequest = {
       followerIds: followerIds
     }
-    console.log(payload)
 
     this.dealsService.updateFollowers(payload, this.dealsData.id, this.profileType).subscribe({
       next: (n) => {
@@ -292,11 +314,12 @@ export class ProfileModalComponent implements OnInit {
         this.dealsService.getFollowersById(this.dealsData.id, pageableRequest, this.profileType).subscribe({
           next: (n: any) => {
             this.followerDetails = n;
+            this.populateForms();
           },
           error: (e) => { },
           complete: () => { }
         });
-        this.populateForms();
+        
 
         this.isEditFollower = false;
         this.submitClicked = false;
@@ -393,6 +416,7 @@ export class ProfileModalComponent implements OnInit {
   }
 
   getComments() {
+    this.isLoading = true;
     this.comments.clear();
 
     let commentList: any;
@@ -410,8 +434,11 @@ export class ProfileModalComponent implements OnInit {
           })
           this.comments.push(commentForm);
         }
+        this.isLoading = false;
       },
-      error: (e) => { },
+      error: (e) => { 
+        this.isLoading = false;
+      },
       complete: () => { }
     });
   }
@@ -435,7 +462,6 @@ export class ProfileModalComponent implements OnInit {
       comment: [text, Validators.required]
     });
 
-    this.comments.push(commentForm);
     this.comment = ''
 
     const commentResponse = this.fb.group({
@@ -446,7 +472,9 @@ export class ProfileModalComponent implements OnInit {
     })
 
     this.dealsService.addComments(commentResponse.value).subscribe({
-      next: (n) => { },
+      next: (n) => { 
+        this.getComments()
+      },
       error: (e) => { },
       complete: () => { }
     });
@@ -625,11 +653,9 @@ export class ProfileModalComponent implements OnInit {
       properties: ["id"],
       size: 10
     }
-    console.log("before", this.dataSource)
     this.dealsService.getFollowersById(this.dealsData.id, pageableRequest, this.profileType).subscribe({
       next: (n: any) => {
         this.dataSource = n;
-        console.log("after", this.dataSource)
         this.modalService.open(content, { size: 'xl', centered: true, scrollable: true });
       },
       error: (e) => { },

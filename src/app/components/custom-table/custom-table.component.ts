@@ -17,6 +17,7 @@ export class CustomTableComponent implements OnInit {
   @Output() onActionClick = new EventEmitter();
   @Output() onEditClick = new EventEmitter();
   @Output() onDeleteClick = new EventEmitter();
+  @Output() onCheckBoxClick = new EventEmitter();
 
   displayedColumns: string[];
 
@@ -92,6 +93,28 @@ export class CustomTableComponent implements OnInit {
     }
   }
 
+  getContextableName(element, contextableType: string) {
+    switch (contextableType) {
+      case 'PERSON': {
+        return element.person.name;
+      }
+      case 'ORGANIZATION': {
+        return element.organization.name;
+      }
+      case 'DEAL': {
+        return element.deal.title;
+      }
+    }
+  }
+
+  getContextableType(contextableType: string) {
+    if (contextableType == 'PERSON') {
+      return 'people';
+    } else {
+      return contextableType.toLowerCase();
+    }
+  }
+
   onIconClick(action: string, data) {
     switch (action) {
       case 'edit': {
@@ -111,6 +134,10 @@ export class CustomTableComponent implements OnInit {
 
   onDelete(data) {
     this.onDeleteClick.emit(data);
+  }
+
+  onCheckBox(data) {
+    this.onCheckBoxClick.emit(data);
   }
 
   convert24HTo12H(timestring: string) {

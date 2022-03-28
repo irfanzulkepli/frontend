@@ -4,6 +4,18 @@ td {
     vertical-align: middle !important;
 }
 
+.badge.PERSON {
+    background-color: #964ed8;
+}
+
+.badge.DEAL {
+    background-color: #46c35f    ;
+}
+
+.badge.ORGANIZATION {
+    background-color: #fc6510    ;
+}
+
 .cursor-pointer {
     cursor: pointer;
 }
