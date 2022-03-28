@@ -3,11 +3,12 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CustomTableDatasource } from 'src/app/components/custom-table/custom-table.interface';
 import { environment } from 'src/environments/environment';
-import { ActivitiyRequest } from './interfaces/add-activities-reqeust.interface';
+import { AddActivitiyRequest } from './interfaces/add-activities-reqeust.interface';
 import { TagRequest } from './interfaces/delete-tag-request.interface';
 import { OrganizationRequest } from './interfaces/organization-request.interface';
 import { PeopleRequest } from './interfaces/people-request.interface';
 import { PersonList } from './interfaces/person-list.interface';
+import { UpdateActivitiyRequest } from './interfaces/update-activities-request.interface';
 import { UpdateAddressRequest } from './interfaces/update-address-request.interface';
 import { UpdateContactRequest } from './interfaces/update-contact-request.interface';
 import { UpdateDetailsRequest } from './interfaces/update-details-request.interface';
@@ -127,8 +128,12 @@ export class LeadService {
     return this.httpClient.post(`${environment.baseUrl}/${profileType}/${id}/tag`, requestBody);
   }
 
-  addActivity(requestBody: ActivitiyRequest) {
+  addActivity(requestBody: AddActivitiyRequest) {
     return this.httpClient.post(`${environment.baseUrl}/activities/add`, requestBody);
+  }
+
+  updateActivity(requestBody: UpdateActivitiyRequest) {
+    return this.httpClient.put(`${environment.baseUrl}/activities/` + requestBody.id, requestBody);
   }
 
   getActivityById(id: number) {

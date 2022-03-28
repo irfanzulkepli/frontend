@@ -63,12 +63,16 @@ export class CalendarViewComponent implements OnInit {
   }
 
   getCalendarEvents() {
+    for (let a = 0; a < this.calendarEvents.length; a) {
+      this.calendarEvents.splice(a, 1);
+    }
+
     for (var activity of this.activitiesData) {
       this.calendarEvents.push({
         id: activity.id.toString(),
         title: activity.title,
-        start: new Date(activity.startDate + ' ' + activity.startTime),
-        end: new Date(activity.endDate + ' ' + activity.endTime),
+        start: new Date(activity.startedAt + ' ' + activity.startTime),
+        end: new Date(activity.endedAt + ' ' + activity.endTime),
         cardData: activity
       });
     }
@@ -77,9 +81,7 @@ export class CalendarViewComponent implements OnInit {
   }
 
   rerenderFullCalendar() {
-
     let appFullCalendarEl: HTMLElement = document.getElementById('appFullCalendar');
-
     let appFullCalendar = new Calendar(appFullCalendarEl, this.calendarOptions);
     appFullCalendar.render();
   }
@@ -88,6 +90,12 @@ export class CalendarViewComponent implements OnInit {
     const modalRef = this.modalService.open(ActivityModalComponent, { size: 'lg', scrollable: true });
 
     modalRef.componentInstance.dateString = clickInfo.dateStr;
+
+    modalRef.result.then(result => {
+      if (result) {
+        this.getDealsActivityList();
+      }
+    });
   }
 
   handleEventClick(clickInfo: EventClickArg) {
@@ -95,13 +103,23 @@ export class CalendarViewComponent implements OnInit {
 
     modalRef.componentInstance.isEdit = true;
     modalRef.componentInstance.activityData = clickInfo.event.extendedProps.cardData;
+
+    modalRef.result.then(result => {
+      if (result) {
+        this.getDealsActivityList();
+      }
+    });
   }
 
   activityModal() {
     const modalRef = this.modalService.open(ActivityModalComponent, { size: 'lg', scrollable: true });
     modalRef.componentInstance.isEdit = false;
 
-    modalRef.result.then(result => result);
+    modalRef.result.then(result => {
+      if (result) {
+        this.getDealsActivityList();
+      }
+    });
   }
 
   closeEventModal() {
@@ -113,6 +131,7 @@ export class CalendarViewComponent implements OnInit {
   }
 
   getDealsActivityList() {
+    this.activitiesData = [];
     this.dealsService.getDealsActivityList().subscribe({
       next: (n) => {
         this.activitiesData = n;

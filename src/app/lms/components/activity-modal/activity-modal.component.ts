@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { TransitionCheckState } from '@angular/material/checkbox';
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
 import { ActivatedRoute } from '@angular/router';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import * as moment from 'moment';
@@ -45,11 +46,13 @@ export class ActivityModalComponent implements OnInit {
   allCollaborators;
   filteredCollaborators;
   selectedCollaborators: any[] = [];
+  @ViewChild('CollaboratorSelect') collaboratorSelect: MatSelect;
 
   participants;
   allParticipants;
   filteredParticipants;
   selectedParticipants: any[] = [];
+  @ViewChild('ParticipantSelect') participantSelect: MatSelect;
 
   peoples;
   allPeoples;
@@ -65,6 +68,7 @@ export class ActivityModalComponent implements OnInit {
   filteredDeals: Observable<Array<any>>;
 
   activityForm: FormGroup = this.fb.group({
+    id: [],
     activityTypeId: ['', Validators.required],
     title: ['', Validators.required],
     description: [],
@@ -76,8 +80,8 @@ export class ActivityModalComponent implements OnInit {
     personsId: [],
     dealsId: [],
     organizationsId: [],
-    participantsIds: [],
-    collaboratorsIds: [],
+    participantsIds: [[]],
+    collaboratorsIds: [[]],
     markAsDone: [false]
   });
 
@@ -142,12 +146,13 @@ export class ActivityModalComponent implements OnInit {
     });
 
     this.activityForm.patchValue({
+      id: this.activityData.id,
       activityTypeId: this.activityData.activityType.id + '',
       title: this.activityData.title ? this.activityData.title : '',
       description: this.activityData.description ? this.activityData.description : '',
-      startedAt: this.activityData.startDate,
+      startedAt: this.activityData.startedAt,
       startTime: this.activityData.startTime,
-      endedAt: this.activityData.endDate,
+      endedAt: this.activityData.endedAt,
       endTime: this.activityData.endTime,
       contextableType: this.activityData.contextableType,
       participantsIds: activityParticipantIds,
@@ -175,11 +180,11 @@ export class ActivityModalComponent implements OnInit {
 
 
   addMinutes(minutes: number) {
-    const endDateAfterAdd = moment().add('m', minutes).format('YYYY-MM-DD');
+    const endedAtAfterAdd = moment().add('m', minutes).format('YYYY-MM-DD');
     const endTimeAfterAdd = moment().add('m', minutes).format('HH:mm');
 
     this.activityForm.patchValue({
-      endedAt: endDateAfterAdd,
+      endedAt: endedAtAfterAdd,
       endTime: endTimeAfterAdd
     });
   }
@@ -187,7 +192,7 @@ export class ActivityModalComponent implements OnInit {
   onCollaboratorChange() {
     let formCollaboratorIds: any[] = this.activityForm.value.collaboratorsIds;
 
-    if (!formCollaboratorIds) {
+    if (!formCollaboratorIds || !this.allCollaborators) {
       return;
     }
 
@@ -204,21 +209,22 @@ export class ActivityModalComponent implements OnInit {
   onCollaboratorRemove(index: number) {
     let formCollaboratorIds: any[] = this.activityForm.value.collaboratorsIds;
 
-    if (!formCollaboratorIds) {
+    if (!formCollaboratorIds || !this.allCollaborators) {
       return;
     }
 
-    formCollaboratorIds.splice(index, 1);
-    this.selectedCollaborators.splice(index, 1);
-    this.activityForm.patchValue({
-      collaborators: formCollaboratorIds
-    })
+    let id: number = formCollaboratorIds[index];
+    this.collaboratorSelect.options.forEach((item: MatOption) => {
+      if (item.value === id) {
+        item.deselect();
+      }
+    });
   }
 
   onParticipantChange() {
     let formParticipantIds: any[] = this.activityForm.value.participantsIds;
 
-    if (!formParticipantIds) {
+    if (!formParticipantIds || !this.allParticipants) {
       return;
     }
 
@@ -235,15 +241,16 @@ export class ActivityModalComponent implements OnInit {
   onParticipantRemove(index: number) {
     let formParticipantIds: any[] = this.activityForm.value.participantsIds;
 
-    if (!formParticipantIds) {
+    if (!formParticipantIds || !this.allParticipants) {
       return;
     }
 
-    formParticipantIds.splice(index, 1);
-    this.selectedParticipants.splice(index, 1);
-    this.activityForm.patchValue({
-      participants: formParticipantIds
-    })
+    let id: number = formParticipantIds[index];
+    this.participantSelect.options.forEach((item: MatOption) => {
+      if (item.value === id) {
+        item.deselect();
+      }
+    });
   }
 
   getInitials(name: string) {
@@ -297,7 +304,11 @@ export class ActivityModalComponent implements OnInit {
       return;
     }
 
-    this.addActiviy();
+    if (this.activityForm.value.id) {
+      this.updateActivity();
+    } else {
+      this.addActiviy();
+    }
   }
 
   private _filterParticipants(value: string) {
@@ -344,7 +355,17 @@ export class ActivityModalComponent implements OnInit {
   addActiviy() {
     this.leadService.addActivity(this.activityForm.value).subscribe({
       next: (n) => {
-        this.activeModal.close();
+        this.activeModal.close(true);
+      },
+      error: (e) => { },
+      complete: () => { }
+    })
+  }
+
+  updateActivity() {
+    this.leadService.updateActivity(this.activityForm.value).subscribe({
+      next: (n) => {
+        this.activeModal.close(true);
       },
       error: (e) => { },
       complete: () => { }

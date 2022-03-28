@@ -6,7 +6,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
 import { LeadService } from '../lead.service';
-import { ActivitiyRequest } from '../interfaces/add-activities-reqeust.interface';
+import { AddActivitiyRequest } from '../interfaces/add-activities-reqeust.interface';
 import { DealsModalComponent } from '../../components/deals-modal/deals-modal.component';
 import { ACTIVITYSTATUS, LEADTYPE } from '../../enum/lms-type.enum';
 
@@ -123,7 +123,7 @@ export class LeadProfileComponent implements OnInit {
 
     const collaboratorIds = formValue.collaborators.map(collaborator => collaborator.id);
     const participantIds = formValue.participants.map(participant => participant.id);
-    const payload: ActivitiyRequest = {
+    const payload: AddActivitiyRequest = {
       activityTypeId: Number(formValue.activity),
       createdById: 43,
       description: formValue.description,

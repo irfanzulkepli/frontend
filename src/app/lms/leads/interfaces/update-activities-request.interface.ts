@@ -1,4 +1,5 @@
-export interface AddActivitiyRequest {
+export interface UpdateActivitiyRequest {
+    id: number,
     activityTypeId: number,
     title: string,
     description: string,
