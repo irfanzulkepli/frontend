@@ -93,13 +93,18 @@
 
         <div class="form-group row mb-3">
           <label for="formLeadTypeInput" class="col-sm-3 col-form-label text-nowrap">Contact Person</label>
-          <div class="col-sm-9 d-flex align-items-center">
-            <mat-select class="form-control" formControlName="contactPerson" placeholder="Choose a contact person">
+          <div class="col-sm-9 d-block align-items-center">
+            <mat-select class="form-control" formControlName="contactPersonId" placeholder="Choose a contact person"
+            [ngClass]="{'is-invalid': commonService.validationChecking('contactPersonId', 'required', dealForm, submitClicked)}">
               <mat-option disabled *ngIf="persons.length <= 0">No options found.</mat-option>
               <mat-option *ngFor="let person of persons" [value]="person.id">
                 {{person.name}}
               </mat-option>
             </mat-select>
+            <div class="invalid-feedback">
+              <span *ngIf="commonService.validationChecking('contactPersonId', 'required', dealForm, submitClicked)">
+                Please select a contact person.</span>
+            </div>
           </div>
         </div>
       </ng-container>

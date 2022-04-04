@@ -50,14 +50,14 @@ export class DealsModalComponent implements OnInit {
     title: ['', Validators.required],
     description: [''],
     contextableType: [LEADTYPE.PERSON],
-    personId: ['', Validators.required],
+    personId: [''],
     organizationId: [''],
     value: [''],
     pipelinesId: ['', Validators.required],
     stagesId: ['', Validators.required],
     expiredAt: [''],
     ownerId: ['', Validators.required],
-    contactPerson: ['']
+    contactPersonId: ['']
   });
 
   constructor(
@@ -77,15 +77,25 @@ export class DealsModalComponent implements OnInit {
       if (value == LEADTYPE.ORGANIZATION) {
         this.dealForm.get('personId').clearValidators();
         this.dealForm.get('organizationId').setValidators(Validators.required);
+        this.dealForm.get('contactPersonId').setValidators(Validators.required);
         this.dealForm.get('organizationId').valueChanges.subscribe(async (value) => {
+
+          if (!value) {
+            return;
+          }
+
           this.persons = await this.leadService.getPersonsByOrganizationId(value).toPromise();
         });
       }
       else {
         this.dealForm.get('organizationId').clearValidators();
+        this.dealForm.get('contactPersonId').clearValidators();
         this.dealForm.get('personId').setValidators(Validators.required);
-        this.dealForm.get('personId').reset();
       }
+
+      this.dealForm.get('personId').reset();
+      this.dealForm.get('organizationId').reset();
+      this.dealForm.get('contactPersonId').reset();
 
       this.dealForm.updateValueAndValidity();
     });
@@ -137,6 +147,7 @@ export class DealsModalComponent implements OnInit {
           this.dealForm.controls['personId'].setValue(n.contextableId);
         } else if (n.contextableType === LEADTYPE.ORGANIZATION) {
           this.dealForm.controls['organizationId'].setValue(n.contextableId);
+          this.dealForm.controls['contactPersonId'].setValue(n.contactPerson.id);
         }
 
         this.getStagesListByPipelineId();

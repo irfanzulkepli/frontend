@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LMSService } from '../../lms-service';
 import { DealsService } from '../deals.service';
-import { PipelinesService } from '../pipelines.service';
 
 @Component({
   selector: 'app-all-deals',
@@ -20,6 +18,7 @@ export class AllDealsComponent implements OnInit {
   page: number = 1;
   pageSize: number = 12;
   collectionSize: number = 0;
+  search: string = '';
 
   constructor(
     private dealsService: DealsService,
@@ -34,13 +33,13 @@ export class AllDealsComponent implements OnInit {
 
     let pageableRequest: any = {
       page: this.page - 1,
-      size: this.pageSize
+      size: this.pageSize,
+      search: this.search
     }
 
     this.dealsService.getDealsPage(pageableRequest).subscribe({
       next: (n) => {
-        // this.collectionSize = n.totalSize;
-        this.collectionSize = 49;
+        this.collectionSize = n.totalSize;
         this.deals = n.payload;
       },
       error: (e) => { },
