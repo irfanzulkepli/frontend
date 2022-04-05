@@ -1,6 +1,6 @@
 <div class="card">
   <div class="card-body">
-    <div class="card-title border-btm pb-4 d-flex justify-content-between align-items-center">
+    <div class="card-title border-btm pb-4 d-flex justify-content-between align-items-center" *ngIf="!isDeal">
       <span>
         {{ isEditContact ? 'Edit Contact' : 'Contact' }}
       </span>
@@ -12,6 +12,9 @@
         <i class="mdi mdi-checkbox-marked-outline font-size-24 cursor-pointer" (click)="onSaveClick()"></i>
       </div>
     </div>
+    <div class="card-title border-btm pb-4 d-flex justify-content-between align-items-center" *ngIf="isDeal">
+      <span *ngIf="isDeal">Contact</span>
+    </div>
 
     <ng-container *ngIf="isLoading">
       <div class="row mt-4">
@@ -22,8 +25,20 @@
         </div>
       </div>
     </ng-container>
+    
+    <div class="table-responsive" *ngIf="isDeal">
+      <table class="table mb-0">
+        <tbody>
+          <tr>
+            <td>
+              Not added yet
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-    <ng-container *ngIf="!isLoading">
+    <ng-container *ngIf="!isLoading && !isDeal">
       <div class="table-responsive" *ngIf="!isEditContact">
         <table class="table mb-0">
           <tbody>

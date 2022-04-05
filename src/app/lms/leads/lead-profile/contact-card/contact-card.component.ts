@@ -18,6 +18,7 @@ export class ContactCardComponent implements OnInit {
   isEditContact: boolean = false;
   submitClicked: boolean = false;
   isLoading: boolean = true;
+  isDeal: boolean;
 
   contactTypes;
 
@@ -34,8 +35,12 @@ export class ContactCardComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    this.contactTypes = await this.leadService.getPhoneEmailTypesListing().toPromise();
-    this.populateForm();
+    this.isDeal = this.profileType == "deals";
+    if (!this.isDeal) {
+      this.contactTypes = await this.leadService.getPhoneEmailTypesListing().toPromise();
+      this.populateForm();
+    }
+
     this.isLoading = false;
   }
 

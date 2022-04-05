@@ -1,0 +1,24 @@
+@import '../../../../../mixin.scss';
+@import '~dropzone/dist/min/dropzone.min.css';
+/* Dropzone */
+
+.d-lg {
+    display: none !important;
+}
+
+.d-lg-none {
+    display: flex !important;
+}
+
+@include screen-breakpoint($min, $desktop) {
+    .d-lg {
+        display: flex !important;
+    }
+
+    .d-lg-none {
+        display: none !important;
+    }
+    .border-rgt {
+        border-right: 1px solid lightgray;
+    }
+}

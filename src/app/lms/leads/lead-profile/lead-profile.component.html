@@ -12,19 +12,22 @@
   <div class="row">
     <div class="col-12">
       <div class="page-title-box d-flex align-items-center justify-content-between">
-        <h4 class="mb-0 font-size-18"> {{ leadProfileData.name }} |
+        <h4 class="mb-0 font-size-18"> {{ leadProfileData.name ? leadProfileData.name : leadProfileData.title}} |
           <span class="font-size-12 cursor-pointer link" (click)="onBack(profileType)">Back</span>
         </h4>
         <div class="page-title-right">
-          <button type="button" class="btn btn-primary btn-rounded" (click)="openDealsModal()">
+          <button type="button" class="btn btn-primary btn-rounded" (click)="openDealsModal()" *ngIf="!isDeal">
             Add Deal
+          </button>
+          <button type="button" class="btn btn-primary btn-rounded" *ngIf="isDeal">
+            Send proposal
           </button>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="row">
+  <div class="row" *ngIf="profileType !== 'deals'">
     <div class="col-12">
       <div class="card overflow-hidden">
         <div class="card-body pt-0">
@@ -191,21 +194,23 @@
     </div>
   </div>
 
+  <app-deal-details *ngIf="profileType == 'deals'" [leadProfileData]="leadProfileData" [profileType]="profileType"></app-deal-details>
+  
   <div class="row">
     <div class="col-xl-4">
 
       <app-details-card [leadProfileData]="leadProfileData" (onDetailsUpdate)="syncDetails()"
         [profileType]="profileType"></app-details-card>
 
-      <app-person-organization-card [leadProfileData]="leadProfileData" [profileType]="profileType"
+      <app-person-organization-card *ngIf="profileType !== 'deals'" [leadProfileData]="leadProfileData" [profileType]="profileType"
         (onPersonOrganizationUpdate)="syncDetails()"> </app-person-organization-card>
 
-      <app-contact-card *ngIf="profileType == 'person'" [leadProfileData]="leadProfileData" [profileType]="profileType"
+      <app-contact-card *ngIf="profileType != 'organization'" [leadProfileData]="leadProfileData" [profileType]="profileType"
         (onContactEmit)="syncDetails()"></app-contact-card>
 
-      <app-address-card [leadProfileData]="leadProfileData" [profileType]="profileType"></app-address-card>
+      <app-address-card *ngIf="profileType !== 'deals'" [leadProfileData]="leadProfileData" [profileType]="profileType"></app-address-card>
 
-      <app-deals-card [leadProfileData]="leadProfileData" [profileType]="profileType" [onChanges]="onChange" (onDealsEmit)="openDealsModal()"></app-deals-card>
+      <app-deals-card *ngIf="profileType !== 'deals'" [leadProfileData]="leadProfileData" [profileType]="profileType" [onChanges]="onChange" (onDealsEmit)="openDealsModal()"></app-deals-card>
 
       <app-custom-fields-card></app-custom-fields-card>
 

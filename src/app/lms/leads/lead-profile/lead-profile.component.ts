@@ -25,6 +25,7 @@ export class LeadProfileComponent implements OnInit {
   isLoadingDetails: boolean = true;
   isLoadingActivities: boolean = true;
   isLoading: boolean = true;
+  isDeal: boolean;
   submitClicked: boolean = false;
   onChange: boolean = false;
 
@@ -75,6 +76,7 @@ export class LeadProfileComponent implements OnInit {
     this.dateNow = this.minEndDate = moment().format('YYYY-MM-DD');
     this.id = Number(this.router.url.split("/").pop());
     this.profileType = this.getProfileType();
+    this.isDeal = this.profileType == "deals";
     this.activityTypes = await this.leadService.getActivityTypesListing().toPromise();
 
     this.leadService.getDetailsById(this.id, this.profileType).subscribe({
@@ -213,7 +215,7 @@ export class LeadProfileComponent implements OnInit {
     if (this.router.url.includes('people'))
       return 'person';
     if (this.router.url.includes('deal'))
-      return 'deal';
+      return 'deals';
   }
 
   getInitial(name: string) {

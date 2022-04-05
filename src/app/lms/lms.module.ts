@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { NgbActiveModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -47,6 +47,9 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     ],
     exports: [SettingsComponent],
     bootstrap: [SettingsComponent],
-    providers: [NgbActiveModal]
+    providers: [
+        NgbActiveModal,
+        DatePipe
+    ]
 })
 export class LMSModule { }

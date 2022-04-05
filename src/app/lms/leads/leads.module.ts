@@ -7,7 +7,7 @@ import { LeadProfileComponent } from './lead-profile/lead-profile.component';
 import { OrganizationComponent } from './organization/organization.component';
 import { LeadsRoutingModule } from './leads-routing.module';
 import { UIModule } from 'src/app/shared/ui/ui.module';
-import { NgbDropdownModule, NgbModalModule, NgbNavModule, NgbPaginationModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbModalModule, NgbNavModule, NgbPaginationModule, NgbTooltipModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { DropzoneConfigInterface, DropzoneModule, DROPZONE_CONFIG } from 'ngx-dropzone-wrapper';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { MatChipsModule } from '@angular/material/chips';
@@ -31,6 +31,7 @@ import { DealsCardComponent } from './lead-profile/deals-card/deals-card.compone
 import { CustomFieldsCardComponent } from './lead-profile/custom-fields-card/custom-fields-card.component';
 import { PeopleDetailsModalComponent } from './people/people-details-modal/people-details-modal.component';
 import { OrganizationDetailsModalComponent } from './organization/organization-details-modal/organization-details-modal.component';
+import { DealDetailsComponent } from './deal/deal-details/deal-details.component';
 
 
 const config: DropzoneConfigInterface = {
@@ -55,7 +56,8 @@ const config: DropzoneConfigInterface = {
         DealsCardComponent,
         CustomFieldsCardComponent,
         PeopleDetailsModalComponent,
-        OrganizationDetailsModalComponent
+        OrganizationDetailsModalComponent,
+        DealDetailsComponent
     ],
     imports: [
         CommonModule,
@@ -80,7 +82,8 @@ const config: DropzoneConfigInterface = {
         NgbPaginationModule,
         NgbTypeaheadModule,
         CustomTableModule,
-        ComponentsModule
+        ComponentsModule,
+        NgbTooltipModule
     ],
     providers: [
         {

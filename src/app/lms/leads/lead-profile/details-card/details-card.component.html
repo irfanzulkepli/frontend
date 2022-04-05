@@ -25,41 +25,88 @@
 
     <ng-container *ngIf="!isLoading">
       <div class="table-responsive" *ngIf="!isEditDetails">
-        <table class="table mb-0">
-          <tbody>
-            <tr>
-              <th scope="row">Name </th>
-              <td>{{ leadProfileData.name }}</td>
-            </tr>
-            <tr>
-              <th scope="row">Lead Group </th>
-              <td>
-                <span class="badge rounded-pill {{ leadProfileData.contactTypes.clazz }}">
-                  {{ leadProfileData.contactTypes.name }}
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">Owner </th>
-              <td>
-                <div class="media align-items-center me-2">
-                  <div
-                    class="me-1 rounded-circle avatar-xs bg-secondary d-flex align-items-center justify-content-center"
-                    alt="user-pic">
-                    {{ getInitials2(leadProfileData.owner.firstName, leadProfileData.owner.lastName) }}
+        <div *ngIf="!isDeal">
+          <table class="table mb-0">
+            <tbody>
+              <tr>
+                <th scope="row">Name </th>
+                <td>{{ leadProfileData.name }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Lead Group </th>
+                <td>
+                  <span class="badge rounded-pill {{ leadProfileData.contactTypes.clazz }}">
+                    {{ leadProfileData.contactTypes.name }}
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Owner </th>
+                <td>
+                  <div class="media align-items-center me-2">
+                    <div
+                      class="me-1 rounded-circle avatar-xs bg-secondary d-flex align-items-center justify-content-center"
+                      alt="user-pic">
+                      {{ getInitials2(leadProfileData.owner.firstName, leadProfileData.owner.lastName) }}
+                    </div>
+                    <div class="media-body">
+                      {{ leadProfileData.owner.firstName }} {{ leadProfileData.owner.lastName }}
+                    </div>
                   </div>
-                  <div class="media-body">
-                    {{ leadProfileData.owner.firstName }} {{ leadProfileData.owner.lastName }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div *ngIf="isDeal">
+          <table class="table mb-0">
+            <tbody>
+              <tr>
+                <th scope="row">Title</th>
+                <td>{{ leadProfileData.title }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Description</th>
+                <td> {{ leadProfileData.description ? leadProfileData.description : 'Not added yet' }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Status</th>
+                <td> 
+                  <span class="badge rounded-pill bg-info">
+                    {{ getStatus(this.leadProfileData.statuses.name) }}
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Value</th>
+                <td> {{ leadProfileData.value }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Expected closing date</th>
+                <td> {{ leadProfileData.expiredAt ? leadProfileData.expiredAt : 'Not added yet' }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Owner </th>
+                <td>
+                  <div class="media align-items-center me-2">
+                    <div
+                      class="me-1 rounded-circle avatar-xs bg-secondary d-flex align-items-center justify-content-center"
+                      alt="user-pic">
+                      {{ getInitials2(leadProfileData.owner.firstName, leadProfileData.owner.lastName) }}
+                    </div>
+                    <div class="media-body">
+                      {{ leadProfileData.owner.firstName }} {{ leadProfileData.owner.lastName }}
+                    </div>
                   </div>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div class="table-responsive" *ngIf="isEditDetails">
-        <form [formGroup]="detailForm">
+        <form [formGroup]="detailForm" *ngIf="!isDeal">
           <table class="table table-nowrap mb-0">
             <tbody>
               <tr>
@@ -97,6 +144,116 @@
                   </select>
                   <div *ngIf="detailForm.controls.owner.getError('required')" class="invalid-feedback">
                     <span *ngIf="detailForm.controls.owner.getError('required')">Please select an owner.</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </form>
+        <form [formGroup]="dealDetailForm" *ngIf="isDeal">
+          <table class="table mb-0">
+            <tbody>
+              <tr>
+                <th scope="row">Title </th>
+                <td>
+                  <input placeholder="Enter title" class="form-control" type="text" formControlName="title"
+                  [ngClass]="{'is-invalid': commonService.validationChecking('title', 'required', dealDetailForm, submitClicked)}" />
+                  <div class="invalid-feedback">
+                    <span *ngIf="commonService.validationChecking('title', 'required', dealDetailForm, submitClicked)">Please provide
+                      a title.</span>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Description</th>
+                <td>
+                  <textarea class="form-control text-muted" id="formDescriptionInput" rows="3" placeholder="Description here" 
+                  formControlName="description"></textarea>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Value</th>
+                <td>
+                  <input type="number" class="form-control" id="formDealValueInput" placeholder="Enter Deal Value"
+                  formControlName="value">
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Lead Type</th>
+                <td>
+                  <div class="form-check d-flex align-items-center" *ngFor="let lead of dealLeadTypes">
+                    <input class="form-check-input" [id]="lead" type="radio" [value]="lead" formControlName="contextableType">
+                    <label class="form-check-label" [for]="lead">&nbsp;{{ lead }}</label>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Lead</th>
+                <td *ngIf="dealDetailForm.controls.contextableType.value.toLowerCase() == 'person'">
+                  <mat-select class="form-select" formControlName="contextableId" placeholder="Choose a contact person"
+                    [ngClass]="{'is-invalid': commonService.validationChecking('contextableId', 'required', dealDetailForm, submitClicked)}">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="personFilterCtrl" placeholderLabel="Search"
+                        noEntriesFoundLabel="No Results"></ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let person of filteredPerson | async" [value]="person.id">
+                      {{person.name}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="invalid-feedback">
+                    <span *ngIf="commonService.validationChecking('contextableId', 'required', dealDetailForm, submitClicked)">Please
+                      select
+                      a person.</span>
+                  </div>
+                </td>
+                <td *ngIf="dealDetailForm.controls.contextableType.value.toLowerCase() == 'organization'">
+                  <mat-select class="form-control" formControlName="contextableId" placeholder="Choose an organization"
+                    [ngClass]="{'is-invalid': commonService.validationChecking('contextableId', 'required', dealDetailForm, submitClicked)}">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="organizationFilterCtrl" placeholderLabel="Search"
+                        noEntriesFoundLabel="No Results"></ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let organization of filteredOrganizations | async" [value]="organization.id">
+                      {{organization.name}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="invalid-feedback">
+                    <span
+                      *ngIf="commonService.validationChecking('contextableId', 'required', dealDetailForm, submitClicked)">Please
+                      select an
+                      organization.</span>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="dealDetailForm.controls.contextableType.value.toLowerCase() == 'organization'">
+                <th scope="row">Contact Person</th>
+                <td>
+                  <mat-select class="form-control" formControlName="contactPerson" placeholder="Choose a contact person">
+                    <mat-option disabled *ngIf="persons.length <= 0">No options found.</mat-option>
+                    <mat-option *ngFor="let person of persons" [value]="person.id">
+                      {{person.name}}
+                    </mat-option>
+                  </mat-select>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Expecting Closing Date</th>
+                <td>
+                  <input class="form-control" type="date" id="formExpClosingDateInput" formControlName="expiredAt"
+                  placeholder="Choose a date">
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Owner</th>
+                <td>
+                  <select class="form-select" formControlName="ownerId"
+                    [ngClass]="{'is-invalid': submitClicked && dealDetailForm.controls.ownerId.getError('required')}">
+                    <option *ngFor="let owner of allUser" [value]="owner.id">
+                      {{ owner.firstName }} {{ owner.lastName }}
+                    </option>
+                  </select>
+                  <div *ngIf="dealDetailForm.controls.ownerId.getError('required')" class="invalid-feedback">
+                    <span *ngIf="dealDetailForm.controls.ownerId.getError('required')">Please select an owner.</span>
                   </div>
                 </td>
               </tr>

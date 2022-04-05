@@ -1,0 +1,173 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card overflow-hidden">
+      <div class="card-body pt-0">
+
+        <ng-container *ngIf="isLoading">
+          <div class="row mt-4">
+            <div class="col-12 d-flex justify-content-center">
+              <div class="spinner-border text-primary m-1" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="!isLoading">
+          <div class="row mt-4">
+            <div class="col-xl-2 d-flex align-items-center justify-content-center">
+              <div class="avatar-lg">
+                <img src="assets/images/users/avatar-1.jpg" alt="" class="img-thumbnail rounded-circle">
+              </div>
+            </div>
+            <div class="col-xl-3 d-flex align-items-center border-rgt d-lg">
+              <div class="row">
+                <div class="col-12">
+                  <p>{{ leadProfileData.person.name }}</p>
+                </div>
+                <div>
+                  <button class="btn btn-success btn-sm" (click)="openWonModal(wonContent)">WON</button>
+                  <button class="btn btn-primary btn-sm" (click)="openLostModal(lostContent)">LOST</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 d-flex align-items-center border-rgt">
+              <div class="row" style="padding-left: 20px;">
+                <div class="col-12">
+                  <div class="media d-flex align-items-center">
+                    <div class="me-4 font-size-24">
+                      <i class="bx bx-dollar"></i>
+                    </div>
+                    <div class="media-body word-break">
+                      <span class="font-size-14">Value:</span>
+                      <p>$ {{ leadProfileData.value }}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="media d-flex align-items-center">
+                    <div class="me-4 font-size-24">
+                      <i class="bx bx-disc"></i>
+                    </div>
+                    <div class="media-body">
+                      <span class="font-size-14">Age:</span>
+                      <p style="margin-bottom: 0px;">
+                        {{ getTimeLapsed() }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-4 d-flex align-items-center">
+              <div class="row" style="padding-left: 20px;">
+                <div class="col-12">
+                  <div class="media d-flex align-items-center">
+                    <div class="me-4 font-size-24">
+                      <i class="bx bx-user"></i>
+                    </div>
+                    <div class="media-body word-break">
+                      <span class="font-size-14">Owner:</span>
+                      <p>
+                        {{ leadProfileData.owner.firstName }} {{ leadProfileData.owner.lastName }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="media d-flex align-items-center">
+                    <div class="me-4 font-size-24">
+                      <i class="bx bx-calendar"></i>
+                    </div>
+                    <div class="media-body">
+                      <span class="font-size-14">Created:</span>
+                      <p style="margin-bottom: 0px;">
+                        {{ leadProfileData.createdAt | date: 'dd-MM-YYYY' }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <form [formGroup]="pipelineForm">
+            <div style="display: flex;" class="btn-group mt-2" role="group" aria-label="Basic radio toggle button group"
+              formArrayName="stages">
+              <ng-container *ngFor="let stageForm of getStagesControl(); let i = index">
+                <ng-container [formGroup]="stageForm">
+                  <input type="checkbox" class="btn-check" autocomplete="off" id="{{stages[i].name}}"
+                    formControlName="value" (change)="onCheckChange($event)" value="{{stages[i].id}}">
+                  <label ngbTooltip="{{stages[i].name}}" class="btn btn-outline-secondary" for={{stages[i].name}}>
+                    A month</label>
+                </ng-container>
+              </ng-container>
+            </div>
+          </form>
+
+          <div class="d-flex justify-content-between">
+            <div class="font-size-90 text-muted d-flex align-items-center">{{ leadProfileData.pipelines.name }} > {{
+              leadProfileData.stages.name }}</div>
+
+            <div class="me-4 font-size-90 d-flex align-items-center">
+              <i class="bx bx-calendar-alt"></i>
+              <p class="mb-0" ngbTooltip="Expected Closing Date" disabled>&nbsp;{{ leadProfileData.expiredAt ?
+                leadProfileData.expiredAt : 'Not added yet'}}</p>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Won Modal -->
+<ng-template #wonContent let-modal>
+  <div class="modal-body d-flex flex-column justify-content-center modal-alert">
+    <div class="text-center">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        class="feather feather-check-circle text-success">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+    </div>
+    <h5 class="text-center font-weight-bold mt-4">Congratulation!</h5>
+    <p class="mb-primary text-center font-size-90 p-0">You won the deal successfully</p>
+    <div class="text-center">
+      <button class="btn btn-success" (click)="modal.dismiss('Cross click')">Thank You</button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Lost Modal -->
+<ng-template #lostContent let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Deal lost</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="dealLostForm">
+      <div class="form-group row mb-3">
+        <label for="formLostReasonInput" class="col-sm-2 col-form-label text-nowrap">Lost Reason</label>
+        <div class="col-sm-10 d-flex align-items-center">
+          <select class="form-select" formControlName="lostReasonsId">
+            <option *ngFor="let lostReason of lostReasons" value="{{lostReason.id}}">{{ lostReason.lostReason }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row mb-3">
+        <label for="formCommentInput" class="col-sm-2 col-form-label">Comment</label>
+        <div class="col-sm-10">
+          <textarea class="form-control text-muted" id="formCommentInput" rows="3" formControlName="comment"></textarea>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="updateDealsToLost()">Confirm</button>
+  </div>
+</ng-template>
