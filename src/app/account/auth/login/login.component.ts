@@ -8,6 +8,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 
 import { environment } from '../../../../environments/environment';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Store } from '@ngxs/store';
+import { StoreCredentials } from 'src/app/state/account-action';
 
 @Component({
   selector: 'app-login',
@@ -30,12 +33,16 @@ export class LoginComponent implements OnInit {
 
   // tslint:disable-next-line: max-line-length
   constructor(private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router, private authenticationService: AuthenticationService,
-    private authFackservice: AuthfakeauthenticationService) { }
+    private authFackservice: AuthfakeauthenticationService,
+    private httpClient: HttpClient,
+    private store: Store) { }
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
-      email: ['admin@themesbrand.com', [Validators.required, Validators.email]],
-      password: ['123456', [Validators.required]],
+      username: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required]],
+      grant_type: ['password', [Validators.required]],
+      client_id: ['dev-test', [Validators.required]],
     });
 
     // reset login status
@@ -51,31 +58,45 @@ export class LoginComponent implements OnInit {
   /**
    * Form submit
    */
-  onSubmit() {
+  async onSubmit() {
     this.submitted = true;
-
     // stop here if form is invalid
     if (this.loginForm.invalid) {
       return;
-    } else {
-      if (environment.defaultauth === 'firebase') {
-        this.authenticationService.login(this.f.email.value, this.f.password.value).then((res: any) => {
-          this.router.navigate(['/dashboard']);
-        })
-          .catch(error => {
-            this.error = error ? error : '';
-          });
-      } else {
-        this.authFackservice.login(this.f.email.value, this.f.password.value)
-          .pipe(first())
-          .subscribe(
-            data => {
-              this.router.navigate(['/dashboard']);
-            },
-            error => {
-              this.error = error ? error : '';
-            });
-      }
     }
+
+    const loginRes = await this.login();
+    console.log('loginRes: ', loginRes);
+
+    const payload = {
+      tokenType: loginRes.token_type,
+      refreshToken: loginRes.refresh_token,
+      accessToken: loginRes.access_token
+    };
+
+    this.store.dispatch(new StoreCredentials(payload)).subscribe(() => {
+      this.router.navigate(['/lms/dashboard']);
+    })
+  }
+
+  async login() {
+    const data = new URLSearchParams();
+
+    for (const key in this.loginForm.value) {
+      data.set(key, this.loginForm.value[key]);
+    }
+
+    let apiUrl: string = "https://d1isjhghszo6bn.cloudfront.net/auth/realms/feng-test/protocol/openid-connect/token";
+
+    const res: any = await this.httpClient.post(apiUrl, data.toString(), {
+      headers: new HttpHeaders()
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+    }).toPromise();
+
+    if (res.errorCode) {
+      throw new Error(res.message);
+    }
+
+    return res;
   }
 }

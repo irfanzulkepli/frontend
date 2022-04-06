@@ -2,7 +2,7 @@
   <div class="card-body">
     <div class="card-title border-btm pb-4 d-flex justify-content-between align-items-center">
       <span>
-        Deals <span *ngIf="deals?.totalSize"> ({{ deals.totalSize }}) </span>
+        Deals <span *ngIf="!deals?.totalSize">(0)</span> <span *ngIf="deals?.totalSize"> ({{ deals.totalSize }}) </span>
       </span>
       <div class="page-title-right">
         <i class="mdi mdi-plus-box-outline font-size-24 cursor-pointer" (click)="openDealsModal()"></i>
@@ -55,7 +55,8 @@
             </div>
           </div>
           <ng-container *ngIf="deals.totalSize > 3">
-            <button style="width: 100%;" type="button" class="btn btn-primary btn-rounded" (click)="openModal(dealsModal)">
+            <button style="width: 100%;" type="button" class="btn btn-primary btn-rounded"
+              (click)="openModal(dealsModal)">
               View all
             </button>
           </ng-container>

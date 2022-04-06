@@ -39,6 +39,7 @@ export class LeadProfileComponent implements OnInit {
   filteredParticipants;
 
   activityTypes;
+  createdDate;
 
   activityForm: FormGroup = this.fb.group({
     activity: ['1', Validators.required],
@@ -82,6 +83,8 @@ export class LeadProfileComponent implements OnInit {
     this.leadService.getDetailsById(this.id, this.profileType).subscribe({
       next: (n) => {
         this.leadProfileData = n;
+        this.createdDate = moment(n.createdAt, 'YYYY-MM-DD HH:mm:ss').format('DD-MM-YYYY');
+
         this.initForm();
         this.isLoading = false;
         this.isLoadingDetails = false;
