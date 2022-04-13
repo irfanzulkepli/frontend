@@ -81,16 +81,7 @@ export class CustomTableComponent implements OnInit {
   }
 
   getStatus(status: string) {
-    switch (status) {
-      case 'status_done': {
-        return 'Done';
-        break;
-      }
-      case 'status_open': {
-        return 'Open';
-        break;
-      }
-    }
+    return status;
   }
 
   getContextableName(element, contextableType: string) {

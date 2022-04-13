@@ -101,7 +101,7 @@
                           element[column['columnDef']] }}
                         </span>
                         <span *ngIf="column['enum']">
-                          {{ getStatus(element[column['columnDef']].name) }}
+                          {{ getStatus(element[column['columnDef']].name) | slice:7 | titlecase }}
                         </span>
                       </span>
                     </td>
@@ -179,7 +179,7 @@
                       <ng-container *ngIf="column['showBadge']">
                         <span class="badge rounded-pill
                         {{ element[column['columnDef']] ? element[column['columnDef']] : '' }} font-size-12">
-                            {{ element[column['columnDef']].toLowerCase() }}
+                          {{ element[column['columnDef']].toLowerCase() }}
                         </span>
                         <span class="d-flex align-items-center link fw-normal cursor-pointer"
                           (click)="redirect(element.contextableId, getContextableType(element[column['columnDef']]))">

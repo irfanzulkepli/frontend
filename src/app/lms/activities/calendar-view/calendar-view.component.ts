@@ -1,11 +1,11 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Calendar, CalendarOptions, EventClickArg, FullCalendarComponent } from '@fullcalendar/angular';
+import { Calendar, CalendarOptions, EventClickArg } from '@fullcalendar/angular';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivityModalComponent } from '../../components/activity-modal/activity-modal.component';
-import { ACTIVITIES } from '../../data/activities.data';
-import { DealsService } from '../../deals/deals.service';
+import { ACTIVITYTYPE } from '../../enum/lms-type.enum';
+import { LeadService } from '../../leads/lead.service';
 
 @Component({
   selector: 'app-calendar-view',
@@ -19,6 +19,8 @@ export class CalendarViewComponent implements OnInit {
   formData: FormGroup;
   // public activitiesData = ACTIVITIES;
   public activitiesData: any[] = [];
+  public contextableTypes: string[] = [ACTIVITYTYPE.PERSON, ACTIVITYTYPE.ORGANIZATION, ACTIVITYTYPE.DEAL];
+  public selectedContextableType: string = '';
 
   calendarEvents: any[] = [];
   newEventDate: any;
@@ -28,7 +30,7 @@ export class CalendarViewComponent implements OnInit {
   constructor(
     private modalService: NgbModal,
     private formBuilder: FormBuilder,
-    private dealsService: DealsService
+    private leadService: LeadService
   ) { }
 
   calendarOptions: CalendarOptions = {
@@ -132,7 +134,8 @@ export class CalendarViewComponent implements OnInit {
 
   getDealsActivityList() {
     this.activitiesData = [];
-    this.dealsService.getDealsActivityList().subscribe({
+    let param: any = { contextableType: this.selectedContextableType };
+    this.leadService.getActivityList(param).subscribe({
       next: (n) => {
         this.activitiesData = n;
         this.getCalendarEvents();

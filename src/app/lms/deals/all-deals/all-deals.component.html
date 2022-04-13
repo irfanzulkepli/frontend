@@ -1,22 +1,61 @@
-<div class="row d-flex flex-row-reverse">
-  <div class="col-sm-12 col-md-12 col-lg-4">
-    <div class="input-group mb-3">
-      <input type="text" class="form-control" placeholder="Search" [(ngModel)]="search">
-      <button type="button" class="btn btn-primary" (click)="getDealsPage()">Search</button>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="page-title-box d-flex align-items-center justify-content-between">
+        <h4 class="mb-0 font-size-18"> All Deals </h4>
+        <div class="page-title-right">
+          <button type="button" class="btn btn-primary btn-rounded" (click)="addDealsModal()">
+            Add Deals
+          </button>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="row">
-  <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-primary" *ngFor="let deal of deals">
-    <app-deals-card [cardData]="deal" [pipelineOptions]="pipelines" [stageTypes]="stages" [userData]="users"
-      [person]="persons" (refreshAllDeals)="getDealsPage()"></app-deals-card>
+  <div class="row d-flex flex-row-reverse">
+    <div class="col-sm-12 col-md-12 col-lg-3">
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Search" [(ngModel)]="search"
+          (ngModelChange)="searchInput.next($event)">
+      </div>
+    </div>
+
+    <div class="col-sm-12 col-md-12 col-lg-9">
+      <div class="row">
+
+        <div class="col-sm-12 col-md-12 col-lg-3">
+          <div class="input-group mb-3">
+            <select class="form-select" [(ngModel)]="pipelineId" (ngModelChange)=" getDealsPage()">
+              <option *ngFor="let data of pipeline" value="{{data.id}}">
+                {{data.name}}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-12 col-lg-4">
+          <div class="input-group mb-3">
+            <input type="date" class="form-control" [(ngModel)]="dateFrom" (ngModelChange)=" getDealsPage()">
+            <input type="date" class="form-control" [(ngModel)]="dateTo" (ngModelChange)=" getDealsPage()">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
   </div>
-</div>
 
-<div class="row mt-3">
-  <div class="col-lg-12 d-flex justify-content-end">
-    <ngb-pagination [collectionSize]="collectionSize" [pageSize]="pageSize" [maxSize]="5" [rotate]="true"
-      [(page)]="page" [ellipses]="false" [boundaryLinks]="true" (pageChange)="getDealsPage()"></ngb-pagination>
+  <div class="row">
+    <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-primary" *ngFor="let deal of deals">
+      <app-deals-card [cardData]="deal" [pipelineOptions]="pipelines" [stageTypes]="stages" [userData]="users"
+        [person]="persons" (refreshAllDeals)="getDealsPage()"></app-deals-card>
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-lg-12 d-flex justify-content-end">
+      <ngb-pagination [collectionSize]="collectionSize" [pageSize]="pageSize" [maxSize]="5" [rotate]="true"
+        [(page)]="page" [ellipses]="false" [boundaryLinks]="true" (pageChange)="getDealsPage()"></ngb-pagination>
+    </div>
   </div>
 </div>

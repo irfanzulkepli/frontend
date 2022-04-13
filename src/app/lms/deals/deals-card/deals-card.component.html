@@ -6,9 +6,10 @@
         <img src="assets/images/users/avatar-1.jpg" class="avatar-xs rounded-circle" alt="">
       </div>
       <div class="media-body">
-        <h5 class="font-size-15 text-primary mt-0 mb-1" (click)="openProfile()" style="cursor: pointer;">{{
-          cardData.title }}</h5>
-        <h5><span class="badge rounded-pill" [ngClass]="'bg-'+cardData.statuses.class_">{{ cardData.statuses.name|slice:7 }}</span></h5>
+        <h5 class="font-size-15 text-primary mt-0 mb-1" (click)="openProfile()" style="cursor: pointer;">
+          {{ cardData.title }}</h5>
+        <h5><span class="badge rounded-pill" [ngClass]="'bg-'+cardData.statuses.clazz">
+            {{ cardData.statuses.name|slice:7 }}</span></h5>
       </div>
       <div ngbDropdown>
         <div class="btn-group ms-auto">

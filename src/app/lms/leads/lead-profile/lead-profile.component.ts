@@ -81,7 +81,7 @@ export class LeadProfileComponent implements OnInit {
     this.activityTypes = await this.leadService.getActivityTypesListing().toPromise();
 
     this.leadService.getDetailsById(this.id, this.profileType).subscribe({
-      next: (n) => {
+      next: (n:any) => {
         this.leadProfileData = n;
         this.createdDate = moment(n.createdAt, 'YYYY-MM-DD HH:mm:ss').format('DD-MM-YYYY');
 

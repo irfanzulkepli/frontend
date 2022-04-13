@@ -34,10 +34,6 @@ export class DealsService {
     return this.httpClient.get(environment.baseUrl + '/deals/' + id + '/activities/list');
   }
 
-  getDealsActivityList(): Observable<any> {
-    return this.httpClient.get(environment.baseUrl + '/deals/activities/list');
-  }
-
   getFollowersById(id: number, pageableRequest, profileType: string) {
     return this.httpClient.get(`${environment.baseUrl}/${profileType}/${id}/followers/page`, { params: pageableRequest });
   }

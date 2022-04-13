@@ -128,6 +128,10 @@ export class LeadService {
     return this.httpClient.post(`${environment.baseUrl}/${profileType}/${id}/tag`, requestBody);
   }
 
+  getActivityList(param: any): Observable<any> {
+    return this.httpClient.get(environment.baseUrl + '/activities/list', { params: param });
+  }
+
   addActivity(requestBody: AddActivitiyRequest) {
     return this.httpClient.post(`${environment.baseUrl}/activities/add`, requestBody);
   }
