@@ -21,11 +21,6 @@ export class LostReasonsComponent implements OnInit {
       type: 'text'
     },
     {
-      displayName: 'Active',
-      columnDef: 'active',
-      type: 'text'
-    },
-    {
       displayName: 'Created by',
       columnDef: 'createdBy.firstName',
       type: 'text'

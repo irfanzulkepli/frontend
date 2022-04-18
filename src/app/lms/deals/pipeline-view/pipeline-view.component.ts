@@ -98,7 +98,7 @@ export class PipelineViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  addModal() {
+  addDealsModal() {
     const modalRef = this.modalService.open(DealsModalComponent);
     modalRef.componentInstance.refreshDealsListPipelineView.subscribe(($e) => {
       this.getDealsListByPipelineId();

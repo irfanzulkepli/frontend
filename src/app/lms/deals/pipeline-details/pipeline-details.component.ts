@@ -76,7 +76,7 @@ export class PipelineDetailsComponent implements OnInit {
       priority: data ? data.priority : ''
     });
 
-    if (this.action === 'Edit'){
+    if (data && this.action === 'Edit') {
       stageForm.controls['id'].setValue(data.id);
     }
 

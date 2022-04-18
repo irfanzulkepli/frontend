@@ -38,11 +38,6 @@ export class PipelinesComponent implements OnInit {
       type: 'number'
     },
     {
-      displayName: 'Active',
-      columnDef: 'active',
-      type: 'text'
-    },
-    {
       displayName: 'Created date',
       columnDef: 'createdAt',
       type: 'date'
