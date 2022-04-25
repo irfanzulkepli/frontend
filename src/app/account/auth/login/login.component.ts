@@ -1,16 +1,13 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
+import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngxs/store';
+import { NgxQrcodeElementTypes, NgxQrcodeErrorCorrectionLevels } from '@techiediaries/ngx-qrcode';
+import { StoreCredentials } from 'src/app/state/account-action';
 import { AuthenticationService } from '../../../core/services/auth.service';
 import { AuthfakeauthenticationService } from '../../../core/services/authfake.service';
-
-import { ActivatedRoute, Router } from '@angular/router';
-import { first } from 'rxjs/operators';
-
-import { environment } from '../../../../environments/environment';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Store } from '@ngxs/store';
-import { StoreCredentials } from 'src/app/state/account-action';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-login',
@@ -28,6 +25,11 @@ export class LoginComponent implements OnInit {
   error = '';
   returnUrl: string;
 
+  elementType = NgxQrcodeElementTypes.URL;
+  correctionLevel = NgxQrcodeErrorCorrectionLevels.HIGH;
+  qrLoading: boolean = false;
+  qrValue = '';
+
   // set the currenr year
   year: number = new Date().getFullYear();
 
@@ -35,7 +37,9 @@ export class LoginComponent implements OnInit {
   constructor(private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router, private authenticationService: AuthenticationService,
     private authFackservice: AuthfakeauthenticationService,
     private httpClient: HttpClient,
-    private store: Store) { }
+    private store: Store,
+    private AuthService: AuthService
+  ) { }
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
@@ -50,6 +54,9 @@ export class LoginComponent implements OnInit {
     // get return url from route parameters or default to '/'
     // tslint:disable-next-line: no-string-literal
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+
+    this.getSfactrOTPlessAuthSmart();
+    // this.getSfactrAuthSmart();
   }
 
   // convenience getter for easy access to form fields
@@ -98,5 +105,35 @@ export class LoginComponent implements OnInit {
     }
 
     return res;
+  }
+
+  getSfactrAuthSmart() {
+    this.qrLoading = true;
+    this.AuthService.getSfactrAuthSmart().subscribe({
+      next: (n) => {
+        if (n.ResultCode == 100) {
+          this.qrValue = decodeURIComponent(decodeURIComponent(n.WhatsAppLink));
+        }
+      },
+      error: (e) => { },
+      complete: () => {
+        this.qrLoading = false;
+      }
+    })
+  }
+
+  getSfactrOTPlessAuthSmart() {
+    this.qrLoading = true;
+    this.AuthService.getSfactrOTPlessAuthSmart().subscribe({
+      next: (n) => {
+        if (n.ResultCode == 100) {
+          this.qrValue = decodeURIComponent(decodeURIComponent(n.WhatsAppLink));
+        }
+      },
+      error: (e) => { },
+      complete: () => {
+        this.qrLoading = false;
+      }
+    })
   }
 }

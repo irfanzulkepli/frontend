@@ -29,6 +29,7 @@ import { JwtInterceptor } from './core/helpers/jwt.interceptor';
 import { FakeBackendInterceptor } from './core/helpers/fake-backend';
 import { AccountState } from './state/account-state';
 import { AccountService } from './state/account-service';
+import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
 
 if (environment.defaultauth === 'firebase') {
   initFirebaseBackend(environment.firebaseConfig);
@@ -75,7 +76,8 @@ export function createTranslateLoader(http: HttpClient): any {
     }),
     NgxsStoragePluginModule.forRoot({
       storage: 1
-    })
+    }),
+    NgxQRCodeModule
   ],
   bootstrap: [AppComponent],
   providers: [

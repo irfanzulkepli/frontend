@@ -14,9 +14,12 @@
 
   <div class="row d-flex flex-row-reverse">
     <div class="col-sm-12 col-md-12 col-lg-3">
-      <div class="input-group mb-3">
-        <input type="text" class="form-control" placeholder="Search" [(ngModel)]="search"
-          (ngModelChange)="searchInput.next($event)">
+      <div class="form-group">
+        <label>Search</label>
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="Search" [(ngModel)]="search"
+            (ngModelChange)="searchInput.next($event)">
+        </div>
       </div>
     </div>
 
@@ -24,19 +27,52 @@
       <div class="row">
 
         <div class="col-sm-12 col-md-12 col-lg-3">
-          <div class="input-group mb-3">
-            <select class="form-select" [(ngModel)]="pipelineId" (ngModelChange)=" getDealsPage()">
-              <option *ngFor="let data of pipeline" value="{{data.id}}">
-                {{data.name}}
-              </option>
-            </select>
+          <div class="form-group">
+            <label>Pipelines</label>
+            <div class="input-group mb-3">
+              <select class="form-select" [(ngModel)]="pipelineId" (ngModelChange)=" getDealsPage()">
+                <option value="">All pipeline</option>
+                <option *ngFor="let data of pipeline" value="{{data.id}}">
+                  {{data.name}}
+                </option>
+              </select>
+            </div>
           </div>
         </div>
 
-        <div class="col-sm-12 col-md-12 col-lg-4">
-          <div class="input-group mb-3">
-            <input type="date" class="form-control" [(ngModel)]="dateFrom" (ngModelChange)=" getDealsPage()">
-            <input type="date" class="form-control" [(ngModel)]="dateTo" (ngModelChange)=" getDealsPage()">
+        <div class="col-sm-12 col-md-12 col-lg-3">
+          <div class="form-group">
+            <label>Created Date</label>
+            <div class="input-group mb-3">
+              <input type="date" class="form-control" [(ngModel)]="dateFrom" (ngModelChange)=" getDealsPage()">
+              <input type="date" class="form-control" [(ngModel)]="dateTo" (ngModelChange)=" getDealsPage()">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-12 col-lg-3">
+          <div class="form-group">
+            <label>Proposals</label>
+            <div class="input-group mb-3">
+              <select class="form-select" [(ngModel)]="hasProposals" (ngModelChange)=" getDealsPage()">
+                <option value="0">Show All Deals</option>
+                <option value="1">With Proposals</option>
+                <option value="2">Without Proposals</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-12 col-lg-3">
+          <div class="form-group">
+            <label>Tags</label>
+            <div class="input-group mb-3">
+              <mat-select class="form-control chip-bg" multiple [(ngModel)]="tagIds" (ngModelChange)="getDealsPage()">
+                <mat-option *ngFor="let data of tags" value="{{data.id}}">
+                  {{data.name}}
+                </mat-option>
+              </mat-select>
+            </div>
           </div>
         </div>
 

@@ -32,6 +32,7 @@ export class AllDealsComponent implements OnInit {
   tagIds: string[] = [];
   dateFrom: string = '';
   dateTo: string = '';
+  hasProposals: number = 0;
 
   constructor(
     private dealsService: DealsService,
@@ -78,8 +79,8 @@ export class AllDealsComponent implements OnInit {
       pipelineId: this.pipelineId,
       dateFrom: this.dateFrom,
       dateTo: this.dateTo,
-      tagIds: '8',
-      hasProposals: true
+      tagIds: this.tagIds,
+      hasProposals: this.hasProposals
     }
 
     this.dealsService.getDealsPage(pageableRequest).subscribe({
@@ -96,9 +97,6 @@ export class AllDealsComponent implements OnInit {
     this.pipelinesService.getPipelinesList().subscribe({
       next: (n) => {
         this.pipeline = n;
-        if (!this.pipelineId && this.pipeline.length > 0) {
-          this.pipelineId = this.pipeline[0].id + '';
-        }
       },
       error: (e) => { },
       complete: () => { }

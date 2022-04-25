@@ -50,6 +50,7 @@
     "@ngxs/storage-plugin": "^3.7.3",
     "@ngxs/store": "^3.7.3",
     "@nicky-lenaers/ngx-scroll-to": "^9.0.0",
+    "@techiediaries/ngx-qrcode": "^9.1.0",
     "@types/chartist": "^0.11.0",
     "angular-archwizard": "^7.0.0",
     "apexcharts": "^3.27.1",
@@ -95,7 +96,7 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^13.2.2",
+    "@angular-devkit/build-angular": "^13.2.5",
     "@angular-eslint/builder": "~13.0.1",
     "@angular-eslint/eslint-plugin": "~13.0.1",
     "@angular-eslint/eslint-plugin-template": "~13.0.1",
@@ -128,7 +129,8 @@
     "karma-jasmine-html-reporter": "^1.5.0",
     "protractor": "~7.0.0",
     "ts-node": "~8.3.0",
-    "typescript": "~4.4.4"
+    "typescript": "~4.4.4",
+    "webpack": "^5.72.0"
   },
   "description": "An Ionic project"
 }
