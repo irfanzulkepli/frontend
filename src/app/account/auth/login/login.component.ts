@@ -4,10 +4,12 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { NgxQrcodeElementTypes, NgxQrcodeErrorCorrectionLevels } from '@techiediaries/ngx-qrcode';
+import { interval } from 'rxjs/internal/observable/interval';
 import { StoreCredentials } from 'src/app/state/account-action';
 import { AuthenticationService } from '../../../core/services/auth.service';
 import { AuthfakeauthenticationService } from '../../../core/services/authfake.service';
 import { AuthService } from '../auth.service';
+import { OTPlessAuthSmartWebSocketAPI } from '../OTPlessAuthSmartWebSocketAPI';
 
 @Component({
   selector: 'app-login',
@@ -20,15 +22,22 @@ import { AuthService } from '../auth.service';
  */
 export class LoginComponent implements OnInit {
 
+  loginType: string = '';
   loginForm: FormGroup;
   submitted = false;
   error = '';
   returnUrl: string;
 
+  otplessAuthSmartWebSocketAPI: OTPlessAuthSmartWebSocketAPI;
+  wsMessage: string = 'test message';
+
   elementType = NgxQrcodeElementTypes.URL;
   correctionLevel = NgxQrcodeErrorCorrectionLevels.HIGH;
+  qrEnabled: boolean = false;
   qrLoading: boolean = false;
   qrValue = '';
+  sessionId = '';
+  phoneNumber = '';
 
   // set the currenr year
   year: number = new Date().getFullYear();
@@ -38,7 +47,7 @@ export class LoginComponent implements OnInit {
     private authFackservice: AuthfakeauthenticationService,
     private httpClient: HttpClient,
     private store: Store,
-    private AuthService: AuthService
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
@@ -56,7 +65,13 @@ export class LoginComponent implements OnInit {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
 
     this.getSfactrOTPlessAuthSmart();
-    // this.getSfactrAuthSmart();
+
+    this.otplessAuthSmartWebSocketAPI = new OTPlessAuthSmartWebSocketAPI(this);
+    this._connect();
+
+    interval(5000).subscribe((x => {
+      this._sendMessage();
+    }));
   }
 
   // convenience getter for easy access to form fields
@@ -73,9 +88,15 @@ export class LoginComponent implements OnInit {
     }
 
     const loginRes = await this.login();
-    console.log('loginRes: ', loginRes);
+    this.storeLoginDetails(loginRes);
+  }
 
-    const payload = {
+  storeLoginDetails(loginRes: any) {
+    this.qrLoading = true;
+    this.qrValue = '';
+    this._disconnect();
+
+    const payload: any = {
       tokenType: loginRes.token_type,
       refreshToken: loginRes.refresh_token,
       accessToken: loginRes.access_token
@@ -83,7 +104,11 @@ export class LoginComponent implements OnInit {
 
     this.store.dispatch(new StoreCredentials(payload)).subscribe(() => {
       this.router.navigate(['/lms/dashboard']);
-    })
+    });
+  }
+
+  changeLoginType(loginType: string) {
+    this.loginType = loginType;
   }
 
   async login() {
@@ -107,30 +132,70 @@ export class LoginComponent implements OnInit {
     return res;
   }
 
-  getSfactrAuthSmart() {
-    this.qrLoading = true;
-    this.AuthService.getSfactrAuthSmart().subscribe({
-      next: (n) => {
-        if (n.ResultCode == 100) {
-          this.qrValue = decodeURIComponent(decodeURIComponent(n.WhatsAppLink));
-        }
-      },
-      error: (e) => { },
-      complete: () => {
-        this.qrLoading = false;
-      }
-    })
+  _connect() {
+    if (!this.otplessAuthSmartWebSocketAPI) {
+      return;
+    }
+
+    this.otplessAuthSmartWebSocketAPI._connect();
   }
+
+  _disconnect() {
+    this.otplessAuthSmartWebSocketAPI._disconnect();
+  }
+
+  _sendMessage() {
+    if (!this.qrEnabled) {
+      return;
+    }
+
+    let obj = {
+      sessionId: this.sessionId
+    }
+
+    this.otplessAuthSmartWebSocketAPI._send(JSON.stringify(obj));
+  }
+
+  _handleMessage(message) {
+
+    let response: any = JSON.parse(message.body);
+
+    if (!response.content) {
+      return;
+    }
+
+    const loginRes: any = JSON.parse(response.content);
+    this.storeLoginDetails(loginRes);
+  }
+
+  // getSfactrAuthSmart() {
+  //   this.qrLoading = true;
+  //   this.authService.getSfactrAuthSmart().subscribe({
+  //     next: (n) => {
+  //       if (n.ResultCode == 100) {
+  //         this.qrValue = decodeURIComponent(decodeURIComponent(n.WhatsAppLink));
+  //       }
+  //     },
+  //     error: (e) => { },
+  //     complete: () => {
+  //       this.qrLoading = false;
+  //     }
+  //   })
+  // }
 
   getSfactrOTPlessAuthSmart() {
     this.qrLoading = true;
-    this.AuthService.getSfactrOTPlessAuthSmart().subscribe({
+    this.authService.getSfactrOTPlessAuthSmart().subscribe({
       next: (n) => {
         if (n.ResultCode == 100) {
           this.qrValue = decodeURIComponent(decodeURIComponent(n.WhatsAppLink));
+          this.qrEnabled = true;
+          this.sessionId = n.SessionID;
         }
       },
-      error: (e) => { },
+      error: (e) => {
+        this.qrEnabled = false;
+      },
       complete: () => {
         this.qrLoading = false;
       }
