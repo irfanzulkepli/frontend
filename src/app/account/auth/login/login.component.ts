@@ -23,6 +23,7 @@ import { OTPlessAuthSmartWebSocketAPI } from '../OTPlessAuthSmartWebSocketAPI';
 export class LoginComponent implements OnInit {
 
   //hai
+  //2nd version
 
   loginType: string = '';
   loginForm: FormGroup;
