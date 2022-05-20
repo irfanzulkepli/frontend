@@ -24,6 +24,13 @@ export class LoginComponent implements OnInit {
 
   //hai
   //third version
+  //svsdvsd
+  //dvsvds
+  //wsdvd
+  //svsdvws
+
+
+  //wfwrfwrfwrf
 
   loginType: string = '';
   loginForm: FormGroup;
