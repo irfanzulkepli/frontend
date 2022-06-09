@@ -5,7 +5,7 @@ import { TemplatesComponent } from './templates/templates.component';
 
 const routes: Routes = [
     { path: 'proposal-list', component: ProposalListComponent },
-    { path: 'templates', component: TemplatesComponent }
+    { path: 'templates', component: TemplatesComponent },
 ];
 
 @NgModule({

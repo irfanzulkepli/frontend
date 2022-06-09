@@ -21,6 +21,11 @@ import bootstrapPlugin from "@fullcalendar/bootstrap";
 import { ProposalsRoutingModule } from './proposals-routing.module';
 import { TemplatesComponent } from './templates/templates.component';
 import { ProposalListComponent } from './proposal-list/proposal-list.component';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatTableModule} from '@angular/material/table';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatDialogModule} from '@angular/material/dialog';
 
 FullCalendarModule.registerPlugins([
     dayGridPlugin,
@@ -31,7 +36,7 @@ FullCalendarModule.registerPlugins([
 @NgModule({
     declarations: [
         TemplatesComponent,
-        ProposalListComponent
+        ProposalListComponent,
     ],
     imports: [
         ProposalsRoutingModule,
@@ -54,7 +59,12 @@ FullCalendarModule.registerPlugins([
         Ng2SmartTableModule,
         NgbPaginationModule,
         NgbTypeaheadModule,
-        CustomTableModule
+        CustomTableModule,
+        MatPaginatorModule,
+        MatTableModule,
+        MatMenuModule,
+        MatSlideToggleModule,
+        MatDialogModule
     ]
 })
 export class ProposalsModule { }

@@ -1,0 +1,130 @@
+#main{
+    padding:0px 18px;
+}
+#title{
+    height:56px;
+}
+#newProposal{
+    width:134px;
+    height: 37px;
+    background-color: #db3700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#newProposalContainer{
+    height: 56px;
+}
+#searchBar{
+    height: 37px;
+    border-radius: 15px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#search{
+    background-color: transparent;
+}
+.iconsearch{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+input[type=text]{
+    border: 0px;
+}
+
+#searchBar:focus {
+    border: 1px solid #db3700;
+}
+
+#filterColumn{
+    padding: 0px 0px 15px 0px;
+}
+
+#searchColumn{
+    padding: 0px 0px 15px 0px;
+}
+
+#manage{
+    height:37px;
+    width: 37px;
+
+}
+#managefield{
+    height:37px;
+    background-color: white;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-width: 0px;
+}
+#filter{
+    margin-left: 10px;
+}
+#filterfield{
+    height:37px;
+    background-color: white;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 25px;
+    border-width: 0px;
+}
+
+#pagingInfo{
+    padding-bottom: 15px;
+}
+
+#proposalTable{
+    margin-bottom: 15px;
+    border-radius: 10px;
+    background-color: white;
+    overflow-x: scroll;
+    height: 100%;
+}
+
+#proposalPaginator{
+    border-radius: 10px;
+}
+
+#insideManage{
+    width: 350px;
+    height: 400px;
+}
+:host ::ng-deep .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+    background-color: grey;
+}
+
+:host ::ng-deep  .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+    background-color: #db3700 ;
+}
+
+#statusDraft{
+    width: 60px;
+    height: 25px;
+    border-radius: 10px;
+    background-color: #FF7800;
+    color:white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#statusSent{
+    width: 60px;
+    height: 25px;
+    border-radius: 5px;
+    background-color: white;
+    border-style: solid ;
+    border-width: 1px;
+    border-color: #005DFF;
+    color:#005DFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

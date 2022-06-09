@@ -119,12 +119,18 @@ export class LoginComponent implements OnInit {
       data.set(key, this.loginForm.value[key]);
     }
 
+    console.log("below is data");
+    console.log(data);
+
     let apiUrl: string = "https://d1isjhghszo6bn.cloudfront.net/auth/realms/feng-test/protocol/openid-connect/token";
 
     const res: any = await this.httpClient.post(apiUrl, data.toString(), {
       headers: new HttpHeaders()
         .set('Content-Type', 'application/x-www-form-urlencoded')
     }).toPromise();
+
+    console.log("below is res");
+    console.log(res);
 
     if (res.errorCode) {
       throw new Error(res.message);

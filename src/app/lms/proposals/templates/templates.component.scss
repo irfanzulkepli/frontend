@@ -38,7 +38,7 @@
             li {
                 position: relative;
                 display: block;
-                padding: 0.75rem 1.25rem;
+                padding: 1.12rem 1.25rem;
                 margin-bottom: -1px;
             }
         }
@@ -47,5 +47,54 @@
 
 .template-card:hover .overlay-options {
     visibility: visible;
-    opacity: 0.5;
+    opacity: 0.6;
+}
+
+#templateTitle{
+    font-size: 20px;
+    color:#9C9C9C;
+}
+
+#newTemplateContainer{
+    height: 56px;
+}
+
+#newTemplate{
+    width:134px;
+    height: 37px;
+    background-color: #db3700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main{
+    padding:0px 18px;
+}
+
+#searchColumn{
+    padding: 0px 0px 15px 0px;
+}
+
+#searchBar{
+    height: 37px;
+    border-radius: 15px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#search{
+    background-color: transparent;
+}
+
+.iconsearch{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+input[type=text]{
+    border: 0px;
 }

@@ -1,69 +1,135 @@
-<div class="container-fluid">
+<div class="main">
 
   <div class="row">
-    <div class="col-12">
-      <div class="page-title-box d-flex align-items-center justify-content-between">
-        <h4 class="mb-0 font-size-18"> Templates </h4>
-        <div class="page-title-right">
-          <button type="button" class="btn btn-primary btn-rounded">
-            Add Template
-          </button>
-        </div>
+    <div id="titleContainer" class="col-sm-12 col-md-6 h-5 p-0 m-0">
+      <h3>Templates</h3>
+    </div>
+    <div id="newTemplateContainer" class="col-sm-12 col-md-6 p-0">
+      <div id="newTemplate" class="shadow rounded-3 text-white border-0 float-end" (click)="goToAddTemplate()">Add template</div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col  p-0 d-flex justify-content-end" >
+      <div id="searchColumn" class="col-sm-12 col-md-3">
+        <form>
+          <div id="searchBar" class="shadow-lg px-3">
+            <div class="container-fluid d-flex p-0">
+              <div class="iconsearch">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                </svg>
+              </div>
+              <div class="w-100">
+                <input id="search" type="text" class="form-control" placeholder="Search"  name="search" [(ngModel)]="this.searchText" (input)="getDataTablePaginator(eventFirst)" autocomplete="off" />
+                <!-- <input type="submit" hidden/> -->
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>
-
-  <div class="row">
-    <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3" *ngFor="let template of templates">
-      <div class="template-card">
+  <div class="row" >
+    <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 px-2 p-0 mb-3" *ngFor="let template of templates">
+      <div class="template-card shadow-lg mb-2">
         <div class="overlay-options">
-          <ul class="list-group h-100">
-            <li class="list-group-item"><a href="#" target="_blank" class="d-block"><svg
-                  xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  class="feather feather-eye">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                  <circle cx="12" cy="12" r="3"></circle>
-                </svg> <span class="ml-3">Preview</span></a></li>
-            <li class="list-group-item"><a href="#" target="_blank" class="d-block"><svg
-                  xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  class="feather feather-edit">
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                </svg> <span class="ml-3">Edit</span></a></li>
-            <li class="list-group-item"><a href="#" target="_blank" class="d-block"><svg
-                  xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  class="feather feather-trash">
-                  <polyline points="3 6 5 6 21 6"></polyline>
-                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                </svg> <span class="ml-3">Delete</span></a></li>
-            <li class="list-group-item"><a href="#" target="_blank" class="d-block"><svg
-                  xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  class="feather feather-copy">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                </svg> <span class="ml-3">Duplicate</span></a></li>
-            <li class="list-group-item"><a href="#" target="_blank" class="d-block"><svg
-                  xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  class="feather feather-zap">
-                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                </svg> <span class="ml-3">Add to proposal</span></a></li>
-            <li class="list-group-item"><a href="#" target="_blank" class="d-block"><svg
-                  xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  class="feather feather-download">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                  <polyline points="7 10 12 15 17 10"></polyline>
-                  <line x1="12" y1="15" x2="12" y2="3"></line>
-                </svg> <span class="ml-3">Download</span></a></li>
+          <ul class="list-group h-100 m-0 p-0" style="display:flex; justify-content:center;">
+
+            <li class="list-group-item">
+              <a target="_blank" class="d-block" (click)="preview(template.title,template.content)">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-eye">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <span class="ms-3">Preview</span>
+              </a>
+            </li>
+
+            <li class="list-group-item">
+              <a target="_blank" class="d-block" (click)="goToEditTemplate(template.id)">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-edit">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                <span class="ms-3">Edit</span>
+              </a>
+            </li>
+
+            <li class="list-group-item">
+              <a target="_blank" class="d-block">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-trash">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+                <span class="ms-3">Delete</span>
+              </a>
+            </li>
+
+            <li class="list-group-item">
+              <a target="_blank" class="d-block" (click)="goToEditTemplate(template.id)">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-copy">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span class="ms-3">Duplicate</span>
+              </a>
+            </li>
+
+            <!-- <li class="list-group-item">
+              <a target="_blank" class="d-block">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-zap">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </svg>
+                <span class="ms-3">Add to proposal</span>
+              </a>
+            </li> -->
+
+            <li class="list-group-item">
+              <a target="_blank" class="d-block">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-download">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span class="ms-3">Download</span>
+              </a>
+            </li>
+
           </ul>
         </div>
       </div>
-      <span class="text-mute"> {{ template.subject }} </span>
+      <p id="templateTitle">{{template.title}}</p>
     </div>
+    
+  </div>
+  <div class="row" *ngIf="this.length>8;">
+    <div class="col p-0 shadow-lg">
+      <mat-paginator [length]="length"
+                    [pageSize]="pageSize"
+                    [pageSizeOptions]="pageSizeOptions"
+                    (page)="getDataTablePaginator($event)"
+                    aria-label="Select page">
+      </mat-paginator>
+    </div>
+
   </div>
 </div>

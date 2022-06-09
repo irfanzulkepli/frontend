@@ -30,6 +30,7 @@ import { FakeBackendInterceptor } from './core/helpers/fake-backend';
 import { AccountState } from './state/account-state';
 import { AccountService } from './state/account-service';
 import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
+import { MatTableModule } from '@angular/material/table';
 
 if (environment.defaultauth === 'firebase') {
   initFirebaseBackend(environment.firebaseConfig);
@@ -46,6 +47,7 @@ export function createTranslateLoader(http: HttpClient): any {
   declarations: [
     AppComponent,
     CyptolandingComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -77,7 +79,8 @@ export function createTranslateLoader(http: HttpClient): any {
     NgxsStoragePluginModule.forRoot({
       storage: 1
     }),
-    NgxQRCodeModule
+    NgxQRCodeModule,
+    MatTableModule
   ],
   bootstrap: [AppComponent],
   providers: [
